@@ -1,0 +1,1193 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="curl"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\cpr\;CMake Files\cpr\opt\;CMake Files\cpr\opt\curl\;CMake Files\cpr\opt\curl\CMake\;CMake Files\cpr\opt\curl\docs\;CMake Files\cpr\opt\curl\docs\libcurl\;CMake Files\cpr\opt\curl\docs\libcurl\opts\;CMake Files\cpr\opt\curl\docs\cmdline-opts\;CMake Files\cpr\opt\curl\lib\;CMake Files\cpr\cpr\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/strip">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 install/strip"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="edit_cache">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 edit_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="curl">
+				<Option output="/home/malibushko/Qt/Examples/curl/curl" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include/curl"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 curl"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="curl/fast">
+				<Option output="/home/malibushko/Qt/Examples/curl/curl" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include/curl"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 curl/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="list_install_components">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 list_install_components"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install/local">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 install/local"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="rebuild_cache">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 rebuild_cache"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="install">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 install"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="uninstall">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/Makefile&quot;  VERBOSE=1 uninstall"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="pdf">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 pdf"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="html">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 html"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="opts-html">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 opts-html"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="opts-pdf">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 opts-pdf"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="generate-curl.1">
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts/Makefile&quot;  VERBOSE=1 generate-curl.1"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libcurl">
+				<Option output="/home/malibushko/Qt/Examples/curl/lib/libcurl.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBUILDING_LIBCURL"/>
+					<Add option="-DCURL_HIDDEN_SYMBOLS"/>
+					<Add option="-DCMAKE_USE_OPENSSL"/>
+					<Add option="-DHAVE_CONFIG_H"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include/curl"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/../include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/.."/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 libcurl"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="libcurl/fast">
+				<Option output="/home/malibushko/Qt/Examples/curl/lib/libcurl.so" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib"/>
+				<Option object_output="./"/>
+				<Option type="3"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DBUILDING_LIBCURL"/>
+					<Add option="-DCURL_HIDDEN_SYMBOLS"/>
+					<Add option="-DCMAKE_USE_OPENSSL"/>
+					<Add option="-DHAVE_CONFIG_H"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include/curl"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/../include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/.."/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 libcurl/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="cpr">
+				<Option output="/home/malibushko/Qt/Examples/curl/lib/libcpr.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/cpr"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCMAKE_USE_OPENSSL"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include/curl"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 cpr"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="cpr/fast">
+				<Option output="/home/malibushko/Qt/Examples/curl/lib/libcpr.a" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/malibushko/Qt/Examples/curl/cpr/cpr"/>
+				<Option object_output="./"/>
+				<Option type="2"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DCMAKE_USE_OPENSSL"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include"/>
+					<Add directory="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/include/curl"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 cpr/fast"/>
+					<CompileFile command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -f &quot;/home/malibushko/Qt/Examples/curl/cpr/cpr/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/apimanager.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/auth.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/cookies.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/cprtypes.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/digest.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/error.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/multipart.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/parameters.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/payload.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/proxies.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/session.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/ssl_options.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/timeout.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/util.cpp">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/api.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/auth.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/body.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/cookies.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/cpr.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/cprtypes.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/curlholder.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/defines.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/digest.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/error.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/max_redirects.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/multipart.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/parameters.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/payload.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/proxies.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/response.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/session.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/ssl_options.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/timeout.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/util.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/include/cpr/verbose.h">
+			<Option target="cpr"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/amigaos.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/amigaos.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/arpa_telnet.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/asyn-ares.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/asyn-thread.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/asyn.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/base64.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/conncache.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/conncache.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/connect.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/connect.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/content_encoding.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/content_encoding.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/cookie.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/cookie.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_addrinfo.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_addrinfo.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_base64.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_config.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_des.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_des.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_endian.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_endian.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_fnmatch.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_fnmatch.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_gethostname.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_gethostname.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_gssapi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_gssapi.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_hmac.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_ldap.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_md4.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_md5.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_memory.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_memrchr.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_memrchr.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_multibyte.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_multibyte.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_ntlm_core.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_ntlm_core.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_ntlm_wb.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_ntlm_wb.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_printf.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_rtmp.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_rtmp.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_sasl.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_sasl.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_sec.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_setup.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_setup_once.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_sspi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_sspi.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_threads.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_threads.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curlx.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/dict.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/dict.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/dotdot.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/dotdot.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/easy.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/easyif.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/escape.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/escape.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/file.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/file.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/fileinfo.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/fileinfo.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/formdata.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/formdata.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ftp.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ftp.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ftplistparser.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ftplistparser.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/getenv.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/getinfo.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/getinfo.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/gopher.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/gopher.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hash.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hash.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hmac.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostasyn.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostcheck.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostcheck.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostip.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostip.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostip4.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostip6.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/hostsyn.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http2.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http2.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_chunks.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_chunks.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_digest.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_digest.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_negotiate.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_negotiate.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_ntlm.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_ntlm.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_proxy.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/http_proxy.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/idn_win32.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/if2ip.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/if2ip.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/imap.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/imap.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/inet_ntop.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/inet_ntop.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/inet_pton.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/inet_pton.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/krb5.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ldap.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/llist.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/llist.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/md4.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/md5.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/memdebug.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/memdebug.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/mime.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/mime.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/mprintf.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/multi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/multihandle.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/multiif.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/netrc.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/netrc.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/non-ascii.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/non-ascii.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/nonblock.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/nonblock.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/openldap.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/parsedate.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/parsedate.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/pingpong.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/pingpong.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/pipeline.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/pipeline.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/pop3.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/pop3.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/progress.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/progress.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/rand.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/rand.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/rtsp.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/rtsp.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/security.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/select.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/select.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/sendf.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/sendf.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/setup-vms.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/share.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/share.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/sigpipe.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/slist.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/slist.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/smb.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/smb.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/smtp.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/smtp.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/sockaddr.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/socks.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/socks.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/socks_gssapi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/socks_sspi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/speedcheck.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/speedcheck.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/splay.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/splay.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ssh.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/ssh.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strcase.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strcase.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strdup.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strdup.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strerror.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strerror.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strtok.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strtok.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strtoofft.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/strtoofft.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/system_win32.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/system_win32.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/telnet.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/telnet.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/tftp.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/tftp.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/timeval.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/timeval.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/transfer.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/transfer.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/url.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/url.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/urldata.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/cleartext.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/cram.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/digest.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/digest.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/digest_sspi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/krb5_gssapi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/krb5_sspi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/ntlm.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/ntlm.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/ntlm_sspi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/oauth2.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/spnego_gssapi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/spnego_sspi.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/vauth.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vauth/vauth.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/version.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/axtls.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/axtls.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/cyassl.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/cyassl.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/darwinssl.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/darwinssl.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/gskit.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/gskit.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/gtls.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/gtls.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/mbedtls.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/mbedtls.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/nss.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/nssg.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/openssl.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/openssl.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/polarssl.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/polarssl.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/polarssl_threadlock.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/polarssl_threadlock.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/schannel.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/schannel.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/vtls.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/vtls/vtls.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/warnless.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/warnless.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/wildcard.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/wildcard.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/x509asn1.c">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/x509asn1.h">
+			<Option target="libcurl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/json_parser.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/main.cpp">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/querybuilder.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/sequence_dispatcher.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/telegram_bot.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/telegram_structs.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/traits.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/trie.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/update_manager.h">
+			<Option target="curl"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/curl-config.in">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/libcurl.pc.in">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMake/CurlSymbolHiding.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\CMake\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMake/FindLibSSH2.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\CMake\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMake/Macros.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\CMake\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMake/OtherTests.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\CMake\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMake/Utilities.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\CMake\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/CMake/cmake_uninstall.cmake.in">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\CMake\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\libcurl\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/Makefile.inc.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\libcurl\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\libcurl\opts\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/libcurl/opts/Makefile.inc.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\libcurl\opts\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\cmdline-opts\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/docs/cmdline-opts/Makefile.inc.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\docs\cmdline-opts\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\lib\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/Makefile.inc.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\lib\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/opt/curl/lib/curl_config.h.cmake">
+			<Option virtualFolder="CMake Files\cpr\opt\curl\lib\"/>
+		</Unit>
+		<Unit filename="/home/malibushko/Qt/Examples/curl/cpr/cpr/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\cpr\cpr\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>
