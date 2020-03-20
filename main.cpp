@@ -50,7 +50,6 @@ int main() {
             std::string name;
             std::string surname;
         };
-
         auto user = std::make_shared<User>();
         seq->addTransition([user,&bot](Message && m) {
             user->name = m.text.value();
