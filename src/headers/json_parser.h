@@ -3,12 +3,11 @@
 #include <string>
 #include <utility>
 #include <variant>
-#include <rapidjson/rapidjson.h>
 #include <type_traits>
+#include "boost/pfr.hpp"
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "boost/pfr.hpp"
 #include "utility/traits.h"
 
 namespace telegram {

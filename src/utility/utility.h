@@ -4,7 +4,10 @@
 #include "rapidjson/writer.h"
 #include "rapidjson/document.h"
 namespace telegram::utility {
+#ifndef NAME_VALUE_PAIR
 #define NAME_VALUE_PAIR(value) std::pair<std::string_view,std::decay_t<decltype(value)>>{#value,value}
+#endif
+
 #ifndef __COUNTER__
 constexpr static int MAX_DEPTH = 64;
 template<uint64_t N>
@@ -61,17 +64,18 @@ int constexpr counter_id(int value = mark<next_flag>::value) {
     static constexpr int current_counter = counter_id();
 
 #else
-
+#ifndef DECLARE_FIELD
 #define DECLARE_FIELD(type, field_name) \
     type field_name; \
     template<typename Dummy__ >       \
     struct field_info<__COUNTER__-current_counter-1,Dummy__> \
     { constexpr static std::string_view name = #field_name;}
-
+#endif
+#ifndef DECLARE_STRUCT
 #define DECLARE_STRUCT template<size_t N,class Dummy = void> struct field_info; \
     static constexpr bool is_parsable = true;\
     static constexpr int current_counter = __COUNTER__;
-
+#endif
 #endif
 
 static std::string objectToJson(rapidjson::Value val) {

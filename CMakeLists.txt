@@ -16,7 +16,6 @@ set (HEADERS
              ./src/headers/networkmanager.h
              ./include/telegram_bot.h
              ./include/telegram_structs.h
-             ./third_party/httplib.h
              ./src/utility/logger.h
              ./src/utility/traits.h
              ./src/utility/trie.h
@@ -34,5 +33,6 @@ add_executable(tglib ${HEADERS} ${SOURCES})
 include_directories(${PROJECT_SOURCE_DIR}/third_party)
 include_directories(${PROJECT_SOURCE_DIR}/src)
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/third_party/boost/include)
 
 target_link_libraries(tglib stdc++fs Threads::Threads OpenSSL::SSL OpenSSL::Crypto)

@@ -1,0 +1,3 @@
+[submodule "include/boost"]
+	path = include/boost
+	url = https://github.com/apolukhin/magic_get.git

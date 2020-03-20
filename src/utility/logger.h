@@ -1,8 +1,8 @@
 #pragma once
-#include <utility>
-
+#include "traits.h"
 namespace telegram {
-template <class T>
+namespace utility {
+template <class T,std::enable_if_t<traits::is_lo>
 class Logger {
     static T* m_logger;
 public:
@@ -14,5 +14,5 @@ public:
         m_logger = logger;
     }
 };
-
+}
 }

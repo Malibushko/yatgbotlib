@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #define CPPHTTPLIB_OPENSSL_SUPPORT
-#include "../third_party/httplib.h"
+#include "../third_party/httplib/httplib.h"
 #undef CPPHTTPLIB_OPENSSL_SUPPORT
 
 class NetworkManager {
@@ -32,17 +32,6 @@ public:
                 reply = i().cli->Post(url.data(),items);
             }
             return reply;
-        } else
-            return {};
-    }
-    std::string post2(const std::string& url,const httplib::Headers& headers = {},const std::string& body = {"{}"},
-                     const std::string& content_type = {"application/json"}) {
-        auto reply = i().cli->Post(url.data(),headers,body,content_type.data());
-        if (reply && reply->status) {
-            if (reply->status > 300 && reply->status < 400) {
-                reply = i().cli->Post(url.data(),headers,body,content_type.data());
-            }
-            return reply->body;
         } else
             return {};
     }

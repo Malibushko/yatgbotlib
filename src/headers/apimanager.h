@@ -105,9 +105,7 @@ public:
         return result;
     }
     std::string call_api_raw_json(const char * api,const QueryBuilder& builder) {
-        return NetworkManager::i().post(base_url + api,
-        {},
-                                        builder.getQuery())->body;
+        return NetworkManager::i().post(base_url + api,{}, builder.getQuery())->body;
     }
 
     template <class T,class TrueOrType>

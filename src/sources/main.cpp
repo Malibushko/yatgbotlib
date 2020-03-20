@@ -2,12 +2,8 @@
 #include <string>
 #include <utility>
 #include <variant>
-#include "rapidjson/rapidjson.h"
-#include "rapidjson/document.h"
-#include "rapidjson/writer.h"
-#include "rapidjson/stringbuffer.h"
-#include "../include/telegram_bot.h"
 #include <string>
+#include "telegram_bot.h"
 
 int main() {
     using namespace telegram;
