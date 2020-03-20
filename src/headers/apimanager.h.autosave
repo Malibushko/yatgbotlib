@@ -1,8 +1,4 @@
 #pragma once
-#include "querybuilder.h"
-#include "networkmanager.h"
-#include "utility/traits.h"
-#include "utility/utility.h"
 #    if __has_include(<filesystem>)
 #        include <filesystem>
 namespace fs = namespace std::filesystem;
@@ -10,6 +6,12 @@ namespace fs = namespace std::filesystem;
 #    include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 #endif
+
+#include "querybuilder.h"
+#include "networkmanager.h"
+#include "utility/traits.h"
+#include "utility/utility.h"
+
 
 
 namespace telegram {

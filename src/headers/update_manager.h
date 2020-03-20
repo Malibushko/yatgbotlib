@@ -1,11 +1,12 @@
 #pragma once
 #include <functional>
-#include <rapidjson/document.h>
 #include <thread>
-#include "telegram_structs.h"
-#include "trie.h"
-#include "json_parser.h"
-#include "sequence_dispatcher.h"
+#include "rapidjson/document.h"
+#include "../include/telegram_structs.h"
+#include "headers/json_parser.h"
+#include "headers/sequence_dispatcher.h"
+#include "utility/trie.h"
+#include "utility/utility.h"
 
 namespace telegram {
 
@@ -137,7 +138,7 @@ public:
                 auto data = obj["data"].GetString();
 
                 if (runCallback<query_callback>(data,
-                            helpers::objectToJson(obj)))
+                            utility::objectToJson(obj)))
                     return;
             }
             else if (it.HasMember("inline_query")) {
@@ -145,14 +146,14 @@ public:
                 auto data = obj["query"].GetString();
 
                 if (runCallback<inline_callback>(data,
-                            helpers::objectToJson(obj)))
+                            utility::objectToJson(obj)))
                     return;
             }
             else if (it.HasMember("chosen_inline_result")) {
                 auto obj = it["chosen_inline_result"].GetObject();
                 auto data = obj["query"].GetString();
 
-                if (runCallback<chosen_inline_callback>(data,helpers::objectToJson(obj)))
+                if (runCallback<chosen_inline_callback>(data,utility::objectToJson(obj)))
                     return;
             }
             else if (it.HasMember("message") && it["message"].GetObject().HasMember("text")) {
@@ -166,7 +167,7 @@ public:
                         else {
                             std::thread(&Sequence<msg_callback>::input<Message>,
                                         std::ref(*result->second),
-                                        fromJson<Message>(helpers::objectToJson(message))).detach();
+                                        fromJson<Message>(utility::objectToJson(message))).detach();
                             return;
                         }
                     }
@@ -176,11 +177,11 @@ public:
                     size_t firstSpace = text.find_first_of(' ');
                     std::string_view cmd(text.data(),firstSpace == std::string::npos ? text.size() : firstSpace);
                     if (msg_callbacks.find(cmd) && (runCallback<msg_callback>(cmd,
-                                helpers::objectToJson(it["message"].GetObject()))))
+                                utility::objectToJson(it["message"].GetObject()))))
                         return;
                 }
             }
-               runCallback<update_callback>({},helpers::objectToJson(it));
+               runCallback<update_callback>({},utility::objectToJson(it));
         };
 
 

@@ -6,8 +6,7 @@
 #include "rapidjson/document.h"
 #include "rapidjson/writer.h"
 #include "rapidjson/stringbuffer.h"
-#include "telegram_structs.h"
-#include "telegram_bot.h"
+#include "../include/telegram_bot.h"
 #include <string>
 
 int main() {

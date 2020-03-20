@@ -1,4 +1,4 @@
-#include "telegram_bot.h"
+#include "../include/telegram_bot.h"
 
 namespace telegram {
 Bot::Bot(const std::string &token) noexcept :
@@ -159,11 +159,15 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port, const std::str
     }
     httplib::SSLServer server(cert_path.data(),key_path.data());
     server.Post("/",[&](const httplib::Request& req,httplib::Response& res){
-        std::cout << req.body << std::endl;
         if (auto host = req.headers.find("REMOTE_ADDR");host != req.headers.end()) {
-            uint32_t host_ip = helpers::ipv4(host->second.data());
-            if (host_ip != std::clamp(host_ip,helpers::telegram_subnet_start,helpers::telegram_subnet_end)
-                    && host_ip != std::clamp(host_ip,helpers::telegram_subnet_start2,helpers::telegram_subnet_end2)) {
+            uint32_t host_ip = utility::ipv4(host->second.data());
+            if (host_ip != std::clamp(host_ip,
+                                      utility::telegram_first_subnet_range_begin,
+                                      utility::telegram_second_subned_range_end)
+                    &&
+               host_ip != std::clamp(host_ip,
+                                             utility::teleram_second_subnet_range_begin,
+                                             utility::telegram_second_subned_range_end)) {
                 return;
             }
         } else

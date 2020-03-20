@@ -1,11 +1,11 @@
 #pragma once
-#include "traits.h"
 #include <memory>
+#include "utility/traits.h"
 
 namespace telegram {
 
 template <class Event>
-using seq_signatures = helpers::checked_callback<Event>;
+using seq_signatures = traits::checked_callback<Event>;
 
 template <class Event,class Check = typename seq_signatures<Event>::checker>
 class Sequence : public std::enable_shared_from_this<Sequence<Event>> {

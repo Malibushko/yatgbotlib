@@ -1,7 +1,7 @@
 #pragma once
 #include <memory>
 #define CPPHTTPLIB_OPENSSL_SUPPORT
-#include "include/httplib.h"
+#include "../third_party/httplib.h"
 #undef CPPHTTPLIB_OPENSSL_SUPPORT
 
 class NetworkManager {
