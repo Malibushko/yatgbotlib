@@ -28,4 +28,5 @@ find_package(OpenSSL REQUIRED COMPONENTS Crypto SSL)
 add_executable(curl ${HEADERS} ${SOURCES})
 
 include_directories(${PROJECT_SOURCE_DIR}/include)
+include_directories(${PROJECT_SOURCE_DIR}/src)
 target_link_libraries(curl stdc++fs Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
