@@ -8,16 +8,16 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_USE_OPENSSL ON)
 
 set (HEADERS
-             ./src/headers/telegram_structs.h
-             ./src/headers/telegram_bot.h
-             ./src/headers/json_parser.h
-             ./src/headers/traits.h
-             ./src/headers/querybuilder.h
-             ./src/headers/apimanager.h
-             ./src/headers/structs/trie.h
-             ./src/headers/update_manager.h
-             ./src/headers/sequence_dispatcher.h
-             ./src/headers/networkmanager.h
+             ./telegram_structs.h
+             ./telegram_bot.h
+             ./json_parser.h
+             ./traits.h
+             ./querybuilder.h
+             ./apimanager.h
+             ./trie.h
+             ./update_manager.h
+             ./sequence_dispatcher.h
+             ./networkmanager.h
              ./include/httplib.h)
 
 set (SOURCES ./telegrambot.cpp
