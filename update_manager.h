@@ -1,0 +1,4 @@
+#ifndef UPDATE_MANAGER_H
+#define UPDATE_MANAGER_H
+
+#endif // UPDATE_MANAGER_H

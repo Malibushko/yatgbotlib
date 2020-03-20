@@ -1,0 +1,4 @@
+#ifndef NETWORKMANAGER_H
+#define NETWORKMANAGER_H
+
+#endif // NETWORKMANAGER_H

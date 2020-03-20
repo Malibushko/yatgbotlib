@@ -1,0 +1,4 @@
+#ifndef TELEGRAM_METHODS_H
+#define TELEGRAM_METHODS_H
+
+#endif // TELEGRAM_METHODS_H

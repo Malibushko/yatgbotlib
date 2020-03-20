@@ -1,0 +1,4 @@
+#ifndef QUERYBUILDER_H
+#define QUERYBUILDER_H
+
+#endif // QUERYBUILDER_H

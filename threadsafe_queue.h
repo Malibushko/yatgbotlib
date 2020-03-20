@@ -1,0 +1,4 @@
+#ifndef THREADSAFE_QUEUE_H
+#define THREADSAFE_QUEUE_H
+
+#endif // THREADSAFE_QUEUE_H
