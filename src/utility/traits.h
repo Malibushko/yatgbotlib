@@ -32,6 +32,15 @@ static_assert (is_unique_ptr_v<decltype(std::unique_ptr<int>{})>);
 
 
 
+template <class T,typename = std::void_t<>>
+struct is_logger : std::false_type {};
+
+template <class T>
+struct is_logger<T,std::void_t<decltype (T::error),decltype (T::info),
+                                decltype(T::warning),decltype(T::critical)>> : std::true_type {};
+template <class T>
+constexpr static bool is_logger_v = is_logger<T>::value;
+
 // проверяет, является ли тип std::optional
 template <class T,typename = std::void_t<>>
 struct is_optional : std::false_type {};
