@@ -1,8 +1,10 @@
 #pragma once
-#include <rapidjson/document.h>
-#include <rapidjson/allocators.h>
-#include <rapidjson/stringbuffer.h>
-#include <rapidjson/writer.h>
+#include "rapidjson/document.h"
+#include "rapidjson/allocators.h"
+#include "rapidjson/stringbuffer.h"
+#include "rapidjson/writer.h"
+#include "apimanager.h"
+#include "utility/utility.h"
 namespace telegram {
 
 class QueryBuilder {
@@ -17,7 +19,7 @@ public:
             builder.doc.SetObject();
 
         rapidjson::Value val;
-        valueToJson(pair.second,val,builder.doc.GetAllocator());
+        value_to_json(pair.second,val,builder.doc.GetAllocator());
         if (!val.IsNull()) {
             rapidjson::Value name(rapidjson::kStringType);
             name.SetString(pair.first.data(),pair.first.size(),builder.doc.GetAllocator());
@@ -26,10 +28,7 @@ public:
         return builder;
     }
     std::string getQuery() const {
-        rapidjson::StringBuffer buff;
-        rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
-        doc.Accept(writer);
-        return buff.GetString();
+        return utility::to_string(doc);
     }
     const rapidjson::Document& getDoc() const {
         return doc;

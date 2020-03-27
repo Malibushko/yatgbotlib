@@ -1,10 +1,9 @@
 #pragma once
 #include <type_traits>
+#include <functional>
 #include <optional>
 #include <memory>
-#include <functional>
-#include <fstream>
-#include "../include/telegram_structs.h"
+#include "telegram_structs.h"
 
 namespace telegram {
 

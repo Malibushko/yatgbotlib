@@ -1,19 +1,21 @@
 #pragma once
 #include <memory>
 #define CPPHTTPLIB_OPENSSL_SUPPORT
-#include "../third_party/httplib/httplib.h"
+#include "httplib/httplib.h"
 #undef CPPHTTPLIB_OPENSSL_SUPPORT
 
-class NetworkManager {
+class network_manager {
     std::unique_ptr<httplib::Client> cli;
-    NetworkManager(const std::string& host) : cli{std::make_unique<httplib::Client>(host.data())} {}
+    network_manager(const std::string& host) : cli{std::make_unique<httplib::Client>(host.data())} {}
 public:
-    static NetworkManager& i() {
-        static NetworkManager inst{"api.telegram.org"};
+    static network_manager& i() {
+        static network_manager inst{"api.telegram.org"};
         inst.cli->set_follow_location(true);
         return inst;
     }
-    std::shared_ptr<httplib::Response> post(const std::string& url,const httplib::Headers& headers = {},const std::string& body = {"{}"},
+    std::shared_ptr<httplib::Response> post(const std::string& url,
+                                            const httplib::Headers& headers = {},
+                                            const std::string& body = {"{}"},
                      const std::string& content_type = {"application/json"}) {
         auto reply = i().cli->Post(url.data(),headers,body,content_type.data());
         if (reply && reply->status) {
@@ -35,8 +37,8 @@ public:
         } else
             return {};
     }
-    NetworkManager(const NetworkManager&) = delete;
-    NetworkManager(NetworkManager&&) = delete;
-    NetworkManager& operator=(const NetworkManager&) = delete;
-    NetworkManager& operator=(NetworkManager&&) = delete;
+    network_manager(const network_manager&) = delete;
+    network_manager(network_manager&&) = delete;
+    network_manager& operator=(const network_manager&) = delete;
+    network_manager& operator=(network_manager&&) = delete;
 };

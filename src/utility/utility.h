@@ -1,6 +1,15 @@
 #pragma once
 #include <cstdint>
 #include <string>
+#include <fstream>
+#    if __has_include(<filesystem>)
+#        include <filesystem>
+namespace fs = namespace std::filesystem;
+#else
+#    include <experimental/filesystem>
+namespace fs = std::experimental::filesystem;
+#endif
+
 #include "rapidjson/writer.h"
 #include "rapidjson/document.h"
 namespace telegram::utility {
@@ -128,6 +137,61 @@ constexpr uint32_t telegram_first_subnet_range_begin = 2509938689;
 constexpr uint32_t telegram_first_subnet_range_end = 2509942782;
 constexpr uint32_t teleram_second_subnet_range_begin = 1533805569;
 constexpr uint32_t telegram_second_subned_range_end = 1533806590;
+
+static inline std::string to_string(const rapidjson::Document& doc) {
+    rapidjson::StringBuffer buff;
+    rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
+    doc.Accept(writer);
+    return buff.GetString();
+}
+static bool lowercase_compare(const std::string& a, const std::string& b)
+{
+    return std::equal(a.begin(), a.end(),
+                      b.begin(), b.end(),
+                      [](char a, char b) {
+                          return tolower(a) == tolower(b);
+                      });
+}
+static std::pair<bool,std::string> parse_value(std::string_view view) {
+    rapidjson::Document doc;
+    if (!view.size()) {
+        return {false,{"Empty or not valid json"}};
+    }
+    doc.Parse(view.data(),view.length());
+    if (doc["ok"].GetBool()) {
+        if (auto& val = doc["result"];val.IsArray())
+            return {true,utility::arrayToJson(val.GetArray())};
+        else if (val.IsObject())
+            return {true,utility::objectToJson(val.GetObject())};
+        else if (val.IsNumber()) {
+            return {true,std::to_string(val.GetInt())};
+        } else if (val.IsString()) {
+            return {true,val.GetString()};
+        } else if (val.IsFloat()) {
+            return {true,std::to_string(val.GetFloat())};
+        } else if (val.IsTrue()) {
+            return {true,"true"};
+        } else if (val.IsFalse()) {
+            return {true,"false"};
+        } else {
+            assert("Undefined value");
+        }
+    } else {
+        return {false,doc["description"].GetString()};
+    }
+}
+
+static inline std::string get_file_bytes(const std::string &filePath) {
+    std::ifstream ifs(filePath, std::ios::in | std::ios::binary);
+    if (!ifs.is_open()) {
+        return {};
+    }
+    size_t fileSize = fs::file_size(filePath);
+    std::vector<char> bytes(fileSize);
+    ifs.read(bytes.data(), fileSize);
+
+    return std::string(bytes.data(), fileSize);
+}
 
 struct error {
     int32_t error_code;

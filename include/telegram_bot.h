@@ -21,7 +21,7 @@ using reply_markups = std::variant<InlineKeyboardMarkup,ReplyKeyboardMarkup,Repl
 using o_error = std::optional<error>;
 
 class Bot {
-    std::unique_ptr<ApiManager> api;
+    std::unique_ptr<api_manager> api;
     UpdateManager updater;
     bool stopPolling = false;
     bool webhookSet = false;
@@ -84,7 +84,7 @@ public:
                    std::optional<ReplyMarkups> reply_markup= {}) const;
 
     std::pair<bool,o_error> setWebhook(std::string_view  url,const std::optional<std::string>& certificate = {},
-                    std::optional<uint32_t> max_connections = {},
+                    const std::optional<uint32_t> max_connections = {},
                     const std::optional<std::vector<std::string_view>> & allowed_updates = {}) const;
 
     bool setWebhookServer(const std::string& url,uint16_t port,const std::string& cert_path = "./cert.pem",

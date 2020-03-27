@@ -1,8 +1,8 @@
-#include "../include/telegram_bot.h"
+#include "telegram_bot.h"
 
 namespace telegram {
 Bot::Bot(const std::string &token) noexcept :
-    api{std::make_unique<ApiManager>("https://api.telegram.org/bot" + token + '/')} {
+    api{std::make_unique<api_manager>("https://api.telegram.org/bot" + token + '/')} {
 }
 
 
@@ -84,29 +84,31 @@ std::pair<Message,o_error> Bot::reply(const Message &msg, const std::string &tex
 }
 
 
-std::pair<std::vector<Update>,o_error> Bot::getUpdates(std::optional<uint32_t> offset, std::optional<uint8_t> limit, std::optional<uint32_t> timeout, std::optional<std::vector<std::string_view> > allowed_updates) const {
+std::pair<std::vector<Update>,o_error> Bot::getUpdates(std::optional<uint32_t> offset,
+                                                       std::optional<uint8_t> limit,
+                                                       std::optional<uint32_t> timeout,
+                                                       std::optional<std::vector<std::string_view>> allowed_updates) const {
     QueryBuilder builder;
-
     builder << NAME_VALUE_PAIR(offset) << NAME_VALUE_PAIR(limit) <<
                NAME_VALUE_PAIR(timeout) << NAME_VALUE_PAIR(allowed_updates);
-
     return api->call_api<std::vector<Update>>(__func__,builder);
 }
 
 
 std::string Bot::getUpdatesRawJson(std::optional<uint32_t> offset, std::optional<uint8_t> limit, std::optional<uint32_t> timeout, std::optional<std::vector<std::string_view> > allowed_updates) {
     QueryBuilder builder;
-
     builder << NAME_VALUE_PAIR(offset) << NAME_VALUE_PAIR(limit) <<
                NAME_VALUE_PAIR(timeout) << NAME_VALUE_PAIR(allowed_updates);
     return api->call_api_raw_json("getUpdates",builder);
 }
 
-std::pair<Message,o_error> Bot::forwardMessage(Bot::IntOrString chat_id, Bot::IntOrString from_chat_id, int64_t message_id, o_bool disable_notification) const {
+std::pair<Message,o_error> Bot::forwardMessage(Bot::IntOrString chat_id,
+                                               Bot::IntOrString from_chat_id,
+                                               int64_t message_id,
+                                               o_bool disable_notification) const {
     QueryBuilder builder;
     builder << NAME_VALUE_PAIR(chat_id) << NAME_VALUE_PAIR(from_chat_id)
             << NAME_VALUE_PAIR(message_id) << NAME_VALUE_PAIR(disable_notification);
-
     return api->call_api<Message>(__func__,builder);
 }
 
@@ -137,7 +139,10 @@ std::pair<Message,o_error> Bot::sendAudio(Bot::IntOrString chat_id, std::string 
 }
 
 
-std::pair<bool,o_error> Bot::setWebhook(std::string_view url, const std::optional<std::string> &certificate, std::optional<uint32_t> max_connections, const std::optional<std::vector<std::string_view> > &allowed_updates) const {
+std::pair<bool,o_error> Bot::setWebhook(std::string_view url,
+                                        const std::optional<std::string> &certificate,
+                                        const std::optional<uint32_t> max_connections,
+                                        const std::optional<std::vector<std::string_view>> &allowed_updates) const {
     QueryBuilder builder;
     builder << NAME_VALUE_PAIR(url) << NAME_VALUE_PAIR(max_connections)
             << NAME_VALUE_PAIR(allowed_updates);

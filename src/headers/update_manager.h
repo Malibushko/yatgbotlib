@@ -66,7 +66,7 @@ public:
             if constexpr (std::is_same_v<cb_type, msg_callback>) {
                 auto result = msg_callbacks.find(cmd);
                 if (result) {
-                    std::thread(result,fromJson<Message>(data)).detach();
+                    std::thread(result,from_json<Message>(data)).detach();
                     return true;
                 }
                 else
@@ -75,7 +75,7 @@ public:
             } else if constexpr (std::is_same_v<cb_type, query_callback>) {
                 auto result = query_callbacks.find(cmd);
                 if (result) {
-                    std::thread(result,fromJson<CallbackQuery>(data)).detach();
+                    std::thread(result,from_json<CallbackQuery>(data)).detach();
                     return true;
                 }
                 else
@@ -84,7 +84,7 @@ public:
             } else if constexpr (std::is_same_v<cb_type, inline_callback>) {
                 auto result = inline_callbacks.find(cmd);
                 if (result) {
-                    std::thread(result,fromJson<InlineQuery>(data)).detach();
+                    std::thread(result,from_json<InlineQuery>(data)).detach();
                     return true;
                 }
                 else
@@ -93,14 +93,14 @@ public:
             } else if constexpr (std::is_same_v<cb_type, chosen_inline_callback>) {
                 auto result = chosen_callbacks.find(cmd);
                 if (result) {
-                    std::thread(result,fromJson<ChosenInlineResult>(data)).detach();
+                    std::thread(result,from_json<ChosenInlineResult>(data)).detach();
                     return true;
                 }
                 else
                     std::cerr << "'chosen inline result' callback not found for " << cmd << " command";
             } else if constexpr (std::is_same_v<cb_type, update_callback>){
                 if (callback) {
-                    std::thread(callback,fromJson<Update>(data)).detach();
+                    std::thread(callback,from_json<Update>(data)).detach();
                     return true;
                 }
             }
@@ -167,7 +167,7 @@ public:
                         else {
                             std::thread(&Sequence<msg_callback>::input<Message>,
                                         std::ref(*result->second),
-                                        fromJson<Message>(utility::objectToJson(message))).detach();
+                                        from_json<Message>(utility::objectToJson(message))).detach();
                             return;
                         }
                     }
