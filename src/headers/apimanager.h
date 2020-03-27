@@ -36,11 +36,11 @@ public:
     api_manager(std::string&& url) noexcept : base_url{std::move(url)} {}
 
     template <class T>
-    std::pair<T,std::optional<error>> call_api(const char* api,const QueryBuilder & builder) {
+    std::pair<T,std::optional<error>> call_api(const char* api,const query_builder & builder) {
         std::shared_ptr<httplib::Response> reply = network_manager::i()
                 .post(base_url + api,
                      {},
-                     builder.getQuery());
+                     builder.get_query());
 
         if (!reply) {
             return {T{},error{600,"Unable to make a request"}};
@@ -56,10 +56,10 @@ public:
         return result;
     }
     template <class T,class TrueOrType>
-    std::pair<T,std::optional<error>> call_api(const char* api,const QueryBuilder & builder) const {
+    std::pair<T,std::optional<error>> call_api(const char* api,const query_builder & builder) const {
         auto reply = network_manager::i().post(base_url + api,
         {},
-                                              builder.getQuery());
+                                              builder.get_query());
 
         std::pair<T,std::optional<error>> result;
 
@@ -93,7 +93,7 @@ public:
     }
 
     template<class T>
-    std::pair<T,std::optional<error>> call_api(const char * api,QueryBuilder& builder,
+    std::pair<T,std::optional<error>> call_api(const char * api,query_builder& builder,
                                                const std::vector<name_value_pair>& params) {
         std::pair<T,std::optional<error>> result;
         std::string reply;
@@ -106,7 +106,7 @@ public:
                          })) {
             // rewrite the doc
             std::vector<httplib::MultipartFormData> items;
-            const auto& build_doc = builder.getDoc().GetObject();
+            const auto& build_doc = builder.get_document().GetObject();
             items.reserve(static_cast<size_t>(std::distance(build_doc.begin(),build_doc.end())));
 
             for (auto it = build_doc.begin();it != build_doc.end();++it) {
@@ -135,7 +135,7 @@ public:
             for (auto && it : params) {
                 builder << it;
             }
-            auto response = network_manager::i().post(base_url + api,{},builder.getQuery());
+            auto response = network_manager::i().post(base_url + api,{},builder.get_query());
             reply = response->body;
             status_code = response->status;
         } else {
@@ -151,8 +151,8 @@ public:
         }
         return result;
     }
-    std::string call_api_raw_json(const char * api,const QueryBuilder& builder) {
-        return network_manager::i().post(base_url + api,{}, builder.getQuery())->body;
+    std::string call_api_raw_json(const char * api,const query_builder& builder) {
+        return network_manager::i().post(base_url + api,{}, builder.get_query())->body;
     }
 
 

@@ -5,34 +5,33 @@
 namespace telegram {
 
 template <class Event>
-using seq_signatures = traits::checked_callback<Event>;
+using checker_signature = typename traits::checked_callback<Event>::checker;
 
-template <class Event,class Check = typename seq_signatures<Event>::checker>
-class Sequence : public std::enable_shared_from_this<Sequence<Event>> {
+template <class Event,class Check = checker_signature<Event>>
+class sequence : public std::enable_shared_from_this<sequence<Event>> {
     std::vector<std::pair<Event,std::optional<Check>>> transitions;
     std::optional<Check> common_check;
     size_t currentStep {0};
 public:
-    Sequence() noexcept {}
-    Sequence(const Sequence&) = default;
-    Sequence(Sequence&&) = default;
-    Sequence& operator=(Sequence&&) = default;
-    Sequence& operator=(const Sequence&) = default;
-
-    Sequence(std::initializer_list<Event>&& trans) : transitions{trans} {
+    sequence() noexcept {}
+    sequence(const sequence&) = default;
+    sequence(sequence&&) = default;
+    sequence& operator=(sequence&&) = default;
+    sequence& operator=(const sequence&) = default;
+    sequence(std::initializer_list<Event>&& trans) : transitions{trans} {
     }
-    auto addTransition(const Event& step,const std::optional<Check>& check = {}) {
+
+    auto add_transition(const Event& step,const std::optional<Check>& check = {}) {
         transitions.emplace_back(step,check);
         return this->shared_from_this();
     }
-    Event& getCurrentStep() const {
+    Event& current_step() const {
         return transitions[currentStep];
     }
     template<class Arg>
     void input(Arg&& arg) {
-        static_assert (std::is_invocable_v<Event,Arg>, "Not applicable DSM function arguments");
-        if (!isFinished()) {
-            std::cout << __func__ << " " << this << std::endl;
+        static_assert (std::is_invocable_v<Event,Arg>, "Not applicable function arguments");
+        if (!finished()) {
             if (transitions[currentStep].second) {
                 if (!std::invoke(transitions[currentStep].second.value(),std::forward<Arg>(arg)))
                     return;
@@ -46,29 +45,28 @@ public:
         }
         return;
     }
-    bool isFinished() const {
+    bool finished() const noexcept {
         return currentStep == transitions.size();
     }
-    auto addCheck(const Check& e) {
+    auto add_check(const Check& e) {
         if (transitions.size())
             transitions.back().second = e;
         return this->shared_from_this();
     }
-    void setStep(uint32_t val) {
+    void set_step(uint32_t val) {
         currentStep = std::clamp(val,0,transitions.size());
     }
-    void stepBack() {
+    void step_back() {
         if (--currentStep)
             currentStep = 0;
     }
     void finish() {
-        std::cout << __func__ << " " << this << std::endl;
         currentStep = transitions.size();
     }
     void reset() {
         currentStep = 0;
     }
-    void addCommonCheck(const Check& e) {
+    void add_check_common(const Check& e) {
         common_check = e;
     }
 };

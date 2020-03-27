@@ -22,7 +22,7 @@ using o_error = std::optional<error>;
 
 class Bot {
     std::unique_ptr<api_manager> api;
-    UpdateManager updater;
+    update_manager updater;
     bool stopPolling = false;
     bool webhookSet = false;
 public:
@@ -31,7 +31,7 @@ public:
     void onInlineResult(std::string_view cmd,chosen_inline_callback&& cb);
     void onCallback(std::string_view cmd,query_callback&& cb);
     void onCommand(std::string_view cmd,msg_callback&& cb);
-    void startSequence(int64_t user_id,std::shared_ptr<Sequence<msg_callback>> seq);
+    void startSequence(int64_t user_id,std::shared_ptr<sequence<msg_callback>> seq);
     void stopSequence(int64_t user_id);
     std::pair<WebhookInfo,o_error> getWebhookInfo() const;
     void start(std::optional<uint32_t> timeout = {},

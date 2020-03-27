@@ -17,7 +17,7 @@ using inline_callback = std::function<void(InlineQuery&&)>;
 using chosen_inline_callback = std::function<void(ChosenInlineResult&&)>;
 using callbacks = std::variant<msg_callback,query_callback,
                                 inline_callback,chosen_inline_callback>;
-class UpdateManager {
+class update_manager {
 private:
     update_callback callback;
     Trie<msg_callback> msg_callbacks;
@@ -26,25 +26,25 @@ private:
     Trie<chosen_inline_callback> chosen_callbacks;
     size_t last_update = 0;
 
-    std::unordered_map<int64_t,std::shared_ptr<Sequence<msg_callback>>> dispatcher;
+    std::unordered_map<int64_t,std::shared_ptr<sequence<msg_callback>>> dispatcher;
 public:
-    UpdateManager() {}
-    void setRawCallback(update_callback && cb) {
+    update_manager() {}
+    void set_raw_callback(update_callback && cb) {
         callback.swap(cb);
     }
-    void addSequence(int64_t user_id,std::shared_ptr<Sequence<msg_callback>> callback) {
+    void add_sequence(int64_t user_id,std::shared_ptr<sequence<msg_callback>> callback) {
         dispatcher[user_id] = callback;
     }
-    void removeSequence(int64_t user_id) {
+    void remove_sequence(int64_t user_id) {
         dispatcher.erase(user_id);
     }
-    size_t getUpdateOffset() const noexcept{
+    size_t get_offset() const noexcept{
         return last_update;
     }
-    void setUpdateOffset(size_t offset) {
+    void set_offset(size_t offset) {
         last_update = offset;
     }
-    void addCallback(std::string_view cmd,callbacks&& cb) {
+    void add_callback(std::string_view cmd,callbacks&& cb) {
         std::visit([&](auto && callback){
             using cb_type = std::decay_t<decltype (callback)>;
             if constexpr (std::is_same_v<cb_type, msg_callback>) {
@@ -61,7 +61,7 @@ public:
         },cb);
     }
     template<class T>
-    bool runCallback(std::string_view cmd,const std::string& data) {
+    bool run_callback(std::string_view cmd,const std::string& data) {
             using cb_type = T;
             if constexpr (std::is_same_v<cb_type, msg_callback>) {
                 auto result = msg_callbacks.find(cmd);
@@ -107,7 +107,7 @@ public:
             return false;
     }
     template<class T>
-    void removeCallback(std::string_view cmd) {
+    void remove_callback(std::string_view cmd) {
         if constexpr (std::is_same_v<T, msg_callback>) {
             msg_callbacks.erase(cmd);
         } else if constexpr (std::is_same_v<T, query_callback>) {
@@ -120,7 +120,7 @@ public:
             static_assert ("Undefined callback type");
         }
     }
-    void routeCallback(const std::string& str)  {
+    void route_callback(const std::string& str)  {
         rapidjson::Document doc;
         const auto& ok = doc.Parse(str.data());
         if (ok.HasParseError()) {
@@ -137,7 +137,7 @@ public:
                 auto obj = it["callback_query"].GetObject();
                 auto data = obj["data"].GetString();
 
-                if (runCallback<query_callback>(data,
+                if (run_callback<query_callback>(data,
                             utility::objectToJson(obj)))
                     return;
             }
@@ -145,7 +145,7 @@ public:
                 auto obj = it["inline_query"].GetObject();
                 auto data = obj["query"].GetString();
 
-                if (runCallback<inline_callback>(data,
+                if (run_callback<inline_callback>(data,
                             utility::objectToJson(obj)))
                     return;
             }
@@ -153,7 +153,7 @@ public:
                 auto obj = it["chosen_inline_result"].GetObject();
                 auto data = obj["query"].GetString();
 
-                if (runCallback<chosen_inline_callback>(data,utility::objectToJson(obj)))
+                if (run_callback<chosen_inline_callback>(data,utility::objectToJson(obj)))
                     return;
             }
             else if (it.HasMember("message") && it["message"].GetObject().HasMember("text")) {
@@ -161,11 +161,11 @@ public:
                     const auto & message = it["message"].GetObject();
                     if (auto result = dispatcher.find(message["from"].GetObject()["id"].GetInt64());
                             result != dispatcher.end()) {
-                        if (result->second->isFinished()) {
+                        if (result->second->finished()) {
                             dispatcher.erase(result);
                         }
                         else {
-                            std::thread(&Sequence<msg_callback>::input<Message>,
+                            std::thread(&sequence<msg_callback>::input<Message>,
                                         std::ref(*result->second),
                                         from_json<Message>(utility::objectToJson(message))).detach();
                             return;
@@ -176,12 +176,12 @@ public:
                     std::string_view text = it["message"].GetObject()["text"].GetString();
                     size_t firstSpace = text.find_first_of(' ');
                     std::string_view cmd(text.data(),firstSpace == std::string::npos ? text.size() : firstSpace);
-                    if (msg_callbacks.find(cmd) && (runCallback<msg_callback>(cmd,
+                    if (msg_callbacks.find(cmd) && (run_callback<msg_callback>(cmd,
                                 utility::objectToJson(it["message"].GetObject()))))
                         return;
                 }
             }
-               runCallback<update_callback>({},utility::objectToJson(it));
+               run_callback<update_callback>({},utility::objectToJson(it));
         };
 
 

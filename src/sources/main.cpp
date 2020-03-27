@@ -22,50 +22,50 @@ int main() {
     });
     bot.onCommand("/count",[&](Message&& m){
        bot.reply(m,"Один");
-       auto seq = std::make_shared<Sequence<msg_callback>>();
-       seq->addTransition([&bot](Message&& m){
+       auto seq = std::make_shared<sequence<msg_callback>>();
+       seq->add_transition([&bot](Message&& m){
           bot.reply(m,"1");
-       })->addTransition([&bot](Message&& m){
+       })->add_transition([&bot](Message&& m){
            bot.reply(m,"2");
-        })->addTransition([&bot](Message&& m){
+        })->add_transition([&bot](Message&& m){
            bot.reply(m,"3");
-        })->addTransition([&bot](Message&& m){
+        })->add_transition([&bot](Message&& m){
            bot.reply(m,"4");
-        })->addTransition([&bot](Message&& m){
+        })->add_transition([&bot](Message&& m){
            bot.reply(m,"5");
-        })->addTransition([&bot](Message&& m){
+        })->add_transition([&bot](Message&& m){
            bot.reply(m,"Всё!");
         });
        bot.startSequence(m.from->id,seq);
     });
     bot.onCommand("/reg",[&](Message&& m){
         bot.reply(m,"Как тебя зовут?");
-        auto seq = std::make_shared<Sequence<msg_callback>>();
+        auto seq = std::make_shared<sequence<msg_callback>>();
         struct User {
             std::string name;
             std::string surname;
         };
         auto user = std::make_shared<User>();
-        seq->addTransition([user,&bot](Message && m) {
+        seq->add_transition([user,&bot](Message && m) {
             user->name = m.text.value();
             bot.reply(m,"Какая у тебя фамилия?");
-        })->addCheck([&bot](Message&& m){
+        })->add_check([&bot](Message&& m){
             if (!m.text || m.text.value().size() < 3) {
                 bot.reply(m,"Слишком маленькое имя.");
                 return false;
             }
             return true;
-        })->addTransition([user,&bot](Message&& m) {
+        })->add_transition([user,&bot](Message&& m) {
             user->surname = m.text.value();
             bot.reply(m,"Привет, " + user->name + " " + user->surname + "!");
-        })->addCheck([user,&bot](Message&& m){
+        })->add_check([user,&bot](Message&& m){
             if (!m.text || m.text.value().size() < 3) {
                 bot.reply(m,"Сликом маленькая фамилия.");
                 return false;
             }
             return true;
         });
-        seq->addCommonCheck([&bot,seq](Message && m){
+        seq->add_check_common([&bot,seq](Message && m){
             if (m.text == "/cancel") {
                 bot.reply(m,"Регистрация отменена");
                 seq->finish();
