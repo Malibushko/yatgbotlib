@@ -1,4 +1,3 @@
-
 //
 //  httplib.h
 //
@@ -42,7 +41,7 @@
 #endif
 
 #ifndef CPPHTTPLIB_PAYLOAD_MAX_LENGTH
-#define CPPHTTPLIB_PAYLOAD_MAX_LENGTH (std::numeric_limits<size_t>::max())
+#define CPPHTTPLIB_PAYLOAD_MAX_LENGTH ((std::numeric_limits<size_t>::max)())
 #endif
 
 #ifndef CPPHTTPLIB_RECV_BUFSIZ
@@ -51,7 +50,7 @@
 
 #ifndef CPPHTTPLIB_THREAD_POOL_COUNT
 #define CPPHTTPLIB_THREAD_POOL_COUNT                                           \
-  (std::max(1u, std::thread::hardware_concurrency() - 1))
+  ((std::max)(1u, std::thread::hardware_concurrency() - 1))
 #endif
 
 /*
@@ -314,7 +313,7 @@ struct Response {
 
   void set_redirect(const char *url);
   void set_content(const char *s, size_t n, const char *content_type);
-  void set_content(const std::string &s, const char *content_type);
+  void set_content(std::string s, const char *content_type);
 
   void set_content_provider(
       size_t length,
@@ -859,7 +858,7 @@ private:
 
 class SSLClient : public Client {
 public:
-  SSLClient(const std::string &host, int port = 443,
+  explicit SSLClient(const std::string &host, int port = 443,
             const std::string &client_cert_path = std::string(),
             const std::string &client_key_path = std::string());
 
@@ -1599,24 +1598,67 @@ find_content_type(const std::string &path,
 inline const char *status_message(int status) {
   switch (status) {
   case 100: return "Continue";
+  case 101: return "Switching Protocol";
+  case 102: return "Processing";
+  case 103: return "Early Hints";
   case 200: return "OK";
+  case 201: return "Created";
   case 202: return "Accepted";
+  case 203: return "Non-Authoritative Information";
   case 204: return "No Content";
+  case 205: return "Reset Content";
   case 206: return "Partial Content";
+  case 207: return "Multi-Status";
+  case 208: return "Already Reported";
+  case 226: return "IM Used";
+  case 300: return "Multiple Choice";
   case 301: return "Moved Permanently";
   case 302: return "Found";
   case 303: return "See Other";
   case 304: return "Not Modified";
+  case 305: return "Use Proxy";
+  case 306: return "unused";
+  case 307: return "Temporary Redirect";
+  case 308: return "Permanent Redirect";
   case 400: return "Bad Request";
   case 401: return "Unauthorized";
+  case 402: return "Payment Required";
   case 403: return "Forbidden";
   case 404: return "Not Found";
+  case 405: return "Method Not Allowed";
+  case 406: return "Not Acceptable";
+  case 407: return "Proxy Authentication Required";
+  case 408: return "Request Timeout";
+  case 409: return "Conflict";
+  case 410: return "Gone";
+  case 411: return "Length Required";
+  case 412: return "Precondition Failed";
   case 413: return "Payload Too Large";
-  case 414: return "Request-URI Too Long";
+  case 414: return "URI Too Long";
   case 415: return "Unsupported Media Type";
   case 416: return "Range Not Satisfiable";
   case 417: return "Expectation Failed";
+  case 418: return "I'm a teapot";
+  case 421: return "Misdirected Request";
+  case 422: return "Unprocessable Entity";
+  case 423: return "Locked";
+  case 424: return "Failed Dependency";
+  case 425: return "Too Early";
+  case 426: return "Upgrade Required";
+  case 428: return "Precondition Required";
+  case 429: return "Too Many Requests";
+  case 431: return "Request Header Fields Too Large";
+  case 451: return "Unavailable For Legal Reasons";
+  case 501: return "Not Implemented";
+  case 502: return "Bad Gateway";
   case 503: return "Service Unavailable";
+  case 504: return "Gateway Timeout";
+  case 505: return "HTTP Version Not Supported";
+  case 506: return "Variant Also Negotiates";
+  case 507: return "Insufficient Storage";
+  case 508: return "Loop Detected";
+  case 510: return "Not Extended";
+  case 511: return "Network Authentication Required";
 
   default:
   case 500: return "Internal Server Error";
@@ -1786,7 +1828,7 @@ inline bool read_content_with_length(Stream &strm, uint64_t len,
   uint64_t r = 0;
   while (r < len) {
     auto read_len = static_cast<size_t>(len - r);
-    auto n = strm.read(buf, std::min(read_len, CPPHTTPLIB_RECV_BUFSIZ));
+    auto n = strm.read(buf, (std::min)(read_len, CPPHTTPLIB_RECV_BUFSIZ));
     if (n <= 0) { return false; }
 
     if (!out(buf, static_cast<size_t>(n))) { return false; }
@@ -1806,7 +1848,7 @@ inline void skip_content_with_length(Stream &strm, uint64_t len) {
   uint64_t r = 0;
   while (r < len) {
     auto read_len = static_cast<size_t>(len - r);
-    auto n = strm.read(buf, std::min(read_len, CPPHTTPLIB_RECV_BUFSIZ));
+    auto n = strm.read(buf, (std::min)(read_len, CPPHTTPLIB_RECV_BUFSIZ));
     if (n <= 0) { return; }
     r += static_cast<uint64_t>(n);
   }
@@ -2151,9 +2193,9 @@ inline bool parse_range_header(const std::string &s, Ranges &ranges) {
 
 class MultipartFormDataParser {
 public:
-  MultipartFormDataParser() {}
+  MultipartFormDataParser() = default;
 
-  void set_boundary(const std::string &boundary) { boundary_ = boundary; }
+  void set_boundary(std::string boundary) { boundary_ = std::move(boundary); }
 
   bool is_valid() const { return is_valid_; }
 
@@ -2166,6 +2208,8 @@ public:
         "^Content-Disposition:\\s*form-data;\\s*name=\"(.*?)\"(?:;\\s*filename="
         "\"(.*?)\")?\\s*$",
         std::regex_constants::icase);
+    static const std::string dash_ = "--";
+    static const std::string crlf_ = "\r\n";
 
     buf_.append(buf, n); // TODO: performance improvement
 
@@ -2305,8 +2349,6 @@ private:
     file_.content_type.clear();
   }
 
-  const std::string dash_ = "--";
-  const std::string crlf_ = "\r\n";
   std::string boundary_;
 
   std::string buf_;
@@ -2737,9 +2779,9 @@ inline void Response::set_content(const char *s, size_t n,
   set_header("Content-Type", content_type);
 }
 
-inline void Response::set_content(const std::string &s,
+inline void Response::set_content(std::string s,
                                   const char *content_type) {
-  body = s;
+  body = std::move(s);
   set_header("Content-Type", content_type);
 }
 
@@ -3257,7 +3299,7 @@ inline bool Server::read_content_core(Stream &strm, bool last_connection,
       return write_response(strm, last_connection, req, res);
     }
 
-    multipart_form_data_parser.set_boundary(boundary);
+    multipart_form_data_parser.set_boundary(std::move(boundary));
     out = [&](const char *buf, size_t n) {
       return multipart_form_data_parser.parse(buf, n, multipart_receiver,
                                               mulitpart_header);
@@ -4006,7 +4048,7 @@ inline bool Client::process_request(Stream &strm, const Request &req,
     }
 
     int dummy_status;
-    if (!detail::read_content(strm, res, std::numeric_limits<size_t>::max(),
+    if (!detail::read_content(strm, res, (std::numeric_limits<size_t>::max)(),
                               dummy_status, req.progress, out)) {
       return false;
     }
@@ -4023,7 +4065,7 @@ inline bool Client::process_and_close_socket(
     std::function<bool(Stream &strm, bool last_connection,
                        bool &connection_close)>
         callback) {
-  request_count = std::min(request_count, keep_alive_max_count_);
+  request_count = (std::min)(request_count, keep_alive_max_count_);
   return detail::process_and_close_socket(true, sock, request_count,
                                           read_timeout_sec_, read_timeout_usec_,
                                           callback);
@@ -4548,8 +4590,6 @@ inline SSLServer::SSLServer(const char *cert_path, const char *private_key_path,
     if (SSL_CTX_use_certificate_chain_file(ctx_, cert_path) != 1 ||
         SSL_CTX_use_PrivateKey_file(ctx_, private_key_path, SSL_FILETYPE_PEM) !=
             1) {
-        fprintf(stderr,"%d %d",SSL_CTX_use_certificate_chain_file(ctx_, cert_path),
-                SSL_CTX_use_PrivateKey_file(ctx_, private_key_path, SSL_FILETYPE_PEM));
       SSL_CTX_free(ctx_);
       ctx_ = nullptr;
     } else if (client_ca_cert_file_path || client_ca_cert_dir_path) {
@@ -4688,11 +4728,13 @@ inline bool SSLClient::is_ssl() const { return true; }
 
 inline bool SSLClient::verify_host(X509 *server_cert) const {
   /* Quote from RFC2818 section 3.1 "Server Identity"
+
      If a subjectAltName extension of type dNSName is present, that MUST
      be used as the identity. Otherwise, the (most specific) Common Name
      field in the Subject field of the certificate MUST be used. Although
      the use of the Common Name is existing practice, it is deprecated and
      Certification Authorities are encouraged to use the dNSName instead.
+
      Matching is performed using the matching rules specified by
      [RFC2459].  If more than one identity of a given type is present in
      the certificate (e.g., more than one dNSName name, a match in any one
@@ -4700,9 +4742,11 @@ inline bool SSLClient::verify_host(X509 *server_cert) const {
      character * which is considered to match any single domain name
      component or component fragment. E.g., *.a.com matches foo.a.com but
      not bar.foo.a.com. f*.com matches foo.com but not bar.com.
+
      In some cases, the URI is specified as an IP address rather than a
      hostname. In this case, the iPAddress subjectAltName must be present
      in the certificate and must exactly match the IP in the URI.
+
   */
   return verify_host_with_subject_alt_name(server_cert) ||
          verify_host_with_common_name(server_cert);
