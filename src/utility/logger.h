@@ -13,13 +13,11 @@ public:
 };
 
 class logger {
-    static inline logger_base*& i;
+    static inline std::unique_ptr<logger_base> i;
 public:
     static void set_implementation(std::unique_ptr<utility::logger_base> ptr) {
-        static std::unique_ptr<logger_base> instance;
-        instance.reset();
-        instance = std::move(ptr);
-        i = instance.get();
+        i.reset();
+        i = std::move(ptr);
     }
     template<class... Args>
     static void warn(Args... args) {
