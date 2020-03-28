@@ -12,9 +12,11 @@ namespace fs = std::experimental::filesystem;
 
 #include "rapidjson/writer.h"
 #include "rapidjson/document.h"
+
+#include "utility/logger.h"
 namespace telegram::utility {
-#ifndef NAME_VALUE_PAIR
-#define NAME_VALUE_PAIR(value) std::pair<std::string_view,std::decay_t<decltype(value)>>{#value,value}
+#ifndef make_named_pair
+#define make_named_pair(value) std::pair<std::string_view,std::decay_t<decltype(value)>>{#value,value}
 #endif
 
 #ifndef __COUNTER__
@@ -62,30 +64,31 @@ int constexpr counter_id(int value = mark<next_flag>::value) {
 }
 
 
-#define DECLARE_FIELD(type, field_name) \
+#define declare_field(type, field_name) \
     type field_name; \
     template<typename Dummy__ >       \
     struct field_info<counter_id()-current_counter-1,Dummy__> \
     { constexpr static std::string_view name = #field_name;}
 
-#define DECLARE_STRUCT template<size_t N,class Dummy = void> struct field_info; \
+#define declare_struct template<size_t N,class Dummy = void> struct field_info; \
     static constexpr bool is_parsable = true;\
     static constexpr int current_counter = counter_id();
 
 #else
-#ifndef DECLARE_FIELD
-#define DECLARE_FIELD(type, field_name) \
+#ifndef declare_field
+#define declare_field(type, field_name) \
     type field_name; \
     template<typename Dummy__ >       \
     struct field_info<__COUNTER__-current_counter-1,Dummy__> \
     { constexpr static std::string_view name = #field_name;}
 #endif
-#ifndef DECLARE_STRUCT
-#define DECLARE_STRUCT template<size_t N,class Dummy = void> struct field_info; \
+#ifndef declare_struct
+#define declare_struct template<size_t N,class Dummy = void> struct field_info; \
     static constexpr bool is_parsable = true;\
     static constexpr int current_counter = __COUNTER__;
 #endif
 #endif
+
 
 static std::string objectToJson(rapidjson::Value val) {
     rapidjson::StringBuffer buff;
@@ -138,6 +141,9 @@ constexpr uint32_t telegram_first_subnet_range_end = 2509942782;
 constexpr uint32_t teleram_second_subnet_range_begin = 1533805569;
 constexpr uint32_t telegram_second_subned_range_end = 1533806590;
 
+static const char * true_literal = "true";
+static const char * false_literal = "false";
+
 static inline std::string to_string(const rapidjson::Document& doc) {
     rapidjson::StringBuffer buff;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
@@ -184,6 +190,7 @@ static std::pair<bool,std::string> parse_value(std::string_view view) {
 static inline std::string get_file_bytes(const std::string &filePath) {
     std::ifstream ifs(filePath, std::ios::in | std::ios::binary);
     if (!ifs.is_open()) {
+        utility::logger::info("File ",filePath, "is empty");
         return {};
     }
     size_t fileSize = fs::file_size(filePath);
@@ -198,9 +205,12 @@ struct error {
     std::string description;
     template<typename IStream>
     friend std::ostream& operator<<(IStream& os,const error & e) {
-        os <<"[Error]: " << e.error_code << " : " << (e.description.size() ? e.description : " no description")
-          << std::endl;
+        os << e.to_string();
         return  os;
+    }
+    std::string to_string() const {
+        return {"[Error]: " + std::to_string(error_code) + ' '
+                           + (description.size() ? description : " no description")};
     }
 };
 }

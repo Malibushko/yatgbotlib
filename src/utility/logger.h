@@ -1,35 +1,57 @@
 #pragma once
-#include "traits.h"
+#include <memory>
+#include <sstream>
 namespace telegram {
 
 namespace utility {
-template <typename T,std::enable_if_t<traits::is_logger_v<T>>>
-class Logger {
-    static T* m_logger;
+class logger_base {
 public:
-    Logger(Logger&& ) =delete;
-    Logger(const Logger&) = delete;
-    Logger& operator=(Logger&&) = delete;
-    Logger& operator=(const Logger&) = delete;
-    static void setLog(T&& logger) {
-        if (m_logger != nullptr)
-            m_logger = logger;
+  virtual void warn(const char *info) = 0;
+  virtual void info(const char *info) = 0;
+  virtual void critical(const char *info) = 0;
+  virtual ~logger_base() {}
+};
+
+class logger {
+    static inline logger_base*& i;
+public:
+    static void set_implementation(std::unique_ptr<utility::logger_base> ptr) {
+        static std::unique_ptr<logger_base> instance;
+        instance.reset();
+        instance = std::move(ptr);
+        i = instance.get();
     }
-    static void warn(const char * info) {
-        if (m_logger != nullptr)
-            m_logger->warn(info);
+    template<class... Args>
+    static void warn(Args... args) {
+        std::stringstream s;
+        (s << ... <<args);
+        warn(s.str());
     }
-    static void info(const char * info) {
-        if (m_logger != nullptr)
-            m_logger->info(info);
+    template<class... Args>
+    static void info(Args... args) {
+        std::stringstream s;
+        (s << ... <<args);
+        info(s.str());
     }
-    static void critical(const char * info) {
-        if (m_logger != nullptr)
-            m_logger->critical(info);
+    template<class... Args>
+    static void critical(Args... args) {
+        std::stringstream s;
+        (s << ... <<args);
+        critical(s.str());
     }
-    ~Logger() {
-        delete m_logger;
+    static void warn(const char * msg) {
+        if (logger::i)
+            logger::i->warn(msg);
+    }
+    static void info(const char * msg) {
+        if (logger::i)
+            logger::i->info(msg);
+    }
+    static void critical(const char * msg) {
+        if (logger::i)
+            logger::i->critical(msg);
     }
 };
-}
-}
+
+} // namespace utility
+} // namespace telegram

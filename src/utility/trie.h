@@ -26,7 +26,7 @@ class Trie {
     };
     std::shared_ptr<TrieNode> root{std::make_shared<TrieNode>()};
 
-    bool isEmpty(const std::shared_ptr<TrieNode>& node) const {
+    bool empty(const std::shared_ptr<TrieNode>& node) const {
         return std::find_if(node->children.begin(),node->children.end(),[](auto && val){return val;}) ==
                 node->children.end();
     }
@@ -35,7 +35,7 @@ class Trie {
             return false;
         if (item.length()) {
             if (!iter->is_end_of_word && erase_impl(iter->findChildren(item[0]),item.substr(1))) {
-                if (isEmpty(iter)) {
+                if (empty(iter)) {
                     iter.reset();
                     return true;
                 }
@@ -44,7 +44,7 @@ class Trie {
             }
         }
         if (!item.length() && iter->is_end_of_word) {
-            if (isEmpty(iter)) {
+            if (empty(iter)) {
                 iter.reset();
                 return true;
             } else {
@@ -69,7 +69,7 @@ public:
         ++size;
     }
     T find(std::string_view item) const {
-        if (isEmpty(root))
+        if (empty(root))
             return T{};
         std::weak_ptr<TrieNode> iter = root;
         for (char it : item) {
@@ -77,7 +77,6 @@ public:
             if (!iter.lock())
                 return T{};
         }
-
         return iter.lock()->is_end_of_word ? iter.lock()->value: T{};
     }
     void erase(std::string_view item) {
@@ -85,7 +84,7 @@ public:
             --size;
         }
     }
-    int32_t getSize() const{
+    int32_t getSize() const noexcept{
         return size;
     }
 };
