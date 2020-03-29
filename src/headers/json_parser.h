@@ -24,20 +24,19 @@ void append_to_document(rapidjson::Document &doc, jsonAllocator &allocator,
                         const MetaStruct &str);
 
 template <size_t N, class T>
-void parse_field(T &field, const rapidjson::Document &doc);
+void parse_field(T &field, rapidjson::Document &doc);
 
 // -------------------- SERIALIZE -----------------------------------
 template <class T, typename = std::enable_if_t<traits::is_parsable_v<T>>>
 std::string to_json(const T &item) {
-  static_assert(boost::pfr::tuple_size_v<std::decay_t<T>>> 0,
+  static_assert(boost::pfr::tuple_size_v<std::decay_t<T>> > 0,
                 "The structure has no fields.");
 
   rapidjson::Value object(rapidjson::kObjectType);
   rapidjson::Document document;
   document.SetObject();
 
-  append_to_document<boost::pfr::tuple_size_v<T> - 1>(
-      document, document.GetAllocator(), item);
+  append_to_document<0>(document, document.GetAllocator(), item);
   return utility::to_string(document);
 }
 
@@ -183,11 +182,11 @@ void append_to_document(rapidjson::Document &doc, jsonAllocator &allocator,
   rapidjson::Value val(rapidjson::kNullType);
   // check if value is unique_ptr (support for other smart pointer will be added
   // later)
-  if constexpr (traits::is_unique_ptr_v<decltype(boost::pfr::get<N>(str))>) {
+  if constexpr (traits::is_unique_ptr_v<traits::remove_cvref_t<decltype(boost::pfr::get<N>(str))>>) {
     if (boost::pfr::get<N>(str))
       value_to_json(*boost::pfr::get<N>(str), val, allocator);
-    else if constexpr (N > 0)
-      append_to_document<N - 1, MetaStruct>(doc, allocator, str);
+    else if constexpr (N+1 < boost::pfr::tuple_size_v<MetaStruct>)
+      append_to_document<N + 1, MetaStruct>(doc, allocator, str);
     else
       return;
   } else {
@@ -204,9 +203,10 @@ void append_to_document(rapidjson::Document &doc, jsonAllocator &allocator,
     doc.AddMember(name.Move(), val, allocator);
   }
   // recursive step
-  if constexpr (N > 0)
-    append_to_document<N - 1, MetaStruct>(doc, allocator, str);
+  if constexpr (N+1 < boost::pfr::tuple_size_v<MetaStruct>)
+    append_to_document<N + 1, MetaStruct>(doc, allocator, str);
 }
+
 
 // ---------------------- DESERIALIZE ----------------------------
 
@@ -224,8 +224,8 @@ template <class T, typename> T from_json(const std::string &data) {
     auto temp_arr = doc.GetArray();
     array_from_json(item, temp_arr, doc.GetAllocator());
   } else if constexpr (traits::is_parsable_v<T>) {
-    static_assert(boost::pfr::tuple_size_v<T>> 0, "The struct has no fields");
-    parse_field<boost::pfr::tuple_size_v<T> - 1>(item, doc);
+    static_assert(boost::pfr::tuple_size_v<T> > 0, "The struct has no fields");
+    parse_field<0>(item, doc);
   }
   return item;
 }
@@ -334,7 +334,8 @@ void parse_field_impl(const char *field_name, T &field,
   }
 }
 
-template <size_t N, class T> void parse_field(T &s, rapidjson::Document &doc) {
+template <size_t N, class T>
+void parse_field(T &s,rapidjson::Document &doc) {
   if (doc.HasMember(T::template field_info<N>::name.data())) {
     using type = traits::optional_or_value<
         std::decay_t<decltype(boost::pfr::get<N>(s))>>;
@@ -347,8 +348,8 @@ template <size_t N, class T> void parse_field(T &s, rapidjson::Document &doc) {
       parse_field_impl(T::template field_info<N>::name.data(),
                        boost::pfr::get<N>(s), doc);
   }
-  if constexpr (N > 0)
-    parse_field<N - 1>(s, doc);
+  if constexpr (N+1 < boost::pfr::tuple_size_v<std::decay_t<T>>)
+    parse_field<N + 1>(s, doc);
 }
 
 } // namespace telegram
