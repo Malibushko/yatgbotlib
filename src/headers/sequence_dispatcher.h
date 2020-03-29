@@ -1,6 +1,5 @@
 #pragma once
 #include "utility/traits.h"
-#include <memory>
 
 namespace telegram {
 

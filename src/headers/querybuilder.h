@@ -1,10 +1,6 @@
 #pragma once
 #include "apimanager.h"
-#include "rapidjson/allocators.h"
-#include "rapidjson/document.h"
-#include "rapidjson/stringbuffer.h"
-#include "rapidjson/writer.h"
-#include "utility/utility.h"
+
 namespace telegram {
 
 class query_builder {

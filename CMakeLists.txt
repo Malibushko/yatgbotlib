@@ -1,13 +1,16 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(tglib LANGUAGES CXX)
+project(tglib VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 set(CMAKE_USE_OPENSSL ON)
 
-set (HEADERS
+set(TGLIB_SOURCE_DIR ${CMAKE_SOURCE_DIR})
+set(TGLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+set(TGLIB_BUILD_TESTS ON)
+set(HEADERS
              ./src/headers/json_parser.h
              ./src/headers/querybuilder.h
              ./src/headers/apimanager.h
@@ -21,18 +24,25 @@ set (HEADERS
              ./src/utility/trie.h
              ./src/utility/utility.h)
 
-set (SOURCES ./src/sources/telegrambot.cpp
-             ./src/sources/main.cpp)
+set (SOURCES ./src/sources/telegrambot.cpp)
 
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED COMPONENTS Crypto SSL)
 find_package(RapidJSON REQUIRED)
 
-add_executable(tglib ${HEADERS} ${SOURCES})
+add_library(tglib SHARED ${HEADERS} ${SOURCES})
 
-include_directories(${PROJECT_SOURCE_DIR}/src)
-include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/third_party)
-include_directories(${PROJECT_SOURCE_DIR}/third_party/magic_get/include/)
+set_target_properties(tglib PROPERTIES VERSION ${PROJECT_VERSION})
+set_target_properties(tglib PROPERTIES PUBLIC_HEADER include/telegram_bot.h)
+
+include_directories(${PROJECT_SOURCE_DIR}/src
+                    ${PROJECT_SOURCE_DIR}/include
+                    ${PROJECT_SOURCE_DIR}/third_party
+                    ${PROJECT_SOURCE_DIR}/third_party/magic_get/include)
 
 target_link_libraries(tglib stdc++fs Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
+
+if (TGLIB_BUILD_TESTS)
+    enable_testing()
+    add_subdirectory(${PROJECT_SOURCE_DIR}/test)
+endif()

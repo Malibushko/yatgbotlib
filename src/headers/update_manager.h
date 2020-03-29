@@ -1,12 +1,9 @@
 #pragma once
 #include <thread>
-#include "headers/json_parser.h"
 #include "headers/sequence_dispatcher.h"
-#include "rapidjson/document.h"
+#include "headers/json_parser.h"
 #include "telegram_structs.h"
-#include "utility/logger.h"
 #include "utility/trie.h"
-#include "utility/utility.h"
 namespace telegram {
 
 using update_callback = std::function<void(Update &&)>;

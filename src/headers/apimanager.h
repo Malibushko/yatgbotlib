@@ -2,7 +2,6 @@
 #include "networkmanager.h"
 #include "querybuilder.h"
 #include "utility/traits.h"
-#include "utility/utility.h"
 
 namespace telegram {
 using namespace traits;
