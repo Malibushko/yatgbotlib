@@ -4,6 +4,7 @@ using namespace telegram;
 constexpr static std::string_view bot_token = BOT_TOKEN;
 constexpr static int64_t chat_id = TEST_CHAT_ID;
 Bot bot{bot_token.data()};
+
 TEST(BotTests, getMe) {
   auto &&[result, error] = bot.getMe();
   ASSERT_FALSE(error);
@@ -59,6 +60,7 @@ TEST(BotTests, sendVoice) {
   ASSERT_TRUE(result.chat.id);
   ASSERT_TRUE(result.message_id);
 }
+
 TEST(BotTests, sendVideoNote) {
   auto &&[result, error] =
       bot.sendVideoNote(chat_id, std::string(TEST_PATH) + "videonote.mp4");
