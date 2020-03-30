@@ -4,6 +4,7 @@
 #include "headers/json_parser.h"
 #include "telegram_structs.h"
 #include "utility/trie.h"
+
 namespace telegram {
 
 using update_callback = std::function<void(Update &&)>;
@@ -160,7 +161,7 @@ public:
                         }
                     }
                 }
-                if (msg_callbacks.getSize()) {
+                if (msg_callbacks.size()) {
                     std::string_view text = it["message"].GetObject()["text"].GetString();
                     size_t firstSpace = text.find_first_of(' ');
                     std::string_view cmd(text.data(), firstSpace == std::string::npos

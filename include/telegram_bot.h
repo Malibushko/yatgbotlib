@@ -7,8 +7,8 @@
 #include <variant>
 
 #include "telegram_structs.h"
-#include "headers/update_manager.h"
 #include "headers/apimanager.h"
+#include "headers/update_manager.h"
 
 namespace telegram {
 
@@ -138,10 +138,10 @@ public:
 
   std::pair<Message, opt_error>
   sendVoice(IntOrString chat_id, const std::string &voice,
-            opt_string_view caption, opt_string_view parse_mode,
-            opt_int32 duration, opt_bool disable_notification,
-            opt_int64 reply_to_message_id,
-            std::optional<ReplyMarkups> reply_markup) const;
+            opt_string_view caption = {}, opt_string_view parse_mode = {},
+            opt_int32 duration = {}, opt_bool disable_notification = {},
+            opt_int64 reply_to_message_id = {},
+            std::optional<ReplyMarkups> reply_markup = {}) const;
 
   std::pair<Message, opt_error>
   sendVideoNote(IntOrString chat_id, const std::string &video_note,

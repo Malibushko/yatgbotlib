@@ -1,16 +1,22 @@
 
 find_package(GTest REQUIRED)
 find_package(OpenSSL REQUIRED)
-set(TEST_IMPORTED_LIBRARIES GTest::GTest OpenSSL::SSL OpenSSL::Crypto)
+set(TEST_IMPORTED_LIBRARIES GTest::GTest OpenSSL::SSL OpenSSL::Crypto stdc++fs tglib)
 if (NOT ${GTEST_FOUND})
     message("GTest library not found. ")
 endif()
+
+set(BOT_TOKEN "663528116:AAG-0bX4VLsnkMVzDpA4Ak_8dWMgRquD3ig")
+set(TEST_CHAT 250033715)
 
 macro (m_add_test _TEST_NAME)
     add_executable(${_TEST_NAME}_tests ${_TEST_NAME}_tests.cpp)
     target_link_libraries(${_TEST_NAME}_tests ${TEST_IMPORTED_LIBRARIES})
     add_test(NAME ${_TEST_NAME} COMMAND ${_TEST_NAME}_tests)
 endmacro()
+add_definitions(-DTEST_PATH=\"${TGLIB_SOURCE_DIR}/test/resource/\"
+                -DBOT_TOKEN=\"${BOT_TOKEN}\"
+                -DTEST_CHAT_ID=${TEST_CHAT})
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}
                     ${GTEST_INCLUDE_DIRS}

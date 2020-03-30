@@ -54,7 +54,7 @@ class Trie {
         }
         return false;
     }
-    size_t size{0};
+    size_t m_size{0};
 public:
     void insert(std::string_view item,const T& value) {
         std::weak_ptr<TrieNode> iter = root;
@@ -66,7 +66,7 @@ public:
         }
         iter.lock()->is_end_of_word = true;
         iter.lock()->value = value;
-        ++size;
+        ++m_size;
     }
     T find(std::string_view item) const {
         if (empty(root))
@@ -81,11 +81,11 @@ public:
     }
     void erase(std::string_view item) {
         if (!erase_impl(root,item)) {
-            --size;
+            --m_size;
         }
     }
-    int32_t getSize() const noexcept{
-        return size;
+    int32_t size() const noexcept{
+        return m_size;
     }
 };
 

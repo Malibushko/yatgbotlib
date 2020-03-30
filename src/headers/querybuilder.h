@@ -4,7 +4,7 @@
 namespace telegram {
 
 class query_builder {
-    rapidjson::Document doc;
+    rapidjson::Document doc {};
 public:
     query_builder() = default;
     query_builder(rapidjson::Document::AllocatorType &allocator)
@@ -26,7 +26,9 @@ public:
         }
         return builder;
     }
-    std::string get_query() const noexcept { return utility::to_string(doc); }
+    std::string get_query() const noexcept {
+        return utility::to_string(doc);
+    }
     const rapidjson::Document &get_document() const noexcept { return doc; }
 };
 } // namespace telegram

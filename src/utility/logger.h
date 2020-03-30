@@ -20,27 +20,35 @@ public:
         i = std::move(ptr);
     }
     template<class... Args>
-    static void warn(Args... args) {
-        std::stringstream s;
-        (s << ... <<args);
-        warn(s.str());
+    static void warn(Args&&... args) {
+        if (logger::i) {
+            std::stringstream s;
+            (s << ... <<args);
+            warn(s.str().data());
+        }
     }
     template<class... Args>
-    static void info(Args... args) {
-        std::stringstream s;
-        (s << ... <<args);
-        info(s.str());
+    static void info(Args&&... args) {
+        if (logger::i) {
+            std::stringstream s;
+            (s << ... <<args);
+            info(s.str().data());
+        }
     }
+
     template<class... Args>
-    static void critical(Args... args) {
-        std::stringstream s;
-        (s << ... <<args);
-        critical(s.str());
+    static void critical(Args&&... args) {
+        if (logger::i) {
+            std::stringstream s;
+            (s << ... <<args);
+            critical(s.str().data());
+        }
     }
     static void warn(const char * msg) {
         if (logger::i)
             logger::i->warn(msg);
     }
+
     static void info(const char * msg) {
         if (logger::i)
             logger::i->info(msg);

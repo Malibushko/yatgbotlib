@@ -114,16 +114,14 @@ public:
         if (it->value.IsInt() || it->value.IsInt64())
           items.push_back({it->name.GetString(),
                            std::to_string(it->value.GetInt64()),
-                           {},
                            {}});
         else if (it->value.IsBool())
           items.push_back({it->name.GetString(),
                            it->value.GetBool() ? "true" : "false",
-                           {},
                            {}});
         else if (it->value.IsString())
           items.push_back(
-              {it->name.GetString(), it->value.GetString(), {}, {}});
+              {it->name.GetString(), it->value.GetString()});
       }
 
       for (auto &&[name, path_or_id] : params) {
@@ -131,15 +129,13 @@ public:
           if (path.filename().string().find(".pem") != std::string::npos)
             items.push_back({"certificate",
                              utility::get_file_bytes(fs::absolute(path)),
-                             '@' + path.string(),
-                             {}});
+                             '@' + path.string()});
           else
-            items.push_back({path.filename(),
+            items.push_back({name.data(),
                              utility::get_file_bytes(fs::absolute(path)),
-                             path.filename().string(),
-                             {}});
+                             path.filename().string()});
         } else {
-          items.push_back({{name.data(), name.size()}, path_or_id, {}, {}});
+          items.push_back({{name.data(), name.size()}, path_or_id});
         }
       }
       auto response = network_manager::i().post(base_url + api, items);

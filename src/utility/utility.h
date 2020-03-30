@@ -2,6 +2,7 @@
 #include <cstdint>
 #include <string>
 #include <fstream>
+#include <map>
 #    if __has_include(<filesystem>)
 #        include <filesystem>
 namespace fs = namespace std::filesystem;
@@ -108,6 +109,18 @@ static std::string arrayToJson(rapidjson::Value val) {
     doc.Accept(writer);
     return buff.GetString();
 }
+enum class content_types {
+    text_plain,
+    application_json,
+    multipart_form_data,
+    application_octet_stream
+};
+static const std::map<content_types,std::string> content_type {
+    {content_types::text_plain,"text/plain"},
+    {content_types::application_json,"application/json"},
+    {content_types::multipart_form_data,"multipart/form-data"},
+    {content_types::application_octet_stream,"application/octet-stream"}
+};
 
 inline constexpr uint32_t to_ipv4(uint8_t oct1, uint8_t oct2, uint8_t oct3, uint8_t oct4) noexcept {
         uint32_t result{0};
