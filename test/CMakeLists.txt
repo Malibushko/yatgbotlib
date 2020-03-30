@@ -6,8 +6,8 @@ if (NOT ${GTEST_FOUND})
     message("GTest library not found. ")
 endif()
 
-set(BOT_TOKEN "663528116:AAG-0bX4VLsnkMVzDpA4Ak_8dWMgRquD3ig")
-set(TEST_CHAT 250033715)
+set(BOT_TOKEN "")
+set(TEST_CHAT 0)
 
 macro (m_add_test _TEST_NAME)
     add_executable(${_TEST_NAME}_tests ${_TEST_NAME}_tests.cpp)
