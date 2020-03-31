@@ -22,7 +22,7 @@ struct is_unique_ptr : std::false_type {};
 
 template <class T>
 struct is_unique_ptr<T,std::void_t<decltype (*std::declval<T>()),typename T::element_type,
-                                                                    typename T::deleter_type>> : std::true_type {};
+typename T::deleter_type>> : std::true_type {};
 
 template <class T>
 constexpr static bool is_unique_ptr_v = is_unique_ptr<T>::value;
@@ -36,7 +36,7 @@ struct is_logger : std::false_type {};
 
 template <class T>
 struct is_logger<T,std::void_t<decltype (T::error),decltype (T::info),
-                                decltype(T::warning),decltype(T::critical)>> : std::true_type {};
+decltype(T::warning),decltype(T::critical)>> : std::true_type {};
 template <class T>
 constexpr static bool is_logger_v = is_logger<T>::value;
 
@@ -145,14 +145,27 @@ struct checked_callback;
 
 template <typename R, typename ...T>
 struct checked_callback<R(T...)> {
-   using checker = std::function<bool(T...)>;
-   using callback = std::function<R(T...)>;
+    using checker = std::function<bool(T...)>;
+    using callback = std::function<R(T...)>;
 };
 
 template <typename R, typename T>
 struct checked_callback<std::function<R(T)>> {
-   using checker = std::function<bool(T)>;
-   using callback = std::function<R(T)>;
+                                             using checker = std::function<bool(T)>;
+                                             using callback = std::function<R(T)>;
+};
+template <typename Func,typename... Args>
+struct func_signature;
+
+template <typename Func,typename Arg>
+struct func_signature<Func(Arg)> {
+    using return_type = Func;
+    using args_type = std::decay_t<Arg>;
+};
+template <typename Func,typename Arg>
+struct func_signature<std::function<Func(Arg)>> {
+    using return_type = Func;
+    using args_type = std::decay_t<Arg>;
 };
 
 } // helpers

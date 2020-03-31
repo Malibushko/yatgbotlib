@@ -57,27 +57,27 @@ class Trie {
     size_t m_size{0};
 public:
     void insert(std::string_view item,const T& value) {
-        std::weak_ptr<TrieNode> iter = root;
+        std::shared_ptr<TrieNode> iter = root;
         for (auto && it : item) {
-            if (!iter.lock()->findChildren(it)) {
-                iter.lock()->children.emplace_back(std::make_shared<TrieNode>(it));
+            if (!iter->findChildren(it)) {
+                iter->children.emplace_back(std::make_shared<TrieNode>(it));
             }
-            iter = iter.lock()->findChildren(it);
+            iter = iter->findChildren(it);
         }
-        iter.lock()->is_end_of_word = true;
-        iter.lock()->value = value;
+        iter->is_end_of_word = true;
+        iter->value = value;
         ++m_size;
     }
     T find(std::string_view item) const {
         if (empty(root))
             return T{};
-        std::weak_ptr<TrieNode> iter = root;
+        std::shared_ptr<TrieNode> iter = root;
         for (char it : item) {
-            iter = iter.lock()->findChildren(it);
-            if (!iter.lock())
+            iter = iter->findChildren(it);
+            if (!iter)
                 return T{};
         }
-        return iter.lock()->is_end_of_word ? iter.lock()->value: T{};
+        return iter->is_end_of_word ? iter->value: T{};
     }
     void erase(std::string_view item) {
         if (!erase_impl(root,item)) {

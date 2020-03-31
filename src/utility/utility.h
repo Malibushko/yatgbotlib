@@ -91,13 +91,13 @@ int constexpr counter_id(int value = mark<next_flag>::value) {
 #endif
 
 
-static std::string objectToJson(rapidjson::Value val) {
+static inline std::string objectToJson(const rapidjson::Value& val) {
     rapidjson::StringBuffer buff;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
     val.Accept(writer);
     return buff.GetString();
 }
-static std::string arrayToJson(rapidjson::Value val) {
+static inline std::string arrayToJson(rapidjson::Value val) {
     rapidjson::StringBuffer buff;
     rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
     rapidjson::Document doc;

@@ -23,10 +23,13 @@ template <size_t N, class MetaStruct,
 void append_to_document(rapidjson::Document &doc, jsonAllocator &allocator,
                         const MetaStruct &str);
 
-template <size_t N, class T>
-void parse_field(T &field, rapidjson::Document &doc);
+template <class T,size_t ...Indexes>
+void parse_field(T &s,rapidjson::Document &doc,const std::index_sequence<Indexes...>& );
 
+template <class T,size_t... Indexes>
+void to_json_impl(const T& item,rapidjson::Document& doc,const std::index_sequence<Indexes...>&);
 // -------------------- SERIALIZE -----------------------------------
+
 template <class T, typename = std::enable_if_t<traits::is_parsable_v<T>>>
 std::string to_json(const T &item) {
   static_assert(boost::pfr::tuple_size_v<std::decay_t<T>> > 0,
@@ -36,7 +39,7 @@ std::string to_json(const T &item) {
   rapidjson::Document document;
   document.SetObject();
 
-  append_to_document<0>(document, document.GetAllocator(), item);
+  to_json_impl(item,document,std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
   return utility::to_string(document);
 }
 
@@ -185,8 +188,6 @@ void append_to_document(rapidjson::Document &doc, jsonAllocator &allocator,
   if constexpr (traits::is_unique_ptr_v<traits::remove_cvref_t<decltype(boost::pfr::get<N>(str))>>) {
     if (boost::pfr::get<N>(str))
       value_to_json(*boost::pfr::get<N>(str), val, allocator);
-    else if constexpr (N+1 < boost::pfr::tuple_size_v<MetaStruct>)
-      append_to_document<N + 1, MetaStruct>(doc, allocator, str);
     else
       return;
   } else {
@@ -202,9 +203,10 @@ void append_to_document(rapidjson::Document &doc, jsonAllocator &allocator,
 
     doc.AddMember(name.Move(), val, allocator);
   }
-  // recursive step
-  if constexpr (N+1 < boost::pfr::tuple_size_v<MetaStruct>)
-    append_to_document<N + 1, MetaStruct>(doc, allocator, str);
+}
+template <class T,size_t... Indexes>
+void to_json_impl(const T& item,rapidjson::Document& doc,const std::index_sequence<Indexes...>&) {
+    (append_to_document<Indexes>(doc,doc.GetAllocator(),item),...);
 }
 
 
@@ -225,7 +227,7 @@ template <class T, typename> T from_json(const std::string &data) {
     array_from_json(item, temp_arr, doc.GetAllocator());
   } else if constexpr (traits::is_parsable_v<T>) {
     static_assert(boost::pfr::tuple_size_v<T> > 0, "The struct has no fields");
-    parse_field<0>(item, doc);
+      parse_field(item, doc,std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
   }
   return item;
 }
@@ -333,23 +335,25 @@ void parse_field_impl(const char *field_name, T &field,
     array_from_json(field, arr, doc.GetAllocator());
   }
 }
+template <typename T,size_t N>
+void parse_impl(T& s,rapidjson::Document& doc) {
+    if (doc.HasMember(T::template field_info<N>::name.data())) {
+      using type = traits::optional_or_value<
+          std::decay_t<decltype(boost::pfr::get<N>(s))>>;
 
-template <size_t N, class T>
-void parse_field(T &s,rapidjson::Document &doc) {
-  if (doc.HasMember(T::template field_info<N>::name.data())) {
-    using type = traits::optional_or_value<
-        std::decay_t<decltype(boost::pfr::get<N>(s))>>;
-
-    if constexpr (traits::is_unique_ptr_v<type>) {
-      boost::pfr::get<N>(s) = std::make_unique<typename type::element_type>();
-      parse_field_impl(T::template field_info<N>::name.data(),
-                       *boost::pfr::get<N>(s), doc);
-    } else
-      parse_field_impl(T::template field_info<N>::name.data(),
-                       boost::pfr::get<N>(s), doc);
-  }
-  if constexpr (N+1 < boost::pfr::tuple_size_v<std::decay_t<T>>)
-    parse_field<N + 1>(s, doc);
+      if constexpr (traits::is_unique_ptr_v<type>) {
+        boost::pfr::get<N>(s) = std::make_unique<typename type::element_type>();
+        parse_field_impl(T::template field_info<N>::name.data(),
+                         *boost::pfr::get<N>(s), doc);
+      } else
+        parse_field_impl(T::template field_info<N>::name.data(),
+                         boost::pfr::get<N>(s), doc);
+    }
 }
+template <class T,size_t ...Indexes>
+void parse_field(T &s,rapidjson::Document &doc,const std::index_sequence<Indexes...>& ) {
+    (parse_impl<T,Indexes>(s,doc),...);
+}
+
 
 } // namespace telegram

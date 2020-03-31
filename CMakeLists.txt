@@ -9,22 +9,32 @@ set(CMAKE_USE_OPENSSL ON)
 
 set(TGLIB_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 set(TGLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
-set(TGLIB_BUILD_TESTS ON)
-set(HEADERS
-             ./src/headers/json_parser.h
-             ./src/headers/querybuilder.h
-             ./src/headers/apimanager.h
-             ./src/headers/update_manager.h
-             ./src/headers/sequence_dispatcher.h
-             ./src/headers/networkmanager.h
-             ./include/telegram_bot.h
-             ./include/telegram_structs.h
-             ./src/utility/logger.h
-             ./src/utility/traits.h
-             ./src/utility/trie.h
-             ./src/utility/utility.h)
 
-set (SOURCES ./src/sources/telegrambot.cpp)
+set(TGLIB_BUILD_TESTS OFF)
+set(TGLIB_BUILD_EXAMPLES ON)
+
+set(HEADERS
+    ./src/headers/json_parser.h
+    ./src/headers/querybuilder.h
+    ./src/headers/apimanager.h
+    ./src/headers/update_manager.h
+    ./src/headers/sequence_dispatcher.h
+    ./src/headers/networkmanager.h
+    ./include/telegram_bot.h
+    ./include/telegram_structs.h
+    ./src/utility/logger.h
+    ./src/utility/traits.h
+    ./src/utility/trie.h
+    ./src/utility/utility.h)
+
+include_directories(${PROJECT_SOURCE_DIR}/src
+    ${PROJECT_SOURCE_DIR}/include
+    ${PROJECT_SOURCE_DIR}/third_party
+    ${PROJECT_SOURCE_DIR}/third_party/magic_get/include)
+
+set (SOURCES ./src/sources/telegrambot.cpp
+             ./src/sources/update_manager.cpp
+             ./third_party/cpp-httplib/out/httplib.cc)
 
 find_package(Threads REQUIRED)
 find_package(OpenSSL REQUIRED COMPONENTS Crypto SSL)
@@ -35,10 +45,6 @@ add_library(tglib SHARED ${HEADERS} ${SOURCES})
 set_target_properties(tglib PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(tglib PROPERTIES PUBLIC_HEADER include/telegram_bot.h)
 
-include_directories(${PROJECT_SOURCE_DIR}/src
-                    ${PROJECT_SOURCE_DIR}/include
-                    ${PROJECT_SOURCE_DIR}/third_party
-                    ${PROJECT_SOURCE_DIR}/third_party/magic_get/include)
 
 target_link_libraries(tglib stdc++fs Threads::Threads OpenSSL::SSL OpenSSL::Crypto)
 
@@ -46,4 +52,6 @@ if (TGLIB_BUILD_TESTS)
     enable_testing()
     add_subdirectory(${PROJECT_SOURCE_DIR}/test)
 endif()
-add_subdirectory(${PROJECT_SOURCE_DIR}/examples)
+if (TGLIB_BUILD_EXAMPLES)
+    add_subdirectory(${PROJECT_SOURCE_DIR}/examples)
+endif()

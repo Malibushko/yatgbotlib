@@ -1,5 +1,5 @@
 ﻿#include "telegram_bot.h"
-
+#include "utility/logger.h"
 namespace telegram {
 
 Bot::Bot(const std::string &token) noexcept
@@ -7,7 +7,7 @@ Bot::Bot(const std::string &token) noexcept
                                         '/')} {}
 
 void Bot::onUpdate(update_callback &&cb) {
-    updater.set_raw_callback(std::move(cb));
+    updater.set_update_callback(std::move(cb));
 }
 
 void Bot::onInlineResult(std::string_view cmd, chosen_inline_callback &&cb) {
@@ -38,8 +38,8 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
     if (auto &&[webhook, error] = getWebhookInfo();
             error || webhook.url.size() || webhookSet) {
         if (error)
-            std::cerr << error.value();
-        std::cerr << "You must remove webhook before using long polling method.";
+            utility::logger::warn(error.value());
+        utility::logger::critical("You must remove webhook before using long polling method.");
         return;
     }
     stopPolling = false;
@@ -47,7 +47,7 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
     while (!stopPolling) {
         updater.route_callback(getUpdatesRawJson(updater.get_offset(), limit,
                                                  timeout, allowed_updates));
-        std::this_thread::sleep_for(100 *
+        std::this_thread::sleep_for(1000 *
                                     std::chrono::milliseconds(timeout.value_or(1)));
     }
 }
