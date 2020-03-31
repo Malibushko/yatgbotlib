@@ -8,11 +8,11 @@ const int64_t chat_id = TEST_CHAT_ID;
 const std::string api_url =
     std::string("https://api.telegram.org/bot") + bot_token.data() + '/';
 
-api_manager mng(api_url.data());
+ApiManager mng(api_url.data());
 int64_t last_message_id = 0;
 
 TEST(ApiManager, post_no_params_test) {
-  auto &&[result, error] = mng.call_api<User>("getMe");
+  auto &&[result, error] = mng.ApiCall<User>("getMe");
   if (error)
     ASSERT_TRUE(false);
   else {
@@ -25,7 +25,7 @@ TEST(ApiManager, post_with_params_test) {
   std::string text = "test";
   builder << make_named_pair(chat_id) << make_named_pair(text);
 
-  auto &&[result, error] = mng.call_api<Message>("sendMessage", builder);
+  auto &&[result, error] = mng.ApiCall<Message>("sendMessage", builder);
   if (error.has_value()) {
     ASSERT_TRUE(false);
   } else {
@@ -42,7 +42,7 @@ TEST(ApiManager, post_conditional) {
   builder << make_named_pair(chat_id) << make_named_pair(message_id)
           << make_named_pair(text);
 
-  auto &&[result, error] = mng.call_api<std::variant<bool, Message>, Message>(
+  auto &&[result, error] = mng.ApiCall<std::variant<bool, Message>, Message>(
       "editMessageText", builder);
   if (error)
     ASSERT_TRUE(false);

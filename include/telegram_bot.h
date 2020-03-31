@@ -26,19 +26,19 @@ using reply_markups = std::variant<InlineKeyboardMarkup, ReplyKeyboardMarkup,
                                    ReplyKeyboardRemove, ForceReply>;
 
 class Bot {
-  std::unique_ptr<api_manager> api;
-  update_manager updater;
+  std::unique_ptr<ApiManager> api;
+  UpdateManager updater;
   bool stopPolling = false;
   bool webhookSet = false;
 
 public:
   Bot(const std::string &token) noexcept;
-  void onUpdate(update_callback &&cb);
-  void onInlineResult(std::string_view cmd, chosen_inline_callback &&cb);
-  void onCallback(std::string_view cmd, query_callback &&cb);
-  void onCommand(std::string_view cmd, msg_callback &&cb);
+  void onUpdate(UpdateCallback &&cb);
+  void onInlineResult(std::string_view cmd, ChosenInlineResultCallback &&cb);
+  void onCallback(std::string_view cmd, QueryCallback &&cb);
+  void onCommand(std::string_view cmd, MessageCallback &&cb);
   void startSequence(int64_t user_id,
-                     std::shared_ptr<sequence<msg_callback>> seq);
+                     std::shared_ptr<Sequence<MessageCallback>> seq);
   void stopSequence(int64_t user_id);
   std::pair<WebhookInfo, opt_error> getWebhookInfo() const;
   void start(opt_uint64 timeout = {}, opt_uint64 offset = {},

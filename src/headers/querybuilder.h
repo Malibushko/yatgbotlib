@@ -17,7 +17,7 @@ public:
             builder.doc.SetObject();
 
         rapidjson::Value val;
-        value_to_json(pair.second, val, builder.doc.GetAllocator());
+        valueToJson(pair.second, val, builder.doc.GetAllocator());
         if (!val.IsNull()) {
             rapidjson::Value name(rapidjson::kStringType);
             name.SetString(pair.first.data(), pair.first.size(),
@@ -29,6 +29,6 @@ public:
     std::string get_query() const noexcept {
         return utility::to_string(doc);
     }
-    const rapidjson::Document &get_document() const noexcept { return doc; }
+    const rapidjson::Document& get_document() const noexcept { return doc; }
 };
 } // namespace telegram

@@ -3,25 +3,25 @@
 
 using namespace telegram;
 
-void update_manager::set_update_callback(update_callback &&cb) {
+void UpdateManager::setUpdateCallback(UpdateCallback &&cb) {
     callback.swap(cb);
 }
 
-void update_manager::add_sequence(int64_t user_id,
-                  std::shared_ptr<sequence<msg_callback>> callback) {
+void UpdateManager::addSequence(int64_t user_id,
+                  std::shared_ptr<Sequence<MessageCallback>> callback) {
     dispatcher[user_id] = callback;
 }
-void update_manager::remove_sequence(int64_t user_id) {
+void UpdateManager::removeSequence(int64_t user_id) {
     dispatcher.erase(user_id);
 }
-size_t update_manager::get_offset() const noexcept {
-    return last_update;
+size_t UpdateManager::getOffset() const noexcept {
+    return lastUpdate;
 }
-void update_manager::add_callback(std::string_view cmd, telegram::callbacks &&callback) {
+void UpdateManager::addCallback(std::string_view cmd, telegram::callbacks &&callback) {
     m_callbacks.insert(cmd,callback);
 }
 
-void update_manager::route_callback(const std::string &str) {
+void UpdateManager::routeCallback(const std::string &str) {
     rapidjson::Document doc;
     const auto &ok = doc.Parse(str.data());
     if (ok.HasParseError()) {
@@ -41,9 +41,9 @@ void update_manager::route_callback(const std::string &str) {
             if (result->second->finished()) {
                 dispatcher.erase(result);
             } else {
-                std::thread(&sequence<msg_callback>::input<Message>,
+                std::thread(&Sequence<MessageCallback>::input<Message>,
                             std::ref(*result->second),
-                            from_json<Message>(utility::objectToJson(message)))
+                            fromJson<Message>(utility::objectToJson(message)))
                         .detach();
             }
             return;
@@ -54,22 +54,22 @@ void update_manager::route_callback(const std::string &str) {
             auto obj = it["callback_query"].GetObject();
             auto data = obj["data"].GetString();
 
-            if (find_callback<query_callback>(data) &&
-                    run_callback<query_callback>(data, utility::objectToJson(obj)))
+            if (findCallback<QueryCallback>(data) &&
+                    runCallback<QueryCallback>(data, utility::objectToJson(obj)))
                 return;
         } else if (it.HasMember("inline_query")) {
             auto obj = it["inline_query"].GetObject();
             auto data = obj["query"].GetString();
 
-            if (find_callback<inline_callback>(data) &&
-                    run_callback<inline_callback>(data, utility::objectToJson(obj)))
+            if (findCallback<InlineQueryCallback>(data) &&
+                    runCallback<InlineQueryCallback>(data, utility::objectToJson(obj)))
                 return;
         } else if (it.HasMember("chosen_inline_result")) {
             auto obj = it["chosen_inline_result"].GetObject();
             auto data = obj["query"].GetString();
 
-            if (find_callback<chosen_inline_callback>(data) &&
-                    run_callback<chosen_inline_callback>(data,
+            if (findCallback<ChosenInlineResultCallback>(data) &&
+                    runCallback<ChosenInlineResultCallback>(data,
                                                      utility::objectToJson(obj)))
                 return;
         } else if (it.HasMember("message") &&
@@ -77,12 +77,12 @@ void update_manager::route_callback(const std::string &str) {
             auto obj = it["message"].GetObject();
             auto data = obj["text"].GetString();
 
-            if (find_callback<msg_callback>(data) &&
-                    run_callback<msg_callback>(data, utility::objectToJson(obj)))
+            if (findCallback<MessageCallback>(data) &&
+                    runCallback<MessageCallback>(data, utility::objectToJson(obj)))
                 return;
         }
         else if (callback)
-            std::thread(callback,from_json<Update>(utility::objectToJson(it))).detach();
+            std::thread(callback,fromJson<Update>(utility::objectToJson(it))).detach();
     };
 
     if (auto has_result = doc.HasMember("result");
@@ -90,7 +90,7 @@ void update_manager::route_callback(const std::string &str) {
         const auto &updates_arr =
                 has_result ? doc["result"].GetArray() : doc.GetArray();
         if (updates_arr.Size())
-            last_update = updates_arr[updates_arr.Size() - 1]
+            lastUpdate = updates_arr[updates_arr.Size() - 1]
                     .GetObject()["update_id"]
                     .GetUint64() + 1;
 
@@ -101,13 +101,13 @@ void update_manager::route_callback(const std::string &str) {
                (!has_result && doc.IsObject())) {
         const auto &update =
                 !has_result ? doc.GetObject() : doc["result"].GetObject();
-        last_update = update["update_id"].GetUint64() + 1;
+        lastUpdate = update["update_id"].GetUint64() + 1;
         callback_router(update);
     } else {
         utility::logger::warn("Json document does not contain any parsable value");
         return;
     }
 }
-void update_manager::set_offset(size_t offset) {
-    last_update = offset;
+void UpdateManager::setOffset(size_t offset) {
+    lastUpdate = offset;
 }

@@ -8,7 +8,7 @@ struct Small {
 };
 
 TEST(JsonParser,to_json_small_structure) {
-    std::string json = to_json(Small{false});
+    std::string json = toJson(Small{false});
     std::string expected_json = "{\"test\":false}";
     EXPECT_EQ(expected_json,json);
 }
@@ -42,7 +42,7 @@ struct Large {
     Large() = default;
 };
 TEST(JsonParser,to_json_large_structure) {
-    std::string json = to_json(Large{});
+    std::string json = toJson(Large{});
     std::string expected_json = "{"
                                 "\"b1\":false,"
                                 "\"b2\":false,"
@@ -80,7 +80,7 @@ struct Array {
 TEST(JsonParser,to_json_array_type) {
     Array arr;
     arr.data = {1,2,3,4,5};
-    std::string json = to_json(arr);
+    std::string json = toJson(arr);
     std::string expected_json = "{\"data\":[1,2,3,4,5]}";
     EXPECT_EQ(expected_json,json);
 
@@ -93,7 +93,7 @@ struct ComplexArray {
 TEST(JsonParser,to_json_complex_array_type) {
     ComplexArray arr;
     arr.data = {{false},{true},{false}};
-    std::string json = to_json(arr);
+    std::string json = toJson(arr);
     std::string expected_json = "{\"data\":[{\"test\":false},{\"test\":true},{\"test\":false}]}";
     EXPECT_EQ(expected_json,json);
 
@@ -107,7 +107,7 @@ struct UniquePtr {
 TEST(JsonParser,to_json_unique_ptr) {
     UniquePtr ptr;
     ptr.data = std::make_unique<int>(5);
-    std::string json = to_json(ptr);
+    std::string json = toJson(ptr);
     std::string expected_json = "{\"data\":5}";
     EXPECT_EQ(expected_json,json);
 }
@@ -122,10 +122,10 @@ TEST(JsonParser,to_json_variant) {
     Variant test2;
     test1.data = 5;
     test2.data = "Test";
-    std::string json_1 = to_json(test1);
+    std::string json_1 = toJson(test1);
     std::string expected_json_1 = "{\"data\":5}";
 
-    std::string json_2 = to_json(test2);
+    std::string json_2 = toJson(test2);
     std::string expected_json_2 = "{\"data\":\"Test\"}";
 
     EXPECT_EQ(expected_json_1,json_1);
@@ -142,18 +142,18 @@ TEST(JsonParser,to_json_2darray) {
             {4,5,6},
             {7,8,9}}
     };
-    std::string json = to_json(m);
+    std::string json = toJson(m);
     std::string expected_json = "{\"data\":[[1,2,3],[4,5,6],[7,8,9]]}";
     EXPECT_EQ(expected_json,json);
 }
 TEST(JsonParser,forward_reverse_parse) {
     Small m{true};
-    std::string json = to_json(m);
-    Small after = from_json<Small>(json);
+    std::string json = toJson(m);
+    Small after = fromJson<Small>(json);
     EXPECT_EQ(m.test,after.test);
 }
 TEST(JsonParser,parse_array) {
-    ComplexArray arr = from_json<ComplexArray>({"{\"data\":[{\"test\":false},{\"test\":true},{\"test\":false}]}"});
+    ComplexArray arr = fromJson<ComplexArray>({"{\"data\":[{\"test\":false},{\"test\":true},{\"test\":false}]}"});
     auto expected = std::vector<Small>{{false},{true},{false}};
     if (arr.data.size() != expected.size())
         ASSERT_TRUE(false);
@@ -166,7 +166,7 @@ TEST(JsonParser,parse_array) {
     ASSERT_TRUE(true);
 }
 TEST(JsonParse,parse_unique_ptr) {
-    UniquePtr ptr = from_json<UniquePtr>({"{\"data\":5}"});
+    UniquePtr ptr = fromJson<UniquePtr>({"{\"data\":5}"});
     if (!ptr.data)
         ASSERT_TRUE(false);
     EXPECT_EQ((*ptr.data),5);

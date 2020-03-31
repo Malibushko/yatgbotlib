@@ -8,15 +8,15 @@ using namespace traits;
 using name_value_pair = std::pair<std::string_view, std::string>;
 using utility::error;
 
-class api_manager {
+class ApiManager {
   std::string base_url;
 
 private:
-  template <class T> void assign_impl(T &value, const std::string &data) const {
+  template <class T> void assignImpl(T &value, const std::string &data) const {
     if constexpr (traits::is_string_type<T>)
       value = data;
     else if constexpr (traits::is_parsable_v<T> || traits::is_container_v<T>)
-      value = std::move(from_json<T>(data));
+      value = std::move(fromJson<T>(data));
     else if constexpr (std::is_same_v<bool, std::decay_t<T>>)
       value = (utility::lowercase_compare(data, "true") ? true : false);
     else if constexpr (std::is_integral_v<T>)
@@ -25,21 +25,21 @@ private:
       value = std::stof(data);
   }
   template <class T, class AssignType>
-  void assign_impl(T &value, const std::string &data) const {
+  void assignImpl(T &value, const std::string &data) const {
     AssignType temp_val{};
-    assign_impl<AssignType>(temp_val, data);
+    assignImpl<AssignType>(temp_val, data);
     value = std::move(temp_val);
   }
 
 public:
-  api_manager() noexcept {}
-  api_manager(std::string &&url) noexcept : base_url{std::move(url)} {}
+  ApiManager() noexcept {}
+  ApiManager(std::string &&url) noexcept : base_url{std::move(url)} {}
 
   template <class T>
-  std::pair<T, std::optional<error>> call_api(const char *api,
+  std::pair<T, std::optional<error>> ApiCall(const char *api,
                                               const query_builder &builder) {
     std::shared_ptr<httplib::Response> reply =
-        network_manager::i().post(base_url + api, {}, builder.get_query());
+        NetworkManager::i().post(base_url + api, {}, builder.get_query());
 
     if (!reply) {
       return {T{}, error{600, "Unable to make a request"}};
@@ -48,7 +48,7 @@ public:
 
     auto &&[is_valid, value] = utility::parse_value(reply->body);
     if (is_valid) {
-      assign_impl<T>(result.first, value);
+      assignImpl<T>(result.first, value);
     } else {
       result.second = error{static_cast<int32_t>(reply->status), value};
     }
@@ -56,9 +56,9 @@ public:
   }
   template <class T, class TrueOrType>
   std::pair<T, std::optional<error>>
-  call_api(const char *api, const query_builder &builder) const {
+  ApiCall(const char *api, const query_builder &builder) const {
     auto reply =
-        network_manager::i().post(base_url + api, {}, builder.get_query());
+        NetworkManager::i().post(base_url + api, {}, builder.get_query());
 
     std::pair<T, std::optional<error>> result;
 
@@ -69,7 +69,7 @@ public:
       } else if (utility::lowercase_compare(value, utility::false_literal)) {
         result.first = false;
       } else {
-        assign_impl<T, TrueOrType>(result.first, value);
+        assignImpl<T, TrueOrType>(result.first, value);
       }
     } else {
       result.second = error{static_cast<int32_t>(reply->status), value};
@@ -78,14 +78,14 @@ public:
   }
 
   template <class T>
-  std::pair<T, std::optional<error>> call_api(const char *api) const {
-    auto reply = network_manager::i().post(base_url + api);
+  std::pair<T, std::optional<error>> ApiCall(const char *api) const {
+    auto reply = NetworkManager::i().post(base_url + api);
 
     std::pair<T, std::optional<error>> result;
 
     auto &&[is_valid, value] = utility::parse_value(reply->body);
     if (is_valid) {
-      assign_impl<T>(result.first, value);
+      assignImpl<T>(result.first, value);
     } else {
       result.second = error{0, value};
     }
@@ -94,7 +94,7 @@ public:
 
   template <class T>
   std::pair<T, std::optional<error>>
-  call_api(const char *api, query_builder &builder,
+  ApiCall(const char *api, query_builder &builder,
            const std::vector<name_value_pair> &params) {
     std::pair<T, std::optional<error>> result;
     std::string reply;
@@ -138,7 +138,7 @@ public:
           items.push_back({{name.data(), name.size()}, path_or_id});
         }
       }
-      auto response = network_manager::i().post(base_url + api, items);
+      auto response = NetworkManager::i().post(base_url + api, items);
       reply = response->body;
       status_code = response->status;
     } else if (params.size()) {
@@ -146,7 +146,7 @@ public:
         builder << it;
       }
       auto response =
-          network_manager::i().post(base_url + api, {}, builder.get_query());
+          NetworkManager::i().post(base_url + api, {}, builder.get_query());
       reply = response->body;
       status_code = response->status;
     } else {
@@ -159,14 +159,14 @@ public:
 
     auto &&[is_valid, value] = utility::parse_value(reply);
     if (is_valid) {
-      assign_impl<T>(result.first, value);
+      assignImpl<T>(result.first, value);
     } else {
       result.second = error{static_cast<int32_t>(status_code), value};
     }
     return result;
   }
-  std::string call_api_raw_json(const char *api, const query_builder &builder) {
-    return network_manager::i()
+  std::string ApiCallRaw(const char *api, const query_builder &builder) {
+    return NetworkManager::i()
         .post(base_url + api, {}, builder.get_query())
         ->body;
   }

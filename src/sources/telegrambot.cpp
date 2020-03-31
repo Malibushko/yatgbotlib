@@ -3,34 +3,34 @@
 namespace telegram {
 
 Bot::Bot(const std::string &token) noexcept
-    : api{std::make_unique<api_manager>("https://api.telegram.org/bot" + token +
+    : api{std::make_unique<ApiManager>("https://api.telegram.org/bot" + token +
                                         '/')} {}
 
-void Bot::onUpdate(update_callback &&cb) {
-    updater.set_update_callback(std::move(cb));
+void Bot::onUpdate(UpdateCallback &&cb) {
+    updater.setUpdateCallback(std::move(cb));
 }
 
-void Bot::onInlineResult(std::string_view cmd, chosen_inline_callback &&cb) {
-    updater.add_callback(cmd, std::move(cb));
+void Bot::onInlineResult(std::string_view cmd, ChosenInlineResultCallback &&cb) {
+    updater.addCallback(cmd, std::move(cb));
 }
 
-void Bot::onCallback(std::string_view cmd, query_callback &&cb) {
-    updater.add_callback(cmd, std::move(cb));
+void Bot::onCallback(std::string_view cmd, QueryCallback &&cb) {
+    updater.addCallback(cmd, std::move(cb));
 }
 
-void Bot::onCommand(std::string_view cmd, msg_callback &&cb) {
-    updater.add_callback(cmd, std::move(cb));
+void Bot::onCommand(std::string_view cmd, MessageCallback &&cb) {
+    updater.addCallback(cmd, std::move(cb));
 }
 
 void Bot::startSequence(int64_t user_id,
-                        std::shared_ptr<sequence<msg_callback>> seq) {
-    updater.add_sequence(user_id, seq);
+                        std::shared_ptr<Sequence<MessageCallback>> seq) {
+    updater.addSequence(user_id, seq);
 }
 
-void Bot::stopSequence(int64_t user_id) { updater.remove_sequence(user_id); }
+void Bot::stopSequence(int64_t user_id) { updater.removeSequence(user_id); }
 
 std::pair<WebhookInfo, opt_error> Bot::getWebhookInfo() const {
-    return api->call_api<WebhookInfo>(__func__);
+    return api->ApiCall<WebhookInfo>(__func__);
 }
 
 void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
@@ -43,9 +43,9 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
         return;
     }
     stopPolling = false;
-    updater.set_offset(offset.value_or(0));
+    updater.setOffset(offset.value_or(0));
     while (!stopPolling) {
-        updater.route_callback(getUpdatesRawJson(updater.get_offset(), limit,
+        updater.routeCallback(getUpdatesRawJson(updater.getOffset(), limit,
                                                  timeout, allowed_updates));
         std::this_thread::sleep_for(1000 *
                                     std::chrono::milliseconds(timeout.value_or(1)));
@@ -53,7 +53,7 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
 }
 void Bot::stop() { stopPolling = true; }
 std::pair<User, opt_error> Bot::getMe() const {
-    return api->call_api<User>(__func__);
+    return api->ApiCall<User>(__func__);
 }
 
 std::pair<Message, opt_error>
@@ -70,7 +70,7 @@ Bot::sendMessage(Bot::IntOrString chat_id, const std::string &text,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error> Bot::reply(const Message &msg,
@@ -91,7 +91,7 @@ std::pair<std::vector<Update>, opt_error> Bot::getUpdates(
     query_builder builder;
     builder << make_named_pair(offset) << make_named_pair(limit)
             << make_named_pair(timeout) << make_named_pair(allowed_updates);
-    return api->call_api<std::vector<Update>>(__func__, builder);
+    return api->ApiCall<std::vector<Update>>(__func__, builder);
 }
 
 std::string Bot::getUpdatesRawJson(
@@ -101,7 +101,7 @@ std::string Bot::getUpdatesRawJson(
     query_builder builder;
     builder << make_named_pair(offset) << make_named_pair(limit)
             << make_named_pair(timeout) << make_named_pair(allowed_updates);
-    return api->call_api_raw_json("getUpdates", builder);
+    return api->ApiCallRaw("getUpdates", builder);
 }
 
 std::pair<Message, opt_error>
@@ -111,7 +111,7 @@ Bot::forwardMessage(Bot::IntOrString chat_id, Bot::IntOrString from_chat_id,
     builder << make_named_pair(chat_id) << make_named_pair(from_chat_id)
             << make_named_pair(message_id)
             << make_named_pair(disable_notification);
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error>
@@ -126,7 +126,7 @@ Bot::sendPhoto(Bot::IntOrString chat_id, const std::string &photo,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder, {make_named_pair(photo)});
+    return api->ApiCall<Message>(__func__, builder, {make_named_pair(photo)});
 }
 
 std::pair<Message, opt_error>
@@ -147,7 +147,7 @@ Bot::sendAudio(Bot::IntOrString chat_id, std::string audio,
     if (thumb.has_value())
         params.push_back(make_named_pair(thumb.value()));
 
-    return api->call_api<Message>(__func__, builder, params);
+    return api->ApiCall<Message>(__func__, builder, params);
 }
 
 std::pair<bool, opt_error> Bot::setWebhook(
@@ -158,10 +158,10 @@ std::pair<bool, opt_error> Bot::setWebhook(
     builder << make_named_pair(url) << make_named_pair(max_connections)
             << make_named_pair(allowed_updates);
     if (certificate)
-        return api->call_api<bool>(__func__, builder,
+        return api->ApiCall<bool>(__func__, builder,
         {make_named_pair(certificate.value())});
     else
-        return api->call_api<bool>(__func__, builder);
+        return api->ApiCall<bool>(__func__, builder);
 }
 
 bool Bot::setWebhookServer(const std::string &url, uint16_t port,
@@ -198,7 +198,7 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
             utility::logger::warn("Cannot resolve host ip");
             return;
         }
-     updater.route_callback(req.body);
+     updater.routeCallback(req.body);
     });
     return server.listen("0.0.0.0", port);
 }
@@ -220,7 +220,7 @@ Bot::sendDocument(IntOrString chat_id, const std::string &document,
     if (thumb.has_value())
         params.push_back(make_named_pair(thumb.value()));
 
-    return api->call_api<Message>(__func__, builder, params);
+    return api->ApiCall<Message>(__func__, builder, params);
 }
 
 std::pair<Message, opt_error>
@@ -243,7 +243,7 @@ Bot::sendVideo(IntOrString chat_id, const std::string &video,
     if (thumb.has_value())
         params.push_back(make_named_pair(thumb.value()));
 
-    return api->call_api<Message>(__func__, builder, params);
+    return api->ApiCall<Message>(__func__, builder, params);
 }
 
 std::pair<Message, opt_error>
@@ -266,7 +266,7 @@ Bot::sendAnimation(IntOrString chat_id, const std::string &animation,
     if (thumb.has_value())
         params.push_back(make_named_pair(thumb.value()));
 
-    return api->call_api<Message>(__func__, builder, params);
+    return api->ApiCall<Message>(__func__, builder, params);
 }
 
 std::pair<Message, opt_error>
@@ -282,7 +282,7 @@ Bot::sendVoice(IntOrString chat_id, const std::string &voice,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder, {make_named_pair(voice)});
+    return api->ApiCall<Message>(__func__, builder, {make_named_pair(voice)});
 }
 
 std::pair<Message, opt_error>
@@ -302,7 +302,7 @@ Bot::sendVideoNote(IntOrString chat_id, const std::string &video_note,
     if (thumb.has_value())
         params.push_back(make_named_pair(thumb.value()));
 
-    return api->call_api<Message>(__func__, builder, params);
+    return api->ApiCall<Message>(__func__, builder, params);
 }
 
 std::pair<Message, opt_error>
@@ -317,7 +317,7 @@ Bot::sendLocation(IntOrString chat_id, float latitude, float longitude,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error> Bot::editMessageLiveLocation(
@@ -329,7 +329,7 @@ std::pair<Message, opt_error> Bot::editMessageLiveLocation(
             << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error> Bot::editMessageLiveLocation(
@@ -341,7 +341,7 @@ std::pair<Message, opt_error> Bot::editMessageLiveLocation(
             << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error> Bot::stopMessageLiveLocation(
@@ -351,7 +351,7 @@ std::pair<Message, opt_error> Bot::stopMessageLiveLocation(
     builder << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error> Bot::stopMessageLiveLocation(
@@ -362,7 +362,7 @@ std::pair<Message, opt_error> Bot::stopMessageLiveLocation(
     builder << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error>
@@ -380,7 +380,7 @@ Bot::sendVenue(Bot::IntOrString chat_id, float latitude, float longitude,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error>
@@ -396,7 +396,7 @@ Bot::sendContact(Bot::IntOrString chat_id, std::string_view phone_number,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<Message, opt_error>
@@ -417,14 +417,14 @@ Bot::sendPoll(Bot::IntOrString chat_id, std::string_view question,
             << make_named_pair(reply_markup)
             << make_named_pair(reply_to_message_id);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::sendChatAction(Bot::IntOrString chat_id,
                                                std::string_view action) const {
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(action);
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<UserProfilePhotos, opt_error>
@@ -434,14 +434,14 @@ Bot::getUserProfilePhotos(int64_t user_id, opt_int32 offset,
     builder << make_named_pair(user_id) << make_named_pair(offset)
             << make_named_pair(limit);
 
-    return api->call_api<UserProfilePhotos>(__func__, builder);
+    return api->ApiCall<UserProfilePhotos>(__func__, builder);
 }
 
 std::pair<File, opt_error> Bot::getFile(std::string_view &file_id) const {
     query_builder builder;
     builder << make_named_pair(file_id);
 
-    return api->call_api<File>(__func__, builder);
+    return api->ApiCall<File>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::kickChatMember(Bot::IntOrString chat_id,
@@ -451,7 +451,7 @@ std::pair<bool, opt_error> Bot::kickChatMember(Bot::IntOrString chat_id,
     builder << make_named_pair(chat_id) << make_named_pair(user_id)
             << make_named_pair(until_date);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::unbanChatMember(Bot::IntOrString chat_id,
@@ -459,7 +459,7 @@ std::pair<bool, opt_error> Bot::unbanChatMember(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(user_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::restrictChatMember(Bot::IntOrString chat_id,
@@ -470,7 +470,7 @@ std::pair<bool, opt_error> Bot::restrictChatMember(Bot::IntOrString chat_id,
     builder << make_named_pair(chat_id) << make_named_pair(user_id)
             << make_named_pair(perms) << make_named_pair(until_date);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -491,7 +491,7 @@ Bot::promoteChatMember(Bot::IntOrString chat_id, int64_t user_id,
             << make_named_pair(can_promote_members)
             << make_named_pair(can_edit_messages);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -501,7 +501,7 @@ Bot::setChatAdministratorCustomTitle(Bot::IntOrString chat_id, int64_t user_id,
     builder << make_named_pair(chat_id) << make_named_pair(user_id)
             << make_named_pair(custom_title);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -510,7 +510,7 @@ Bot::setChatPermissions(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(permissions);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<std::string, opt_error>
@@ -518,14 +518,14 @@ Bot::exportChatInviteLink(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
 
-    return api->call_api<std::string>(__func__, builder);
+    return api->ApiCall<std::string>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::setChatPhoto(Bot::IntOrString chat_id,
                                              const std::string &photo) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
-    return api->call_api<bool>(__func__, builder, {make_named_pair(photo)});
+    return api->ApiCall<bool>(__func__, builder, {make_named_pair(photo)});
 }
 
 std::pair<bool, opt_error>
@@ -533,7 +533,7 @@ Bot::deleteChatPhoto(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::setChatTitle(Bot::IntOrString chat_id,
@@ -541,7 +541,7 @@ std::pair<bool, opt_error> Bot::setChatTitle(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(title);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -550,7 +550,7 @@ Bot::setChatDescription(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(description);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -560,7 +560,7 @@ Bot::pinChatMessage(Bot::IntOrString chat_id, int64_t message_id,
     builder << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(disable_notification);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -568,20 +568,20 @@ Bot::unpinChatMessage(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::leaveChat(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<Chat, opt_error> Bot::getChat(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
 
-    return api->call_api<Chat>(__func__, builder);
+    return api->ApiCall<Chat>(__func__, builder);
 }
 
 std::pair<std::vector<ChatMember>, opt_error>
@@ -589,14 +589,14 @@ Bot::getChatAdministrators(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
 
-    return api->call_api<std::vector<ChatMember>>(__func__, builder);
+    return api->ApiCall<std::vector<ChatMember>>(__func__, builder);
 }
 
 std::pair<uint32_t, opt_error>
 Bot::getChatMembersCount(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
-    return api->call_api<uint32_t>(__func__, builder);
+    return api->ApiCall<uint32_t>(__func__, builder);
 }
 
 std::pair<ChatMember, opt_error> Bot::getChatMember(Bot::IntOrString chat_id,
@@ -604,7 +604,7 @@ std::pair<ChatMember, opt_error> Bot::getChatMember(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(user_id);
 
-    return api->call_api<ChatMember>(__func__, builder);
+    return api->ApiCall<ChatMember>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -613,7 +613,7 @@ Bot::setChatStickerSet(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(sticker_set_name);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -621,7 +621,7 @@ Bot::deleteChatStickerSet(Bot::IntOrString chat_id) const {
     query_builder builder;
     builder << make_named_pair(chat_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -633,7 +633,7 @@ Bot::answerCallbackQuery(std::string_view callback_query_id,
             << make_named_pair(show_alert) << make_named_pair(url)
             << make_named_pair(cache_time);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error>
@@ -649,7 +649,7 @@ Bot::editMessageText(Bot::IntOrString chat_id, std::string_view text,
             << make_named_pair(disable_web_page_preview)
             << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageText(
@@ -664,7 +664,7 @@ std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageText(
             << make_named_pair(disable_web_page_preview)
             << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error>
@@ -677,7 +677,7 @@ Bot::editMessageCaption(Bot::IntOrString chat_id, opt_int64 message_id,
             << make_named_pair(message_id) << make_named_pair(inline_message_id)
             << make_named_pair(parse_mode) << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageCaption(
@@ -690,7 +690,7 @@ std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageCaption(
             << make_named_pair(message_id) << make_named_pair(inline_message_id)
             << make_named_pair(parse_mode) << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error>
@@ -703,7 +703,7 @@ Bot::editMessageMedia(Bot::InputMedia media, opt_int64 inline_message_id,
             << make_named_pair(message_id) << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error>
@@ -715,7 +715,7 @@ Bot::editMessageMedia(Bot::InputMedia media, Bot::IntOrString chat_id,
             << make_named_pair(message_id) << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageReplyMarkup(
@@ -727,7 +727,7 @@ std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageReplyMarkup(
             << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageReplyMarkup(
@@ -739,7 +739,7 @@ std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageReplyMarkup(
             << make_named_pair(inline_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::deleteMessage(Bot::IntOrString chat_id,
@@ -747,7 +747,7 @@ std::pair<bool, opt_error> Bot::deleteMessage(Bot::IntOrString chat_id,
     query_builder builder;
     builder << make_named_pair(chat_id) << make_named_pair(message_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<Poll, opt_error>
@@ -757,7 +757,7 @@ Bot::stopPoll(Bot::IntOrString chat_id, int64_t message_id,
     builder << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Poll>(__func__, builder);
+    return api->ApiCall<Poll>(__func__, builder);
 }
 
 std::pair<Message, opt_error>
@@ -769,7 +769,7 @@ Bot::sendSticker(Bot::IntOrString chat_id, const std::string &sticker,
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder, {make_named_pair(sticker)});
+    return api->ApiCall<Message>(__func__, builder, {make_named_pair(sticker)});
 }
 
 std::pair<StickerSet, opt_error>
@@ -777,14 +777,14 @@ Bot::getStickerSet(const std::string &name) const {
     query_builder builder;
     builder << make_named_pair(name);
 
-    return api->call_api<StickerSet>(__func__, builder);
+    return api->ApiCall<StickerSet>(__func__, builder);
 }
 
 std::pair<File, opt_error>
 Bot::uploadStickerFile(int64_t user_id, const std::string &png_sticker) const {
     query_builder builder;
     builder << make_named_pair(user_id);
-    return api->call_api<File>(__func__, builder, {make_named_pair(png_sticker)});
+    return api->ApiCall<File>(__func__, builder, {make_named_pair(png_sticker)});
 }
 
 std::pair<bool, opt_error> Bot::createNewStickerSet(
@@ -797,7 +797,7 @@ std::pair<bool, opt_error> Bot::createNewStickerSet(
             << make_named_pair(title) << make_named_pair(emojis)
             << make_named_pair(contains_masks) << make_named_pair(mask_position);
 
-    return api->call_api<bool>(__func__, builder, {make_named_pair(png_sticker)});
+    return api->ApiCall<bool>(__func__, builder, {make_named_pair(png_sticker)});
 }
 
 std::pair<bool, opt_error>
@@ -808,7 +808,7 @@ Bot::addStickerToSet(int64_t user_id, std::string_view name,
     builder << make_named_pair(user_id) << make_named_pair(name)
             << make_named_pair(emojis) << make_named_pair(mask_position);
 
-    return api->call_api<bool>(__func__, builder, {make_named_pair(png_sticker)});
+    return api->ApiCall<bool>(__func__, builder, {make_named_pair(png_sticker)});
 }
 
 std::pair<bool, opt_error>
@@ -816,7 +816,7 @@ Bot::setStickerPositionInSet(std::string_view sticker, int32_t position) const {
     query_builder builder;
     builder << make_named_pair(sticker) << make_named_pair(position);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -824,7 +824,7 @@ Bot::deleteStickerFromSet(const std::string &sticker) const {
     query_builder builder;
     builder << make_named_pair(sticker);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<Message, opt_error> Bot::sendInvoice(
@@ -856,7 +856,7 @@ std::pair<Message, opt_error> Bot::sendInvoice(
             << make_named_pair(reply_to_message_id)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -866,7 +866,7 @@ Bot::answerShippingQuery(std::string_view shipping_query_id, std::false_type,
     builder << make_named_pair(shipping_query_id)
             << name_value_pair{"ok", "false"} << make_named_pair(error_message);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::answerShippingQuery(
@@ -876,7 +876,7 @@ std::pair<bool, opt_error> Bot::answerShippingQuery(
     builder << make_named_pair(shipping_query_id) << name_value_pair{"ok", "true"}
             << make_named_pair(shipping_options);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -886,7 +886,7 @@ Bot::answerPreCheckoutQuery(std::string_view pre_checkout_query_id, bool ok,
     builder << make_named_pair(ok) << make_named_pair(pre_checkout_query_id)
             << make_named_pair(error_message);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -898,7 +898,7 @@ Bot::answerPreCheckoutQuery(std::string_view pre_checkout_query_id,
             << make_named_pair(pre_checkout_query_id)
             << make_named_pair(error_message);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::setPassportDataErrors(
@@ -907,7 +907,7 @@ std::pair<bool, opt_error> Bot::setPassportDataErrors(
     query_builder builder;
     builder << make_named_pair(user_id) << make_named_pair(errors);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<Message, opt_error>
@@ -919,7 +919,7 @@ Bot::sendGame(int64_t chat_id, std::string_view game_short_name,
             << make_named_pair(disable_notification) << make_named_pair(duration)
             << make_named_pair(reply_markup);
 
-    return api->call_api<Message>(__func__, builder);
+    return api->ApiCall<Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error>
@@ -932,7 +932,7 @@ Bot::setGameScore(int64_t user_id, int32_t score,
             << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(inline_message_id) << make_named_pair(force)
             << make_named_pair(disable_edit_message);
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<std::variant<bool, Message>, opt_error>
@@ -944,7 +944,7 @@ Bot::setGameScore(int64_t user_id, uint32_t score, int64_t chat_id,
             << make_named_pair(chat_id) << make_named_pair(message_id)
             << make_named_pair(inline_message_id) << make_named_pair(force)
             << make_named_pair(disable_edit_message);
-    return api->call_api<std::variant<bool, Message>, Message>(__func__, builder);
+    return api->ApiCall<std::variant<bool, Message>, Message>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -954,7 +954,7 @@ Bot::getGameHighScores(int64_t user_id, int64_t chat_id, int64_t message_id,
     builder << make_named_pair(user_id) << make_named_pair(chat_id)
             << make_named_pair(message_id) << make_named_pair(inline_message_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error>
@@ -964,10 +964,10 @@ Bot::getGameHighScores(int64_t user_id, std::string_view inline_message_id,
     builder << make_named_pair(user_id) << make_named_pair(chat_id)
             << make_named_pair(message_id) << make_named_pair(inline_message_id);
 
-    return api->call_api<bool>(__func__, builder);
+    return api->ApiCall<bool>(__func__, builder);
 }
 
 std::pair<bool, opt_error> Bot::deleteWebhook() const {
-    return api->call_api<bool>(__func__);
+    return api->ApiCall<bool>(__func__);
 }
 } // namespace telegram

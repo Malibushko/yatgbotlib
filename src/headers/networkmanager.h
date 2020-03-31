@@ -5,9 +5,9 @@
 #include "utility/utility.h"
 
 namespace telegram {
-class network_manager {
+class NetworkManager {
     std::unique_ptr<httplib::Client> cli;
-    network_manager(const char * host)
+    NetworkManager(const char * host)
         : cli{std::make_unique<httplib::Client>(host)} {}
     enum class http_code {informational = 100,
                           success = 200,
@@ -16,12 +16,12 @@ class network_manager {
                           server_error = 500};
     constexpr static std::string_view host_addr = "api.telegram.org";
 public:
-    static network_manager &i() {
-        static network_manager inst{host_addr.data()};
+    static NetworkManager &i() {
+        static NetworkManager inst{host_addr.data()};
         inst.cli->set_follow_location(true);
         return inst;
     }
-    static std::string_view get_host_address() {
+    static std::string_view getHostAddr() {
         return host_addr;
     }
     std::shared_ptr<httplib::Response>
@@ -53,9 +53,9 @@ public:
         } else
             return {};
     }
-    network_manager(const network_manager &) = delete;
-    network_manager(network_manager &&) = delete;
-    network_manager &operator=(const network_manager &) = delete;
-    network_manager &operator=(network_manager &&) = delete;
+    NetworkManager(const NetworkManager &) = delete;
+    NetworkManager(NetworkManager &&) = delete;
+    NetworkManager &operator=(const NetworkManager &) = delete;
+    NetworkManager &operator=(NetworkManager &&) = delete;
 };
 }

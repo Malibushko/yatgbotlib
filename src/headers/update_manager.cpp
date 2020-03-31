@@ -1,28 +1,28 @@
 #include "update_manager.h"
 
-telegram::update_manager::update_manager() {}
+telegram::UpdateManager::UpdateManager() {}
 
-void telegram::update_manager::set_update_callback(telegram::update_callback &&cb) {
+void telegram::UpdateManager::setUpdateCallback(telegram::UpdateCallback &&cb) {
     callback.swap(cb);
 }
 
-void telegram::update_manager::add_sequence(int64_t user_id, std::shared_ptr<sequence<telegram::msg_callback> > callback) {
+void telegram::UpdateManager::addSequence(int64_t user_id, std::shared_ptr<Sequence<telegram::MessageCallback> > callback) {
     dispatcher[user_id] = callback;
 }
 
-void telegram::update_manager::remove_sequence(int64_t user_id) { dispatcher.erase(user_id); }
+void telegram::UpdateManager::removeSequence(int64_t user_id) { dispatcher.erase(user_id); }
 
-size_t telegram::update_manager::get_offset() const noexcept { return last_update; }
+size_t telegram::UpdateManager::getOffset() const noexcept { return lastUpdate; }
 
-void telegram::update_manager::set_offset(size_t offset) { last_update = offset; }
+void telegram::UpdateManager::setOffset(size_t offset) { lastUpdate = offset; }
 
-void telegram::update_manager::add_callback(std::string_view cmd, telegram::callbacks &&cb) {
+void telegram::UpdateManager::addCallback(std::string_view cmd, telegram::callbacks &&cb) {
     std::visit(
                 [&](auto &&callback) {
         using cb_type = std::decay_t<decltype(callback)>;
-        if constexpr (std::is_same_v<cb_type, msg_callback>) {
+        if constexpr (std::is_same_v<cb_type, MessageCallback>) {
             msg_callbacks.insert(cmd, callback);
-        } else if constexpr (std::is_same_v<cb_type, query_callback>) {
+        } else if constexpr (std::is_same_v<cb_type, QueryCallback>) {
             query_callbacks.insert(cmd, callback);
         }
     });
