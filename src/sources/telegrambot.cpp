@@ -36,8 +36,7 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
       error || webhook.url.size() || webhookSet) {
     if (error)
       utility::logger::warn(error.value());
-    utility::logger::critical(
-        "You must remove webhook before using long polling method.");
+    utility::logger::critical("You must remove webhook before using long polling method.");
     return;
   }
   stopPolling = false;
@@ -45,8 +44,7 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
   while (!stopPolling) {
     updater.routeCallback(getUpdatesRawJson(updater.getOffset(), limit, timeout,
                                             allowed_updates));
-    std::this_thread::sleep_for(1000 *
-                                std::chrono::milliseconds(timeout.value_or(1)));
+    std::this_thread::sleep_for(std::chrono::milliseconds(timeout.value_or(1)));
   }
 }
 void Bot::stop() { stopPolling = true; }

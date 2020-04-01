@@ -42,10 +42,11 @@ int main() {
         auto password_check = std::make_shared<Sequence<QueryCallback>>();
         for (std::size_t i = 0; i < password.size();++i) {
             // add transition for each number
-            password_check->addTransition([&bot,&msg,password_check,number = str[i]](CallbackQuery&& q){
+            password_check->addTransition([&bot,user_id = msg.from->id
+                                          ,password_check,number = str[i]](CallbackQuery&& q){
                 if (!q.data || q.data->at(0) != number) {
                     bot.reply(q.message.value(),"Failed to log in");
-                    bot.stopSequence(msg.from->id);
+                    bot.stopSequence(user_id);
                 }
             });
         }
@@ -56,5 +57,5 @@ int main() {
         // add message to bot (not thread-safe)
         bot.startSequence(msg.from->id,password_check);
     });
-    bot.start();
+    bot.start(100);
 }

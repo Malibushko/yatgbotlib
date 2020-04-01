@@ -70,5 +70,5 @@ int main() {
        // add sequence to bot
        bot.startSequence(msg.from->id,registration);
     });
-    bot.start();
+    bot.start(100);
 }
