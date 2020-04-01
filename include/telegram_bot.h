@@ -37,8 +37,7 @@ public:
   void onCallback(std::string_view cmd, QueryCallback &&cb);
   void onCommand(std::string_view cmd, MessageCallback &&cb);
   template <class Event,class Check>
-  void startSequence(int64_t user_id,
-                          std::shared_ptr<Sequence<Event,Check>> seq) {
+  void startSequence(int64_t user_id, std::shared_ptr<Sequence<Event,Check>> seq) {
       auto s = std::make_shared<Sequences>();
       *s = *seq;
       updater.addSequence(user_id, s);

@@ -9,6 +9,7 @@ void UpdateManager::setUpdateCallback(UpdateCallback &&cb) {
 void UpdateManager::addSequence(int64_t user_id,
                   std::shared_ptr<Sequences> callback) {
     dispatcher[user_id] = callback;
+
 }
 void UpdateManager::removeSequence(int64_t user_id) {
     dispatcher.erase(user_id);

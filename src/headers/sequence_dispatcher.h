@@ -10,6 +10,9 @@ template <class Event, class Check = checker_signature<Event>>
 class Sequence : public std::enable_shared_from_this<Sequence<Event>> {
   using TransitionPair = std::pair<Event, std::optional<Check>>;
   std::vector<TransitionPair> transitions;
+  Event exitEvent;
+  Event enterEvent;
+
   std::optional<Check> commonCheck;
   size_t m_currentStep{0};
 
@@ -24,8 +27,6 @@ public:
   Sequence &operator=(const Sequence &) = default;
   Sequence(std::initializer_list<Event> &&trans);
 
-  Event &currentStep() const;
-
   template <class Arg> void input(Arg &&arg);
 
   std::shared_ptr<Sequence<Event, Check>> addCheck(const Check &e);
@@ -38,6 +39,18 @@ public:
   void finish();
   void reset();
 
+  std::shared_ptr<Sequence<Event,Check>> onExit(const Event& e) {
+      exitEvent = e;
+      return this->shared_from_this();
+  }
+  std::shared_ptr<Sequence<Event,Check>> onEnter(const Event& e) {
+      enterEvent = e;
+      return this->shared_from_this();
+  }
+
+  std::size_t size() const noexcept {
+      return transitions.size();
+  }
   bool finished() const noexcept;
 };
 
@@ -54,7 +67,13 @@ void Sequence<Event, Check>::input(Arg &&arg) {
       if (commonCheck && !std::invoke(commonCheck.value(), std::forward<Arg>(arg))) {
             return;
       }
+      if (!m_currentStep && enterEvent)
+          enterEvent(std::forward<Arg>(arg));
+
       std::invoke(transitions[m_currentStep++].first, std::forward<Arg>(arg));
+
+      if (finished() && exitEvent)
+          exitEvent(std::forward<Arg>(arg));
     }
     return;
   }
@@ -67,10 +86,7 @@ template <class Event, class Check>
 Sequence<Event, Check>::Sequence(std::initializer_list<Event> &&trans)
     : transitions{trans} {}
 
-template <class Event, class Check>
-Event &Sequence<Event, Check>::currentStep() const {
-  return transitions[m_currentStep];
-}
+
 
 template <class Event, class Check>
 bool Sequence<Event, Check>::finished() const noexcept {

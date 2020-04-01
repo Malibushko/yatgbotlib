@@ -16,9 +16,9 @@ using ChosenInlineResultCallback = std::function<void(ChosenInlineResult &&)>;
 using Callbacks = std::variant<MessageCallback, QueryCallback, InlineQueryCallback,
 ChosenInlineResultCallback>;
 using Sequences = std::variant<Sequence<MessageCallback>,
-                               Sequence<QueryCallback>,
-                               Sequence<InlineQueryCallback>,
-                               Sequence<ChosenInlineResultCallback>>;
+Sequence<QueryCallback>,
+Sequence<InlineQueryCallback>,
+Sequence<ChosenInlineResultCallback>>;
 
 class UpdateManager {
 private:
@@ -33,7 +33,7 @@ public:
     void setUpdateCallback(UpdateCallback &&cb);
 
     void addSequence(int64_t user_id,
-                      std::shared_ptr<Sequences> callback);
+                     std::shared_ptr<Sequences> callback);
     void removeSequence(int64_t user_id);
 
     size_t getOffset() const noexcept;
@@ -53,26 +53,7 @@ public:
                     const Value& doc);
 
     template<class CallbackType,class Value>
-    bool runIfSequence(int64_t id,const Value& val) {
-        bool call_successfull = false;
-        if (auto result = dispatcher.find(id);result != dispatcher.end()) {
-            std::visit([&](auto&& value){
-                using value_type = typename std::decay_t<decltype (value)>::EventType;
-                if constexpr (std::is_same_v<value_type, CallbackType>) {
-                    if (value.finished()) {
-                            dispatcher.erase(result);
-                        } else {
-                            call_successfull = true;
-                            std::thread([&,object = utility::objectToJson(val)](){
-                               using callbackArgType = typename traits::func_signature<value_type>::args_type;
-                               value.input(fromJson<callbackArgType>(object));
-                            }).detach();
-                        }
-                    }
-            },*result->second);
-        }
-        return call_successfull;
-    }
+    bool runIfSequence(int64_t id,const Value& val);
 };
 
 template <class CallbackType>
@@ -94,26 +75,26 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
 }
 template <class CallbackType,class Value>
 bool UpdateManager::runIfExist(std::string_view callback_name,std::string_view callback_data,
-                const Value& doc) {
+                               const Value& doc) {
     // check if json contain callback data for current type
     if (!doc.HasMember(callback_name.data()))
         return false;
     // check if there is a sequence for the user
     if (dispatcher.size()
-        && doc[callback_name.data()].HasMember("from")
-        && runIfSequence<CallbackType>(doc[callback_name.data()]["from"]["id"].GetInt64(),
+            && doc[callback_name.data()].HasMember("from")
+            && runIfSequence<CallbackType>(doc[callback_name.data()]["from"]["id"].GetInt64(),
                                            doc[callback_name.data()].GetObject())) {
-            return true;
+        return true;
     }
     // else run callback if it exists
     if (doc[callback_name.data()].HasMember(callback_data.data())) {
-                const char*  data = doc[callback_name.data()][callback_data.data()].GetString();
-                if (findCallback<CallbackType>(data) &&
-                        runCallback<CallbackType>(data,
-                           utility::objectToJson(doc[callback_name.data()].GetObject())))
-                            return true;
-                return false;
-}
+        const char*  data = doc[callback_name.data()][callback_data.data()].GetString();
+        if (findCallback<CallbackType>(data) &&
+                runCallback<CallbackType>(data,
+                                          utility::objectToJson(doc[callback_name.data()].GetObject())))
+            return true;
+        return false;
+    }
 }
 template<class CallbackType>
 bool UpdateManager::findCallback(std::string_view cmd) {
@@ -125,6 +106,29 @@ bool UpdateManager::findCallback(std::string_view cmd) {
 template <class CallbackType>
 void UpdateManager::removeCallback(std::string_view cmd) {
     m_callbacks.erase(cmd);
+}
+template<class CallbackType,class Value>
+bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
+    bool call_successfull = false;
+    if (auto result = dispatcher.find(id);result != dispatcher.end()) {
+        if (result->second) {
+            std::visit([&](auto&& value){
+                using value_type = typename std::decay_t<decltype (value)>::EventType;
+                if constexpr (std::is_same_v<value_type, CallbackType>) {
+                    if (value.finished()) {
+                        dispatcher.erase(result);
+                    } else {
+                        call_successfull = true;
+                        std::thread([&,object = utility::objectToJson(val)](){
+                            using callbackArgType = typename traits::func_signature<value_type>::args_type;
+                            value.input(fromJson<callbackArgType>(object));
+                        }).detach();
+                    }
+                }
+            },*result->second);
+        }
+    }
+    return call_successfull;
 }
 
 } // namespace telegram
