@@ -3,7 +3,7 @@
 #include <vector>
 #include <memory>
 #include <algorithm>
-
+#include <optional>
 template <class T>
 class Trie {
     struct TrieNode {
@@ -68,16 +68,16 @@ public:
         iter->value = value;
         ++m_size;
     }
-    T find(std::string_view item) const {
+    std::optional<T> find(std::string_view item) const {
         if (empty(root))
-            return T{};
+            return std::optional<T>();
         std::shared_ptr<TrieNode> iter = root;
         for (char it : item) {
             iter = iter->findChildren(it);
             if (!iter)
-                return T{};
+                return std::optional<T>();
         }
-        return iter->is_end_of_word ? iter->value: T{};
+        return (iter->is_end_of_word ? iter->value : std::optional<T>());
     }
     void erase(std::string_view item) {
         if (!erase_impl(root,item)) {

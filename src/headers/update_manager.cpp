@@ -16,7 +16,7 @@ size_t telegram::UpdateManager::getOffset() const noexcept { return lastUpdate; 
 
 void telegram::UpdateManager::setOffset(size_t offset) { lastUpdate = offset; }
 
-void telegram::UpdateManager::addCallback(std::string_view cmd, telegram::callbacks &&cb) {
+void telegram::UpdateManager::addCallback(std::string_view cmd, telegram::Callbacks &&cb) {
     std::visit(
                 [&](auto &&callback) {
         using cb_type = std::decay_t<decltype(callback)>;

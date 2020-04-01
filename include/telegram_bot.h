@@ -6,9 +6,8 @@
 #include <type_traits>
 #include <variant>
 
-#include "telegram_structs.h"
-#include "headers/apimanager.h"
 #include "headers/update_manager.h"
+#include "headers/apimanager.h"
 
 namespace telegram {
 
@@ -37,8 +36,14 @@ public:
   void onInlineResult(std::string_view cmd, ChosenInlineResultCallback &&cb);
   void onCallback(std::string_view cmd, QueryCallback &&cb);
   void onCommand(std::string_view cmd, MessageCallback &&cb);
+  template <class Event,class Check>
   void startSequence(int64_t user_id,
-                     std::shared_ptr<Sequence<MessageCallback>> seq);
+                          std::shared_ptr<Sequence<Event,Check>> seq) {
+      auto s = std::make_shared<Sequences>();
+      *s = *seq;
+      updater.addSequence(user_id, s);
+  }
+
   void stopSequence(int64_t user_id);
   std::pair<WebhookInfo, opt_error> getWebhookInfo() const;
   void start(opt_uint64 timeout = {}, opt_uint64 offset = {},

@@ -34,6 +34,8 @@ include_directories(${PROJECT_SOURCE_DIR}/src
 
 set (SOURCES ./src/sources/telegrambot.cpp
              ./src/sources/update_manager.cpp
+             ./src/sources/networkmanager.cpp
+             ./src/sources/querybuilder.cpp
              ./third_party/cpp-httplib/out/httplib.cc)
 
 find_package(Threads REQUIRED)

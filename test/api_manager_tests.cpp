@@ -21,7 +21,7 @@ TEST(ApiManager, post_no_params_test) {
   }
 }
 TEST(ApiManager, post_with_params_test) {
-  query_builder builder;
+  QueryBuilder builder;
   std::string text = "test";
   builder << make_named_pair(chat_id) << make_named_pair(text);
 
@@ -36,7 +36,7 @@ TEST(ApiManager, post_with_params_test) {
 }
 
 TEST(ApiManager, post_conditional) {
-  query_builder builder;
+  QueryBuilder builder;
   int64_t message_id = last_message_id;
   std::string text = "test successfull";
   builder << make_named_pair(chat_id) << make_named_pair(message_id)

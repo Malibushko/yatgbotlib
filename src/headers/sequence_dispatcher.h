@@ -8,58 +8,113 @@ using checker_signature = typename traits::checked_callback<Event>::checker;
 
 template <class Event, class Check = checker_signature<Event>>
 class Sequence : public std::enable_shared_from_this<Sequence<Event>> {
-  std::vector<std::pair<Event, std::optional<Check>>> transitions;
+  using TransitionPair = std::pair<Event, std::optional<Check>>;
+  std::vector<TransitionPair> transitions;
   std::optional<Check> commonCheck;
   size_t m_currentStep{0};
 
 public:
-  Sequence() noexcept {}
+  using EventType = Event;
+  using CheckType = Check;
+
+  Sequence() noexcept;
   Sequence(const Sequence &) = default;
   Sequence(Sequence &&) = default;
   Sequence &operator=(Sequence &&) = default;
   Sequence &operator=(const Sequence &) = default;
+  Sequence(std::initializer_list<Event> &&trans);
 
-  Sequence(std::initializer_list<Event> &&trans) : transitions{trans} {}
-  auto addTransition(const Event &step,
-                      const std::optional<Check> &check = {}) {
-    transitions.emplace_back(step, check);
-    return this->shared_from_this();
-  }
-  Event &currentStep() const { return transitions[m_currentStep]; }
+  Event &currentStep() const;
 
-  template <class Arg> void input(Arg &&arg) {
+  template <class Arg> void input(Arg &&arg);
+
+  std::shared_ptr<Sequence<Event, Check>> addCheck(const Check &e);
+  std::shared_ptr<Sequence<Event, Check>> addCommonCheck(const Check &e);
+  std::shared_ptr<Sequence<Event, Check>>
+  addTransition(const Event &step, const std::optional<Check> &check = {});
+
+  void setStep(uint32_t val);
+  void stepBack();
+  void finish();
+  void reset();
+
+  bool finished() const noexcept;
+};
+
+template <class Event, class Check>
+template <class Arg>
+void Sequence<Event, Check>::input(Arg &&arg) {
     static_assert(std::is_invocable_v<Event, Arg>,
                   "Not applicable function arguments");
     if (!finished()) {
-      if (transitions[m_currentStep].second) {
-        if (!std::invoke(transitions[m_currentStep].second.value(),
-                         std::forward<Arg>(arg)))
+      if (auto step = transitions[m_currentStep].second;step &&
+              !std::invoke(step.value(),std::forward<Arg>(arg))) {
           return;
       }
-      if (commonCheck) {
-        if (!std::invoke(commonCheck.value(), std::forward<Arg>(arg))) {
-          return;
-        }
+      if (commonCheck && !std::invoke(commonCheck.value(), std::forward<Arg>(arg))) {
+            return;
       }
       std::invoke(transitions[m_currentStep++].first, std::forward<Arg>(arg));
     }
     return;
   }
-  bool finished() const noexcept { return m_currentStep == transitions.size(); }
-  auto addCheck(const Check &e) {
-    if (transitions.size())
-      transitions.back().second = e;
-    return this->shared_from_this();
-  }
-  void addCommonCheck(const Check &e) { commonCheck = e; }
-  void setStep(uint32_t val) {
-    m_currentStep = std::clamp(val, 0, transitions.size());
-  }
-  void stepBack() {
-    if (--m_currentStep)
-      m_currentStep = 0;
-  }
-  void finish() { m_currentStep = transitions.size(); }
-  void reset() { m_currentStep = 0; }
-};
+
+
+template <class Event, class Check>
+Sequence<Event, Check>::Sequence() noexcept {}
+
+template <class Event, class Check>
+Sequence<Event, Check>::Sequence(std::initializer_list<Event> &&trans)
+    : transitions{trans} {}
+
+template <class Event, class Check>
+Event &Sequence<Event, Check>::currentStep() const {
+  return transitions[m_currentStep];
+}
+
+template <class Event, class Check>
+bool Sequence<Event, Check>::finished() const noexcept {
+  return m_currentStep == transitions.size();
+}
+
+template <class Event, class Check>
+std::shared_ptr<Sequence<Event, Check>>
+Sequence<Event, Check>::addCheck(const Check &e) {
+  if (transitions.size())
+    transitions.back().second = e;
+  return this->shared_from_this();
+}
+
+template <class Event, class Check>
+std::shared_ptr<Sequence<Event, Check>>
+Sequence<Event, Check>::addCommonCheck(const Check &e) {
+  commonCheck = e;
+  return this->shared_from_this();
+}
+
+template <class Event, class Check>
+std::shared_ptr<Sequence<Event, Check>>
+Sequence<Event, Check>::addTransition(const Event &step,
+                                      const std::optional<Check> &check) {
+  transitions.emplace_back(step, check);
+  return this->shared_from_this();
+}
+
+template <class Event, class Check>
+void Sequence<Event, Check>::setStep(uint32_t val) {
+  m_currentStep = std::clamp(val, 0, transitions.size());
+}
+
+template <class Event, class Check> void Sequence<Event, Check>::stepBack() {
+  if (--m_currentStep)
+    m_currentStep = 0;
+}
+
+template <class Event, class Check> void Sequence<Event, Check>::finish() {
+  m_currentStep = transitions.size();
+}
+
+template <class Event, class Check> void Sequence<Event, Check>::reset() {
+  m_currentStep = 0;
+}
 } // namespace telegram

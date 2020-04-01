@@ -1,8 +1,7 @@
 #pragma once
 #include "networkmanager.h"
+#include "json_parser.h"
 #include "querybuilder.h"
-#include "utility/traits.h"
-
 namespace telegram {
 using namespace traits;
 using name_value_pair = std::pair<std::string_view, std::string>;
@@ -10,6 +9,7 @@ using utility::error;
 
 class ApiManager {
   std::string base_url;
+  NetworkManager m_manager{"api.telegram.org"};
 
 private:
   template <class T> void assignImpl(T &value, const std::string &data) const {
@@ -32,14 +32,14 @@ private:
   }
 
 public:
-  ApiManager() noexcept {}
+  ApiManager() {}
   ApiManager(std::string &&url) noexcept : base_url{std::move(url)} {}
 
   template <class T>
   std::pair<T, std::optional<error>> ApiCall(const char *api,
-                                              const query_builder &builder) {
+                                             const QueryBuilder &builder) {
     std::shared_ptr<httplib::Response> reply =
-        NetworkManager::i().post(base_url + api, {}, builder.get_query());
+        m_manager.post(base_url + api, {}, builder.getQuery());
 
     if (!reply) {
       return {T{}, error{600, "Unable to make a request"}};
@@ -54,11 +54,11 @@ public:
     }
     return result;
   }
+
   template <class T, class TrueOrType>
-  std::pair<T, std::optional<error>>
-  ApiCall(const char *api, const query_builder &builder) const {
-    auto reply =
-        NetworkManager::i().post(base_url + api, {}, builder.get_query());
+  std::pair<T, std::optional<error>> ApiCall(const char *api,
+                                             const QueryBuilder &builder) {
+    auto reply = m_manager.post(base_url + api, {}, builder.getQuery());
 
     std::pair<T, std::optional<error>> result;
 
@@ -78,8 +78,8 @@ public:
   }
 
   template <class T>
-  std::pair<T, std::optional<error>> ApiCall(const char *api) const {
-    auto reply = NetworkManager::i().post(base_url + api);
+  std::pair<T, std::optional<error>> ApiCall(const char *api) {
+    auto reply = m_manager.post(base_url + api);
 
     std::pair<T, std::optional<error>> result;
 
@@ -94,8 +94,8 @@ public:
 
   template <class T>
   std::pair<T, std::optional<error>>
-  ApiCall(const char *api, query_builder &builder,
-           const std::vector<name_value_pair> &params) {
+  ApiCall(const char *api, QueryBuilder &builder,
+          const std::vector<name_value_pair> &params) {
     std::pair<T, std::optional<error>> result;
     std::string reply;
     int status_code = 0;
@@ -106,22 +106,20 @@ public:
                     })) {
       // rewrite the doc
       std::vector<httplib::MultipartFormData> items;
-      const auto &build_doc = builder.get_document().GetObject();
+      const auto &build_doc = builder.getDocument().GetObject();
       items.reserve(static_cast<size_t>(
           std::distance(build_doc.begin(), build_doc.end())));
 
       for (auto it = build_doc.begin(); it != build_doc.end(); ++it) {
         if (it->value.IsInt() || it->value.IsInt64())
-          items.push_back({it->name.GetString(),
-                           std::to_string(it->value.GetInt64()),
-                           {}});
+          items.push_back(
+              {it->name.GetString(), std::to_string(it->value.GetInt64()), {}});
         else if (it->value.IsBool())
           items.push_back({it->name.GetString(),
                            it->value.GetBool() ? "true" : "false",
                            {}});
         else if (it->value.IsString())
-          items.push_back(
-              {it->name.GetString(), it->value.GetString()});
+          items.push_back({it->name.GetString(), it->value.GetString()});
       }
 
       for (auto &&[name, path_or_id] : params) {
@@ -138,15 +136,14 @@ public:
           items.push_back({{name.data(), name.size()}, path_or_id});
         }
       }
-      auto response = NetworkManager::i().post(base_url + api, items);
+      auto response = m_manager.post(base_url + api, items);
       reply = response->body;
       status_code = response->status;
     } else if (params.size()) {
       for (auto &&it : params) {
         builder << it;
       }
-      auto response =
-          NetworkManager::i().post(base_url + api, {}, builder.get_query());
+      auto response = m_manager.post(base_url + api, {}, builder.getQuery());
       reply = response->body;
       status_code = response->status;
     } else {
@@ -165,10 +162,8 @@ public:
     }
     return result;
   }
-  std::string ApiCallRaw(const char *api, const query_builder &builder) {
-    return NetworkManager::i()
-        .post(base_url + api, {}, builder.get_query())
-        ->body;
+  std::string ApiCallRaw(const char *api, const QueryBuilder &builder) {
+    return m_manager.post(base_url + api, {}, builder.getQuery())->body;
   }
 };
 } // namespace telegram

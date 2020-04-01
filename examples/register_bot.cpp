@@ -68,7 +68,7 @@ int main() {
        });
 
        // add sequence to bot
-       bot.startSequence(msg.chat.id,registration);
+       bot.startSequence(msg.from->id,registration);
     });
     bot.start();
 }

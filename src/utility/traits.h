@@ -3,7 +3,7 @@
 #include <functional>
 #include <optional>
 #include <memory>
-#include "telegram_structs.h"
+#include <variant>
 
 namespace telegram {
 

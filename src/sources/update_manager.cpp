@@ -4,11 +4,10 @@
 using namespace telegram;
 
 void UpdateManager::setUpdateCallback(UpdateCallback &&cb) {
-    callback.swap(cb);
+    callback = cb;
 }
-
 void UpdateManager::addSequence(int64_t user_id,
-                  std::shared_ptr<Sequence<MessageCallback>> callback) {
+                  std::shared_ptr<Sequences> callback) {
     dispatcher[user_id] = callback;
 }
 void UpdateManager::removeSequence(int64_t user_id) {
@@ -17,10 +16,9 @@ void UpdateManager::removeSequence(int64_t user_id) {
 size_t UpdateManager::getOffset() const noexcept {
     return lastUpdate;
 }
-void UpdateManager::addCallback(std::string_view cmd, telegram::callbacks &&callback) {
+void UpdateManager::addCallback(std::string_view cmd, telegram::Callbacks &&callback) {
     m_callbacks.insert(cmd,callback);
 }
-
 void UpdateManager::routeCallback(const std::string &str) {
     rapidjson::Document doc;
     const auto &ok = doc.Parse(str.data());
@@ -33,55 +31,20 @@ void UpdateManager::routeCallback(const std::string &str) {
         utility::logger::warn("Error: ",doc["description"].GetString(),'\n');
         return;
     }
-    if (dispatcher.size()) {
-        const auto &message = doc["message"].GetObject();
-        if (auto result =
-                dispatcher.find(message["from"].GetObject()["id"].GetInt64());
-                result != dispatcher.end()) {
-            if (result->second->finished()) {
-                dispatcher.erase(result);
-            } else {
-                std::thread(&Sequence<MessageCallback>::input<Message>,
-                            std::ref(*result->second),
-                            fromJson<Message>(utility::objectToJson(message)))
-                        .detach();
-            }
-            return;
-        }
-    }
     auto callback_router = [this](const auto &it) {
-        if (it.HasMember("callback_query")) {
-            auto obj = it["callback_query"].GetObject();
-            auto data = obj["data"].GetString();
-
-            if (findCallback<QueryCallback>(data) &&
-                    runCallback<QueryCallback>(data, utility::objectToJson(obj)))
-                return;
-        } else if (it.HasMember("inline_query")) {
-            auto obj = it["inline_query"].GetObject();
-            auto data = obj["query"].GetString();
-
-            if (findCallback<InlineQueryCallback>(data) &&
-                    runCallback<InlineQueryCallback>(data, utility::objectToJson(obj)))
-                return;
-        } else if (it.HasMember("chosen_inline_result")) {
-            auto obj = it["chosen_inline_result"].GetObject();
-            auto data = obj["query"].GetString();
-
-            if (findCallback<ChosenInlineResultCallback>(data) &&
-                    runCallback<ChosenInlineResultCallback>(data,
-                                                     utility::objectToJson(obj)))
-                return;
-        } else if (it.HasMember("message") &&
-                   it["message"].GetObject().HasMember("text")) {
-            auto obj = it["message"].GetObject();
-            auto data = obj["text"].GetString();
-
-            if (findCallback<MessageCallback>(data) &&
-                    runCallback<MessageCallback>(data, utility::objectToJson(obj)))
-                return;
+        if (runIfExist<QueryCallback>("callback_query","data",it)) {
+             return;
         }
-        else if (callback)
+        if (runIfExist<InlineQueryCallback>("inline_query","query",it)) {
+             return;
+        }
+        if (runIfExist<ChosenInlineResultCallback>("chosen_inline_result","query",it)) {
+             return;
+        }
+        if (runIfExist<MessageCallback>("message","text",it)) {
+                         return;
+        }
+        if (callback)
             std::thread(callback,fromJson<Update>(utility::objectToJson(it))).detach();
     };
 

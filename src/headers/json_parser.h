@@ -5,8 +5,10 @@
 #include <utility>
 #include <variant>
 
-#include "utility/traits.h"
 #include "boost/pfr.hpp"
+#include "rapidjson/document.h"
+#include "utility/traits.h"
+#include "utility/utility.h"
 
 namespace telegram {
 
@@ -21,25 +23,28 @@ T fromJson(const std::string &);
 template <size_t N, class MetaStruct,
           typename = std::enable_if_t<traits::is_parsable_v<MetaStruct>>>
 void appendToDocument(rapidjson::Document &doc, jsonAllocator &allocator,
-                        const MetaStruct &str);
+                      const MetaStruct &str);
 
-template <class T,size_t ...Indexes>
-void parseField(T &s,rapidjson::Document &doc,const std::index_sequence<Indexes...>& );
+template <class T, size_t... Indexes>
+void parseField(T &s, rapidjson::Document &doc,
+                const std::index_sequence<Indexes...> &);
 
-template <class T,size_t... Indexes>
-void toJsonImpl(const T& item,rapidjson::Document& doc,const std::index_sequence<Indexes...>&);
+template <class T, size_t... Indexes>
+void toJsonImpl(const T &item, rapidjson::Document &doc,
+                const std::index_sequence<Indexes...> &);
 // -------------------- SERIALIZE -----------------------------------
 
 template <class T, typename = std::enable_if_t<traits::is_parsable_v<T>>>
 std::string toJson(const T &item) {
-  static_assert(boost::pfr::tuple_size_v<std::decay_t<T>> > 0,
+  static_assert(boost::pfr::tuple_size_v<std::decay_t<T>>> 0,
                 "The structure has no fields.");
 
   rapidjson::Value object(rapidjson::kObjectType);
   rapidjson::Document document;
   document.SetObject();
 
-  toJsonImpl(item,document,std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
+  toJsonImpl(item, document,
+             std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
   return utility::to_string(document);
 }
 
@@ -47,7 +52,7 @@ std::string toJson(const T &item) {
 // массивы)
 template <class T>
 void arrayToJson(const T &arr, rapidjson::Value &val,
-                   jsonAllocator &allocator) {
+                 jsonAllocator &allocator) {
   using type = traits::optional_or_value<std::decay_t<T>>;
   if (val.IsNull()) // check if value has not been set before
     val = rapidjson::Value(rapidjson::kArrayType);
@@ -106,7 +111,7 @@ void arrayToJson(const T &arr, rapidjson::Value &val,
 
 template <class T>
 void valueToJson(const T &value, rapidjson::Value &val,
-                   jsonAllocator &allocator) {
+                 jsonAllocator &allocator) {
   using field_type = typename std::decay_t<decltype(value)>;
   using type = traits::optional_or_value<field_type>; // get real value type
 
@@ -137,18 +142,18 @@ void valueToJson(const T &value, rapidjson::Value &val,
   }
   // bool case
   else if constexpr (std::is_same_v<type, bool>) {
-    std::optional<type> inner_val;
+    std::optional<type> underlying_value;
     if constexpr (traits::is_optional_v<field_type>) {
-      inner_val = value.value_or(type{});
+      underlying_value = value.value_or(type{});
     } else {
-      inner_val = value;
+      underlying_value = value;
     }
-    if (inner_val.value())
+    if (underlying_value.value())
       val = rapidjson::Value(rapidjson::kTrueType);
     else
       val = rapidjson::Value(rapidjson::kFalseType);
 
-    val.SetBool(inner_val.value());
+    val.SetBool(underlying_value.value());
   }
   // float case
   else if constexpr (std::is_floating_point_v<type>) {
@@ -180,12 +185,13 @@ void valueToJson(const T &value, rapidjson::Value &val,
 
 template <size_t N, class MetaStruct, typename>
 void appendToDocument(rapidjson::Document &doc, jsonAllocator &allocator,
-                        const MetaStruct &str) {
+                      const MetaStruct &str) {
   // set init value to Null
   rapidjson::Value val(rapidjson::kNullType);
   // check if value is unique_ptr (support for other smart pointer will be added
   // later)
-  if constexpr (traits::is_unique_ptr_v<traits::remove_cvref_t<decltype(boost::pfr::get<N>(str))>>) {
+  if constexpr (traits::is_unique_ptr_v<traits::remove_cvref_t<decltype(
+                    boost::pfr::get<N>(str))>>) {
     if (boost::pfr::get<N>(str))
       valueToJson(*boost::pfr::get<N>(str), val, allocator);
     else
@@ -204,11 +210,11 @@ void appendToDocument(rapidjson::Document &doc, jsonAllocator &allocator,
     doc.AddMember(name.Move(), val, allocator);
   }
 }
-template <class T,size_t... Indexes>
-void toJsonImpl(const T& item,rapidjson::Document& doc,const std::index_sequence<Indexes...>&) {
-    (appendToDocument<Indexes>(doc,doc.GetAllocator(),item),...);
+template <class T, size_t... Indexes>
+void toJsonImpl(const T &item, rapidjson::Document &doc,
+                const std::index_sequence<Indexes...> &) {
+  (appendToDocument<Indexes>(doc, doc.GetAllocator(), item), ...);
 }
-
 
 // ---------------------- DESERIALIZE ----------------------------
 
@@ -224,16 +230,17 @@ template <class T, typename> T fromJson(const std::string &data) {
   // array case
   if constexpr (traits::is_container_v<T> && !traits::is_string_type<T>) {
     auto temp_arr = doc.GetArray();
-    ArrayToJson(item, temp_arr, doc.GetAllocator());
+    arrayToJson(item, temp_arr, doc.GetAllocator());
   } else if constexpr (traits::is_parsable_v<T>) {
-    static_assert(boost::pfr::tuple_size_v<T> > 0, "The struct has no fields");
-      parse_field(item, doc,std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
+    static_assert(boost::pfr::tuple_size_v<T>> 0, "The struct has no fields");
+    parseField(item, doc,
+                std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
   }
   return item;
 }
 
 template <class T>
-void ArrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) {
+void arrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) {
   using type =
       traits::optional_or_value<std::remove_reference_t<std::remove_cv_t<T>>>;
   if constexpr (traits::is_optional_v<T>)
@@ -275,8 +282,8 @@ void ArrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) {
       doc.SetObject();
       const auto &obj = it.GetObject();
 
-      for (auto &&field_iter : obj) {
-        doc.AddMember(field_iter.name.Move(), field_iter.value.Move(),
+      for (auto &&fieldIter : obj) {
+        doc.AddMember(fieldIter.name.Move(), fieldIter.value.Move(),
                       allocator);
       }
       if constexpr (traits::is_optional_v<T>) {
@@ -293,7 +300,7 @@ void ArrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) {
     for (auto it = arr.begin(); it != arr.end(); ++it) {
       if (it->IsArray()) {
         auto val = it->GetArray();
-        ArrayToJson(nestedArray, val, allocator);
+        arrayToJson(nestedArray, val, allocator);
       }
     }
     if constexpr (traits::is_optional_v<T>)
@@ -304,7 +311,7 @@ void ArrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) {
 }
 template <class T>
 void parseFieldImpl(const char *field_name, T &field,
-                      rapidjson::Document &doc) {
+                    rapidjson::Document &doc) {
   if (!doc.HasMember(field_name)) {
     // if not member in document return default construct
     field = {};
@@ -332,28 +339,28 @@ void parseFieldImpl(const char *field_name, T &field,
     field = fromJson<field_type>(utility::to_string(subdoc));
   } else if constexpr (traits::is_container_v<field_type>) {
     auto arr = val.GetArray();
-    ArrayToJson(field, arr, doc.GetAllocator());
+    arrayToJson(field, arr, doc.GetAllocator());
   }
 }
-template <typename T,size_t N>
-void parseImpl(T& s,rapidjson::Document& doc) {
-    if (doc.HasMember(T::template field_info<N>::name.data())) {
-      using type = traits::optional_or_value<
-          std::decay_t<decltype(boost::pfr::get<N>(s))>>;
+template <typename T, size_t N> void parseImpl(T &s, rapidjson::Document &doc) {
+  if (doc.HasMember(T::template field_info<N>::name.data())) {
+    using type = traits::optional_or_value<
+        std::decay_t<decltype(boost::pfr::get<N>(s))>>;
 
-      if constexpr (traits::is_unique_ptr_v<type>) {
-        boost::pfr::get<N>(s) = std::make_unique<typename type::element_type>();
-        parseFieldImpl(T::template field_info<N>::name.data(),
-                         *boost::pfr::get<N>(s), doc);
-      } else
-        parseFieldImpl(T::template field_info<N>::name.data(),
-                         boost::pfr::get<N>(s), doc);
-    }
-}
-template <class T,size_t ...Indexes>
-void parse_field(T &s,rapidjson::Document &doc,const std::index_sequence<Indexes...>& ) {
-    (parseImpl<T,Indexes>(s,doc),...);
+    if constexpr (traits::is_unique_ptr_v<type>) {
+      boost::pfr::get<N>(s) = std::make_unique<typename type::element_type>();
+      parseFieldImpl(T::template field_info<N>::name.data(),
+                     *boost::pfr::get<N>(s), doc);
+    } else
+      parseFieldImpl(T::template field_info<N>::name.data(),
+                     boost::pfr::get<N>(s), doc);
+  }
 }
 
+template <class T, size_t... Indexes>
+void parseField(T &s, rapidjson::Document &doc,
+                 const std::index_sequence<Indexes...> &) {
+  (parseImpl<T, Indexes>(s, doc), ...);
+}
 
 } // namespace telegram
