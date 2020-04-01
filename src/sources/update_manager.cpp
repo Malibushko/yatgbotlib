@@ -20,12 +20,16 @@ size_t UpdateManager::getOffset() const noexcept {
 void UpdateManager::addCallback(std::string_view cmd, telegram::Callbacks &&callback) {
     m_callbacks.insert(cmd,callback);
 }
+void UpdateManager::addCallback(std::regex cmd, telegram::Callbacks &&callback) {
+    m_regex.emplace_back(cmd,callback);
+}
 void UpdateManager::routeCallback(const std::string &str) {
     rapidjson::Document doc;
     const auto &ok = doc.Parse(str.data());
     if (ok.HasParseError()) {
         utility::logger::warn("Document parse error. \nRapidjson Error Code: ",
-                              ok.GetParseError(),"\nOffset: ",ok.GetErrorOffset(),'\n');
+                              ok.GetParseError(),"\nOffset: ",ok.GetErrorOffset(),'\n',
+                              "JSON: ",str);
         return;
     }
     if (doc.HasMember("ok") && !doc["ok"].GetBool()) {

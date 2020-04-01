@@ -18,4 +18,4 @@ add_example(webhook_example)
 add_example(callback_example)
 add_example(register_bot)
 add_example(sequence_example)
-
+add_example(regex_example)

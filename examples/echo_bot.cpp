@@ -8,5 +8,5 @@ int main() {
            bot.reply(update.message.value(),update.message.value().text.value_or("<no text>"));
        }
     });
-    bot.start();
+    bot.start(100);
 }

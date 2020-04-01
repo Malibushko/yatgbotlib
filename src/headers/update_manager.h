@@ -2,6 +2,7 @@
 #include <thread>
 #include <functional>
 #include <variant>
+#include <regex>
 #include "telegram_structs.h"
 #include "utility/trie.h"
 #include "sequence_dispatcher.h"
@@ -24,6 +25,7 @@ class UpdateManager {
 private:
     UpdateCallback callback;
     Trie<Callbacks> m_callbacks;
+    std::vector<std::pair<std::regex,Callbacks>> m_regex;
 
     std::unordered_map<int64_t, std::shared_ptr<Sequences>>
     dispatcher;
@@ -40,9 +42,14 @@ public:
     void setOffset(size_t offset);
 
     void addCallback(std::string_view cmd, telegram::Callbacks &&cb);
+    void addCallback(std::regex cmd, telegram::Callbacks &&callback);
     void routeCallback(const std::string &str);
     template <class CallbackType>
     bool runCallback(std::string_view cmd, const std::string &data);
+
+    template <class CallbackType>
+    bool runCallback(const Callbacks& cb,const std::string &data);
+
     template<class CallbackType>
     bool findCallback(std::string_view cmd);
     template <class CallbackType>
@@ -73,6 +80,21 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
     },value);
     return value_found;
 }
+template <class CallbackType>
+bool UpdateManager::runCallback(const Callbacks& cb,const std::string &data) {
+    bool value_found = false;
+    std::visit([&](auto&& value){
+        using value_type = std::decay_t<decltype (value)>;
+        if constexpr (std::is_same_v<CallbackType,value_type>) {
+            using callback_arg_type = typename traits::func_signature<value_type>::args_type;
+            if (value) {
+                std::thread(value,fromJson<callback_arg_type>(data)).detach();
+                value_found = true;
+            }
+        }
+    },cb);
+    return value_found;
+}
 template <class CallbackType,class Value>
 bool UpdateManager::runIfExist(std::string_view callback_name,std::string_view callback_data,
                                const Value& doc) {
@@ -93,8 +115,15 @@ bool UpdateManager::runIfExist(std::string_view callback_name,std::string_view c
                 runCallback<CallbackType>(data,
                                           utility::objectToJson(doc[callback_name.data()].GetObject())))
             return true;
-        return false;
     }
+    // check on any regex match
+    for (auto && [regex,callback] : m_regex) {
+        if (std::regex_match(callback_data.data(),regex)) {
+            if (runCallback<CallbackType>(callback,utility::objectToJson(doc[callback_name.data()])))
+                return true;
+        }
+    }
+    return false;
 }
 template<class CallbackType>
 bool UpdateManager::findCallback(std::string_view cmd) {
@@ -128,6 +157,7 @@ bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
             },*result->second);
         }
     }
+
     return call_successfull;
 }
 

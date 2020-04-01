@@ -36,6 +36,16 @@ public:
   void onInlineResult(std::string_view cmd, ChosenInlineResultCallback &&cb);
   void onCallback(std::string_view cmd, QueryCallback &&cb);
   void onCommand(std::string_view cmd, MessageCallback &&cb);
+
+  template<class CallbackType>
+  void onEvent(std::string_view cmd, CallbackType&& cb) {
+       updater.addCallback(cmd, std::move(cb));
+  }
+  template<class CallbackType>
+  void onEvent(std::regex cmd, CallbackType&& cb) {
+       updater.addCallback(cmd, std::move(cb));
+  }
+
   template <class Event,class Check>
   void startSequence(int64_t user_id, std::shared_ptr<Sequence<Event,Check>> seq) {
       auto s = std::make_shared<Sequences>();
