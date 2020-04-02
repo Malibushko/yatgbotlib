@@ -1,14 +1,13 @@
 #include "headers/querybuilder.h"
-#include "utility/utility.h"
-telegram::QueryBuilder::QueryBuilder(
+using namespace telegram;
+
+QueryBuilder::QueryBuilder(
     rapidjson::Document::AllocatorType &allocator)
     : doc{&allocator} {}
 
-std::string telegram::QueryBuilder::getQuery() const noexcept {
-  return utility::to_string(doc);
+std::string QueryBuilder::getQuery() const noexcept {
+  return JsonParser::i().rapidDocumentToString(doc);
 }
-
-const rapidjson::Document &telegram::QueryBuilder::getDocument() const
-    noexcept {
+const rapidjson::Document &QueryBuilder::getDocument() const noexcept {
   return doc;
 }

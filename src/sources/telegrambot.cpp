@@ -1,6 +1,8 @@
 ﻿#include "telegram_bot.h"
-#include "utility/logger.h"
 #include "headers/querybuilder.h"
+#include "headers/apimanager.h"
+#include "utility/utility.h"
+
 namespace telegram {
 
 Bot::Bot(const std::string &token) noexcept
@@ -32,10 +34,10 @@ std::pair<WebhookInfo, opt_error> Bot::getWebhookInfo() const {
 
 void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
                 std::optional<std::vector<std::string_view>> allowed_updates) {
-  if (auto &&[webhook, error] = getWebhookInfo();
-      error || webhook.url.size() || webhookSet) {
-    if (error)
-      utility::logger::warn(error.value());
+  if (auto &&[webhook, Error] = getWebhookInfo();
+      Error || webhook.url.size() || webhookSet) {
+    if (Error)
+      utility::logger::warn(Error.value());
     utility::logger::critical("You must remove webhook before using long polling method.");
     return;
   }
@@ -54,7 +56,7 @@ std::pair<User, opt_error> Bot::getMe() const {
 
 std::pair<Message, opt_error>
 Bot::sendMessage(Bot::IntOrString chat_id, const std::string &text,
-                 opt_string parse_mode, opt_bool disable_web_page_preview,
+                 std::optional<ParseMode> parse_mode, opt_bool disable_web_page_preview,
                  opt_bool disable_notification, opt_int64 reply_to_message_id,
                  std::optional<Bot::ReplyMarkups> reply_markup) const {
 
@@ -112,7 +114,7 @@ Bot::forwardMessage(Bot::IntOrString chat_id, Bot::IntOrString from_chat_id,
 
 std::pair<Message, opt_error>
 Bot::sendPhoto(Bot::IntOrString chat_id, const std::string &photo,
-               std::string_view caption, std::string_view parse_mode,
+               std::string_view caption, std::optional<ParseMode> parse_mode,
                opt_bool disable_notification, opt_int64 reply_to_message_id,
                std::optional<Bot::ReplyMarkups> reply_markup) const {
   QueryBuilder builder;
@@ -127,7 +129,7 @@ Bot::sendPhoto(Bot::IntOrString chat_id, const std::string &photo,
 
 std::pair<Message, opt_error>
 Bot::sendAudio(Bot::IntOrString chat_id, std::string audio,
-               opt_string_view caption, opt_string_view parse_mode,
+               opt_string_view caption, std::optional<ParseMode> parse_mode,
                std::optional<int> duration, opt_string_view performer,
                opt_string_view title, const std::optional<std::string> &thumb,
                opt_bool disable_notification, opt_int64 reply_to_message_id,
@@ -165,12 +167,12 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
                            const std::string &key_path) {
 
   webhookSet = true;
-  auto [result, error] =
+  auto [result, Error] =
       setWebhook(url + ':' + std::to_string(port), cert_path);
   if (!result)
     return false;
-  if (error) {
-    utility::logger::warn(error->to_string());
+  if (Error) {
+    utility::logger::warn(Error->toString());
     return false;
   }
   httplib::SSLServer server(cert_path.data(), key_path.data());
@@ -181,7 +183,7 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
   server.Post("/", [&](const httplib::Request &req, httplib::Response &) {
     if (auto host = req.headers.find("REMOTE_ADDR");
         host != req.headers.end()) {
-      uint32_t host_ip = utility::ipv4(host->second.data());
+      uint32_t host_ip = NetworkManager::ipv4(host->second.data());
       if (host_ip != std::clamp(host_ip,
                                 utility::telegram_first_subnet_range_begin,
                                 utility::telegram_second_subned_range_end) &&
@@ -203,7 +205,7 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
 std::pair<Message, opt_error>
 Bot::sendDocument(IntOrString chat_id, const std::string &document,
                   const std::optional<std::string> thumb,
-                  opt_string_view caption, opt_string_view parse_mode,
+                  opt_string_view caption, std::optional<ParseMode> parse_mode,
                   opt_bool disable_notification, opt_int64 reply_to_message_id,
                   std::optional<Bot::ReplyMarkups> reply_markup) const {
   QueryBuilder builder;
@@ -224,7 +226,7 @@ std::pair<Message, opt_error>
 Bot::sendVideo(IntOrString chat_id, const std::string &video,
                opt_int32 duration, opt_int32 width, opt_int32 height,
                const std::optional<std::string> &thumb, opt_string_view caption,
-               opt_string_view parse_mode, opt_bool supports_streaming,
+               std::optional<ParseMode> parse_mode, opt_bool supports_streaming,
                opt_bool disable_notification, opt_int64 reply_to_message_id,
                std::optional<Bot::ReplyMarkups> reply_markup) const {
   QueryBuilder builder;
@@ -247,7 +249,7 @@ std::pair<Message, opt_error>
 Bot::sendAnimation(IntOrString chat_id, const std::string &animation,
                    opt_int32 duration, opt_int32 width, opt_int32 height,
                    const opt_string &thumb, opt_string_view caption,
-                   opt_string_view parse_mode, opt_bool supports_streaming,
+                   std::optional<ParseMode> parse_mode, opt_bool supports_streaming,
                    opt_bool disable_nofitication, opt_int64 reply_to_message_id,
                    std::optional<Bot::ReplyMarkups> reply_markup) const {
   QueryBuilder builder;
@@ -268,7 +270,7 @@ Bot::sendAnimation(IntOrString chat_id, const std::string &animation,
 
 std::pair<Message, opt_error>
 Bot::sendVoice(IntOrString chat_id, const std::string &voice,
-               opt_string_view caption, opt_string_view parse_mode,
+               opt_string_view caption, std::optional<ParseMode> parse_mode,
                opt_int32 duration, opt_bool disable_notification,
                opt_int64 reply_to_message_id,
                std::optional<Bot::ReplyMarkups> reply_markup) const {
@@ -418,7 +420,7 @@ Bot::sendPoll(Bot::IntOrString chat_id, std::string_view question,
 }
 
 std::pair<bool, opt_error> Bot::sendChatAction(Bot::IntOrString chat_id,
-                                               std::string_view action) const {
+                                               ChatAction action) const {
   QueryBuilder builder;
   builder << make_named_pair(chat_id) << make_named_pair(action);
   return api->ApiCall<bool>(__func__, builder);
@@ -636,7 +638,7 @@ Bot::answerCallbackQuery(std::string_view callback_query_id,
 std::pair<std::variant<bool, Message>, opt_error>
 Bot::editMessageText(Bot::IntOrString chat_id, std::string_view text,
                      opt_int64 message_id, opt_string_view inline_message_id,
-                     opt_string_view parse_mode,
+                     std::optional<ParseMode> parse_mode,
                      opt_bool disable_web_page_preview,
                      std::optional<InlineKeyboardMarkup> reply_markup) const {
   QueryBuilder builder;
@@ -652,7 +654,7 @@ Bot::editMessageText(Bot::IntOrString chat_id, std::string_view text,
 std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageText(
     std::string_view text, const std::string &inline_message_id,
     std::optional<Bot::IntOrString> chat_id, opt_int64 message_id,
-    opt_string_view parse_mode, opt_bool disable_web_page_preview,
+    std::optional<ParseMode> parse_mode, opt_bool disable_web_page_preview,
     std::optional<InlineKeyboardMarkup> reply_markup) const {
   QueryBuilder builder;
   builder << make_named_pair(chat_id) << make_named_pair(text)
@@ -667,7 +669,7 @@ std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageText(
 std::pair<std::variant<bool, Message>, opt_error>
 Bot::editMessageCaption(Bot::IntOrString chat_id, opt_int64 message_id,
                         opt_string_view inline_message_id,
-                        opt_string_view caption, opt_string_view parse_mode,
+                        opt_string_view caption, std::optional<ParseMode> parse_mode,
                         std::optional<InlineKeyboardMarkup> reply_markup) {
   QueryBuilder builder;
   builder << make_named_pair(chat_id) << make_named_pair(caption)
@@ -680,7 +682,7 @@ Bot::editMessageCaption(Bot::IntOrString chat_id, opt_int64 message_id,
 std::pair<std::variant<bool, Message>, opt_error> Bot::editMessageCaption(
     const std::string &inline_message_id,
     std::optional<Bot::IntOrString> chat_id, opt_int64 message_id,
-    opt_string_view caption, opt_string_view parse_mode,
+    opt_string_view caption, std::optional<ParseMode> parse_mode,
     std::optional<InlineKeyboardMarkup> reply_markup) const {
   QueryBuilder builder;
   builder << make_named_pair(chat_id) << make_named_pair(caption)

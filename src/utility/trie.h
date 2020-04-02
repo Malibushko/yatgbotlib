@@ -4,6 +4,8 @@
 #include <memory>
 #include <algorithm>
 #include <optional>
+
+namespace telegram::utility {
 template <class T>
 class Trie {
     struct TrieNode {
@@ -88,4 +90,4 @@ public:
         return m_size;
     }
 };
-
+}

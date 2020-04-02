@@ -20,7 +20,7 @@ using opt_int32 = std::optional<int32_t>;
 using opt_uint8 = std::optional<uint8_t>;
 using opt_string_ref = std::optional<std::string> &;
 using opt_string_view = std::optional<std::string_view>;
-using opt_error = std::optional<error>;
+using opt_error = std::optional<utility::Error>;
 using reply_markups = std::variant<InlineKeyboardMarkup, ReplyKeyboardMarkup,
                                    ReplyKeyboardRemove, ForceReply>;
 
@@ -72,7 +72,7 @@ public:
   /// Use this method to send text messages. On success, the sent Message is
   /// returned.
   std::pair<Message, opt_error> sendMessage(
-      IntOrString chat_id, const std::string &text, opt_string parse_mode = {},
+      IntOrString chat_id, const std::string &text, std::optional<ParseMode> parse_mode = {},
       opt_bool disable_web_page_preview = {},
       opt_bool disable_notification = {}, opt_int64 reply_to_message_id = {},
       std::optional<ReplyMarkups> reply_markup = {}) const;
@@ -100,14 +100,14 @@ public:
 
   std::pair<Message, opt_error>
   sendPhoto(IntOrString chat_id, const std::string &photo,
-            std::string_view caption = {}, std::string_view parse_mode = {},
+            std::string_view caption = {}, std::optional<ParseMode> parse_mode = {},
             opt_bool disable_notification = {},
             opt_int64 reply_to_message_id = {},
             std::optional<ReplyMarkups> reply_markup = {}) const;
 
   std::pair<Message, opt_error> sendAudio(
       IntOrString chat_id, std::string audio, opt_string_view caption = {},
-      opt_string_view parse_mode = {}, std::optional<int> duration = {},
+      std::optional<ParseMode> parse_mode = {}, std::optional<int> duration = {},
       opt_string_view performer = {}, opt_string_view title = {},
       const std::optional<std::string> &thumb = {},
       opt_bool disable_notification = {}, opt_int64 reply_to_message_id = {},
@@ -126,7 +126,7 @@ public:
   std::pair<Message, opt_error>
   sendDocument(IntOrString chat_id, const std::string &document,
                const std::optional<std::string> thumb = {},
-               opt_string_view caption = {}, opt_string_view parse_mode = {},
+               opt_string_view caption = {}, std::optional<ParseMode> parse_mode = {},
                opt_bool disable_notification = {},
                opt_int64 reply_to_message_id = {},
                std::optional<ReplyMarkups> reply_markup = {}) const;
@@ -135,7 +135,7 @@ public:
   sendVideo(IntOrString chat_id, const std::string &video,
             opt_int32 duration = {}, opt_int32 width = {},
             opt_int32 height = {}, const std::optional<std::string> &thumb = {},
-            opt_string_view caption = {}, opt_string_view parse_mode = {},
+            opt_string_view caption = {}, std::optional<ParseMode> parse_mode = {},
             opt_bool supports_streaming = {},
             opt_bool disable_notification = {},
             opt_int64 reply_to_message_id = {},
@@ -145,14 +145,14 @@ public:
       IntOrString chat_id, const std::string &animation,
       opt_int32 duration = {}, opt_int32 width = {}, opt_int32 height = {},
       const std::optional<std::string> &thumb = {},
-      opt_string_view caption = {}, opt_string_view parse_mode = {},
+      opt_string_view caption = {}, std::optional<ParseMode> parse_mode = {},
       opt_bool supports_streaming = {}, opt_bool disable_nofitication = {},
       opt_int64 reply_to_message_id = {},
       std::optional<ReplyMarkups> reply_markup = {}) const;
 
   std::pair<Message, opt_error>
   sendVoice(IntOrString chat_id, const std::string &voice,
-            opt_string_view caption = {}, opt_string_view parse_mode = {},
+            opt_string_view caption = {}, std::optional<ParseMode> parse_mode = {},
             opt_int32 duration = {}, opt_bool disable_notification = {},
             opt_int64 reply_to_message_id = {},
             std::optional<ReplyMarkups> reply_markup = {}) const;
@@ -214,7 +214,7 @@ public:
            std::optional<ReplyMarkups> reply_markup = {}) const;
 
   std::pair<bool, opt_error> sendChatAction(IntOrString chat_id,
-                                            std::string_view action) const;
+                                            ChatAction action) const;
 
   std::pair<UserProfilePhotos, opt_error>
   getUserProfilePhotos(int64_t user_id, opt_int32 offset = {},
@@ -295,14 +295,14 @@ public:
   std::pair<std::variant<bool, Message>, opt_error>
   editMessageText(IntOrString chat_id, std::string_view text,
                   opt_int64 message_id, opt_string_view inline_message_id = {},
-                  opt_string_view parse_mode = {},
+                  std::optional<ParseMode> parse_mode = {},
                   opt_bool disable_web_page_preview = {},
                   std::optional<InlineKeyboardMarkup> reply_markup = {}) const;
 
   std::pair<std::variant<bool, Message>, opt_error>
   editMessageText(std::string_view text, const std::string &inline_message_id,
                   std::optional<IntOrString> chat_id = {},
-                  opt_int64 message_id = {}, opt_string_view parse_mode = {},
+                  opt_int64 message_id = {}, std::optional<ParseMode> parse_mode = {},
                   opt_bool disable_web_page_preview = {},
                   std::optional<InlineKeyboardMarkup> reply_markup = {}) const;
   std::pair<std::variant<bool, Message>, opt_error>
@@ -310,14 +310,14 @@ public:
   editMessageCaption(IntOrString chat_id, opt_int64 message_id,
                      opt_string_view inline_message_id = {},
                      opt_string_view caption = {},
-                     opt_string_view parse_mode = {},
+                     std::optional<ParseMode> parse_mode = {},
                      std::optional<InlineKeyboardMarkup> reply_markup = {});
   std::pair<std::variant<bool, Message>, opt_error>
 
   editMessageCaption(
       const std::string &inline_message_id,
       std::optional<IntOrString> chat_id = {}, opt_int64 message_id = {},
-      opt_string_view caption = {}, opt_string_view parse_mode = {},
+      opt_string_view caption = {}, std::optional<ParseMode> parse_mode = {},
       std::optional<InlineKeyboardMarkup> reply_markup = {}) const;
 
   using InputMedia =

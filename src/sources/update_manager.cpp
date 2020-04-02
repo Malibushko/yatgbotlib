@@ -50,7 +50,7 @@ void UpdateManager::routeCallback(const std::string &str) {
                          return;
         }
         if (callback)
-            std::thread(callback,fromJson<Update>(utility::objectToJson(it))).detach();
+            std::thread(callback,JsonParser::i().fromJson<Update>(JsonParser::i().rapidObjectToJson(it))).detach();
     };
 
     if (auto has_result = doc.HasMember("result");

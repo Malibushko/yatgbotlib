@@ -3,10 +3,12 @@
 #include <functional>
 #include <variant>
 #include <regex>
+
 #include "telegram_structs.h"
-#include "utility/trie.h"
 #include "sequence_dispatcher.h"
+#include "utility/trie.h"
 #include "json_parser.h"
+
 namespace telegram {
 
 using UpdateCallback = std::function<void(Update &&)>;
@@ -24,7 +26,7 @@ Sequence<ChosenInlineResultCallback>>;
 class UpdateManager {
 private:
     UpdateCallback callback;
-    Trie<Callbacks> m_callbacks;
+    utility::Trie<Callbacks> m_callbacks;
     std::vector<std::pair<std::regex,Callbacks>> m_regex;
 
     std::unordered_map<int64_t, std::shared_ptr<Sequences>>
@@ -73,7 +75,7 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
         if constexpr (std::is_same_v<CallbackType,value_type>) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
-                std::thread(value,fromJson<callback_arg_type>(data)).detach();
+                std::thread(value,JsonParser::i().fromJson<callback_arg_type>(data)).detach();
                 value_found = true;
             }
         }
@@ -88,7 +90,7 @@ bool UpdateManager::runCallback(const Callbacks& cb,const std::string &data) {
         if constexpr (std::is_same_v<CallbackType,value_type>) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
-                std::thread(value,fromJson<callback_arg_type>(data)).detach();
+                std::thread(value,JsonParser::i().fromJson<callback_arg_type>(data)).detach();
                 value_found = true;
             }
         }
@@ -113,13 +115,13 @@ bool UpdateManager::runIfExist(std::string_view callback_name,std::string_view c
         const char*  data = doc[callback_name.data()][callback_data.data()].GetString();
         if (findCallback<CallbackType>(data) &&
                 runCallback<CallbackType>(data,
-                                          utility::objectToJson(doc[callback_name.data()].GetObject())))
+                                          JsonParser::i().rapidObjectToJson(doc[callback_name.data()].GetObject())))
             return true;
     }
     // check on any regex match
     for (auto && [regex,callback] : m_regex) {
         if (std::regex_match(callback_data.data(),regex)) {
-            if (runCallback<CallbackType>(callback,utility::objectToJson(doc[callback_name.data()])))
+            if (runCallback<CallbackType>(callback,JsonParser::i().rapidObjectToJson(doc[callback_name.data()])))
                 return true;
         }
     }
@@ -148,9 +150,9 @@ bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
                         dispatcher.erase(result);
                     } else {
                         call_successfull = true;
-                        std::thread([&,object = utility::objectToJson(val)](){
+                        std::thread([&,object = JsonParser::i().rapidObjectToJson(val)](){
                             using callbackArgType = typename traits::func_signature<value_type>::args_type;
-                            value.input(fromJson<callbackArgType>(object));
+                            value.input(JsonParser::i().fromJson<callbackArgType>(object));
                         }).detach();
                     }
                 }

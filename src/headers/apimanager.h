@@ -1,22 +1,61 @@
 #pragma once
 #include "networkmanager.h"
-#include "json_parser.h"
 #include "querybuilder.h"
+#include "utility/utility.h"
+
 namespace telegram {
 using namespace traits;
 using name_value_pair = std::pair<std::string_view, std::string>;
-using utility::error;
+
+namespace utility {
+    bool lowercase_compare(std::string_view a, std::string_view b)
+    {
+        return std::equal(a.begin(), a.end(),
+                          b.begin(), b.end(),
+                          [](char a, char b) {
+                              return tolower(a) == tolower(b);
+                          });
+    }
+
+    std::string fileBytes(const std::string &filePath) {
+        std::ifstream ifs(filePath, std::ios::in | std::ios::binary);
+        if (!ifs.is_open()) {
+            utility::logger::info("File ",filePath, "is empty");
+            return {};
+        }
+        size_t fileSize = fs::file_size(filePath);
+        std::vector<char> bytes(fileSize);
+        ifs.read(bytes.data(), fileSize);
+
+        return std::string(bytes.data(), fileSize);
+    }
+    struct Error {
+        int32_t error_code;
+        std::string description;
+        template<typename IStream>
+        friend std::ostream& operator<<(IStream& os,const Error & e) {
+            os << e.toString();
+            return  os;
+        }
+        std::string toString() const {
+            return {"[Error]: " + std::to_string(error_code) + ' '
+                        + (description.size() ? description : " no description")};
+        }
+    };
+
+}
+using utility::Error;
 
 class ApiManager {
   std::string base_url;
   NetworkManager m_manager{"api.telegram.org"};
 
 private:
-  template <class T> void assignImpl(T &value, const std::string &data) const {
+  template <class T> void assignFromJson(T &value, const std::string &data) const {
     if constexpr (traits::is_string_type<T>)
       value = data;
     else if constexpr (traits::is_parsable_v<T> || traits::is_container_v<T>)
-      value = std::move(fromJson<T>(data));
+      value = std::move(JsonParser::i().fromJson<T>(data));
     else if constexpr (std::is_same_v<bool, std::decay_t<T>>)
       value = (utility::lowercase_compare(data, "true") ? true : false);
     else if constexpr (std::is_integral_v<T>)
@@ -25,10 +64,38 @@ private:
       value = std::stof(data);
   }
   template <class T, class AssignType>
-  void assignImpl(T &value, const std::string &data) const {
+  void assignFromJson(T &value, const std::string &data) const {
     AssignType temp_val{};
-    assignImpl<AssignType>(temp_val, data);
+    assignFromJson<AssignType>(temp_val, data);
     value = std::move(temp_val);
+  }
+  std::pair<bool,std::string> parseWithError(std::string_view view) {
+      rapidjson::Document doc;
+      if (!view.size()) {
+          return {false,{"Empty or not valid json"}};
+      }
+      doc.Parse(view.data(),view.length());
+      if (doc["ok"].GetBool()) {
+          if (auto& val = doc["result"];val.IsArray())
+              return {true,JsonParser::i().rapidArrayToJson(val.GetArray())};
+          else if (val.IsObject())
+              return {true,JsonParser::i().rapidObjectToJson(val.GetObject())};
+          else if (val.IsNumber()) {
+              return {true,std::to_string(val.GetInt())};
+          } else if (val.IsString()) {
+              return {true,val.GetString()};
+          } else if (val.IsFloat()) {
+              return {true,std::to_string(val.GetFloat())};
+          } else if (val.IsTrue()) {
+              return {true,"true"};
+          } else if (val.IsFalse()) {
+              return {true,"false"};
+          } else {
+              assert("Undefined value");
+          }
+      } else {
+          return {false,doc["description"].GetString()};
+      }
   }
 
 public:
@@ -36,67 +103,67 @@ public:
   ApiManager(std::string &&url) noexcept : base_url{std::move(url)} {}
 
   template <class T>
-  std::pair<T, std::optional<error>> ApiCall(const char *api,
+  std::pair<T, std::optional<Error>> ApiCall(const char *api,
                                              const QueryBuilder &builder) {
     std::shared_ptr<httplib::Response> reply =
         m_manager.post(base_url + api, {}, builder.getQuery());
 
     if (!reply) {
-      return {T{}, error{600, "Unable to make a request"}};
+      return {T{}, Error{600, "Unable to make a request"}};
     }
-    std::pair<T, std::optional<error>> result;
+    std::pair<T, std::optional<Error>> result;
 
-    auto &&[is_valid, value] = utility::parse_value(reply->body);
+    auto &&[is_valid, value] = parseWithError(reply->body);
     if (is_valid) {
-      assignImpl<T>(result.first, value);
+      assignFromJson<T>(result.first, value);
     } else {
-      result.second = error{static_cast<int32_t>(reply->status), value};
+      result.second = Error{static_cast<int32_t>(reply->status), value};
     }
     return result;
   }
 
   template <class T, class TrueOrType>
-  std::pair<T, std::optional<error>> ApiCall(const char *api,
+  std::pair<T, std::optional<Error>> ApiCall(const char *api,
                                              const QueryBuilder &builder) {
     auto reply = m_manager.post(base_url + api, {}, builder.getQuery());
 
-    std::pair<T, std::optional<error>> result;
+    std::pair<T, std::optional<Error>> result;
 
-    auto &&[is_valid, value] = utility::parse_value(reply->body);
+    auto &&[is_valid, value] = parseWithError(reply->body);
     if (is_valid) {
-      if (utility::lowercase_compare(value, utility::true_literal)) {
+      if (utility::lowercase_compare(value, utility::true_literal.data())) {
         result.first = true;
-      } else if (utility::lowercase_compare(value, utility::false_literal)) {
+      } else if (utility::lowercase_compare(value, utility::false_literal.data())) {
         result.first = false;
       } else {
-        assignImpl<T, TrueOrType>(result.first, value);
+        assignFromJson<T, TrueOrType>(result.first, value);
       }
     } else {
-      result.second = error{static_cast<int32_t>(reply->status), value};
+      result.second = Error{static_cast<int32_t>(reply->status), value};
     }
     return result;
   }
 
   template <class T>
-  std::pair<T, std::optional<error>> ApiCall(const char *api) {
+  std::pair<T, std::optional<Error>> ApiCall(const char *api) {
     auto reply = m_manager.post(base_url + api);
 
-    std::pair<T, std::optional<error>> result;
+    std::pair<T, std::optional<Error>> result;
 
-    auto &&[is_valid, value] = utility::parse_value(reply->body);
+    auto &&[is_valid, value] = parseWithError(reply->body);
     if (is_valid) {
-      assignImpl<T>(result.first, value);
+      assignFromJson<T>(result.first, value);
     } else {
-      result.second = error{0, value};
+      result.second = Error{0, value};
     }
     return result;
   }
 
   template <class T>
-  std::pair<T, std::optional<error>>
+  std::pair<T, std::optional<Error>>
   ApiCall(const char *api, QueryBuilder &builder,
           const std::vector<name_value_pair> &params) {
-    std::pair<T, std::optional<error>> result;
+    std::pair<T, std::optional<Error>> result;
     std::string reply;
     int status_code = 0;
     // check if there is a valid path to local file
@@ -126,11 +193,11 @@ public:
         if (auto path = fs::path(path_or_id); fs::exists(path)) {
           if (path.filename().string().find(".pem") != std::string::npos)
             items.push_back({"certificate",
-                             utility::get_file_bytes(fs::absolute(path)),
+                             utility::fileBytes(fs::absolute(path)),
                              '@' + path.string()});
           else
             items.push_back({name.data(),
-                             utility::get_file_bytes(fs::absolute(path)),
+                             utility::fileBytes(fs::absolute(path)),
                              path.filename().string()});
         } else {
           items.push_back({{name.data(), name.size()}, path_or_id});
@@ -147,18 +214,18 @@ public:
       reply = response->body;
       status_code = response->status;
     } else {
-      result.second = error{
+      result.second = Error{
           0,
           std::string("Id or filepath is not valid for at least one file at ") +
               __func__};
       return result;
     }
 
-    auto &&[is_valid, value] = utility::parse_value(reply);
+    auto &&[is_valid, value] = parseWithError(reply);
     if (is_valid) {
-      assignImpl<T>(result.first, value);
+      assignFromJson<T>(result.first, value);
     } else {
-      result.second = error{static_cast<int32_t>(status_code), value};
+      result.second = Error{static_cast<int32_t>(status_code), value};
     }
     return result;
   }

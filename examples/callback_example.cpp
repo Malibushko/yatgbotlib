@@ -4,7 +4,7 @@ int main() {
     using namespace telegram;
     Bot bot{BOT_TOKEN};
     bot.onCommand("/start",[&](Message&& msg){
-       bot.sendMessage(msg.chat.id,"Use `/menu` to get the menu","Markdown");
+       bot.sendMessage(msg.chat.id,"Use `/menu` to get the menu",ParseMode::Markdown);
     });
     bot.onCommand("/menu",[&](Message&& msg){
         InlineKeyboardMarkup keyboard{
@@ -19,21 +19,22 @@ int main() {
     });
     bot.onCallback("image",[&](CallbackQuery&& cb){
        const int64_t chat_id = cb.message.value().chat.id;
-       bot.sendChatAction(chat_id,"upload_photo");
+       bot.sendChatAction(chat_id,ChatAction::UploadPhoto);
        bot.sendPhoto(chat_id,std::string(RESOURCE_PATH)+"photo.jpg");
     });
     bot.onCallback("voice",[&](CallbackQuery&& cb){
         const int64_t chat_id = cb.message.value().chat.id;
+        bot.sendChatAction(chat_id,ChatAction::RecordAudio);
         bot.sendVoice(chat_id,std::string(RESOURCE_PATH)+"voice.ogg");
     });
     bot.onCallback("video",[&](CallbackQuery&& cb){
         const int64_t chat_id = cb.message.value().chat.id;
-        bot.sendChatAction(chat_id,"upload_video");
+        bot.sendChatAction(chat_id,ChatAction::UploadVideo);
         bot.sendVideo(chat_id,std::string(RESOURCE_PATH)+"video.mp4");
     });
     bot.onCallback("audio",[&](CallbackQuery&& cb){
         const int64_t chat_id = cb.message.value().chat.id;
-        bot.sendChatAction(chat_id,"upload_audio");
+        bot.sendChatAction(chat_id,ChatAction::UploadAudio);
         bot.sendAudio(chat_id,std::string(RESOURCE_PATH)+"audio.mp3");
     });
     bot.start(100);

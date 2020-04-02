@@ -36,7 +36,8 @@ int main() {
             ss << it;
         // create string out of array
         auto str = ss.str();
-        bot.sendMessage(msg.chat.id,"Enter `" + str + "`\n","Markdown",{},{},{},createKeyboard());
+        bot.sendMessage(msg.chat.id,"Enter `" + str + "`\n",ParseMode::Markdown,
+        {},{},{},createKeyboard());
 
         // create sequence
         auto password_check = std::make_shared<Sequence<QueryCallback>>();
