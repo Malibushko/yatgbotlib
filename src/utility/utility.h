@@ -17,16 +17,19 @@ namespace fs = std::experimental::filesystem;
 #include "utility/logger.h"
 
 namespace telegram {
+/// HTTP request content types
 enum class ContentTypes {
     text_plain,
     application_json,
     multipart_form_data,
     application_octet_stream
 };
+/// parse_mode for Telegram Bot Api
 enum class ParseMode {
     Markdown,
     HTML
 };
+/// chat_action for Telegram Bot Api
 enum class ChatAction {
     Typing,
     UploadPhoto,
@@ -38,6 +41,12 @@ enum class ChatAction {
     FindLocation,
     RecordVideoNote,
     UploadVideoNote
+};
+/// Library error codes
+enum class ErrorCodes {
+    UnableToMakeRequest = 1000, /// httplib was not able to make a request
+    NotValid, /// not valid parameters
+    InvalidReply /// reply did not contain any value
 };
 }
 

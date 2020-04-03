@@ -16,7 +16,11 @@ namespace telegram {
 
 using jsonAllocator = rapidjson::Document::AllocatorType;
 using jsonArray = decltype(std::declval<rapidjson::Document>().GetArray());
-
+/**
+ * @brief Class for parsing json
+ * Main idea of json parsing is described in telegram_bot.h
+ * There will only be described implementation details
+ */
 class JsonParser {
     JsonParser() noexcept {
     }
@@ -29,7 +33,7 @@ public:
     JsonParser(const JsonParser&) = delete;
 
     template <class T, typename = std::enable_if_t<traits::is_parsable_v<T>>>
-    std::string toJson(const T &item) {
+    std::string toJson(const T &item) const {
       static_assert(boost::pfr::tuple_size_v<std::decay_t<T>>> 0,
                     "The structure has no fields.");
 
@@ -37,29 +41,29 @@ public:
       rapidjson::Document document;
       document.SetObject();
 
-      toJsonImpl(item, document,
+      launchDeserialize(item, document,
                  std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
       return rapidObjectToJson(document);
     }
 
     template <class T, typename = std::enable_if_t<traits::is_container_v<T> ||
                                                    traits::is_parsable_v<T>>>
-    T fromJson(const std::string &data) {
+    T fromJson(const std::string &data) const  {
       rapidjson::Document doc;
       rapidjson::Value val;
       rapidjson::ParseResult ok = doc.Parse(data.data());
       if (!ok) {
-        utility::logger::warn("Invalid json;");
+        utility::Logger::warn("Invalid json;");
         return T{};
       }
       T item{};
-      // array case
+      // if value is array
       if constexpr (traits::is_container_v<T> && !traits::is_string_type<T>) {
         auto temp_arr = doc.GetArray();
         arrayToJson(item, temp_arr, doc.GetAllocator());
       } else if constexpr (traits::is_parsable_v<T>) {
         static_assert(boost::pfr::tuple_size_v<T>> 0, "The struct has no fields");
-        parseField(item, doc,
+        launchParser(item, doc,
                     std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
       }
       return item;
@@ -67,7 +71,7 @@ public:
 
     template <class T>
     void valueToJson(const T &value, rapidjson::Value &val,
-                     jsonAllocator &allocator) {
+                     jsonAllocator &allocator) const {
       using field_type = typename std::decay_t<decltype(value)>;
       using type = traits::optional_or_value<field_type>; // get real value type
 
@@ -141,13 +145,13 @@ public:
       }
     }
 
-    std::string rapidObjectToJson(const rapidjson::Value& val) {
+    std::string rapidObjectToJson(const rapidjson::Value& val) const {
         rapidjson::StringBuffer buff;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
         val.Accept(writer);
         return buff.GetString();
     }
-    std::string rapidArrayToJson(rapidjson::Value val) {
+    std::string rapidArrayToJson(rapidjson::Value val) const {
         rapidjson::StringBuffer buff;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
         rapidjson::Document doc;
@@ -159,7 +163,7 @@ public:
         doc.Accept(writer);
         return buff.GetString();
     }
-    std::string rapidDocumentToString(const rapidjson::Document& doc) {
+    std::string rapidDocumentToString(const rapidjson::Document& doc) const {
         rapidjson::StringBuffer buff;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
         doc.Accept(writer);
@@ -171,7 +175,7 @@ private:
     // ------------------------- SERIALIZE ----------------------------
     template <class T>
     void arrayToJson(const T &arr, rapidjson::Value &val,
-                     jsonAllocator &allocator) {
+                     jsonAllocator &allocator) const {
       using type = traits::optional_or_value<std::decay_t<T>>;
       if (val.IsNull()) // check if value has not been set before
         val = rapidjson::Value(rapidjson::kArrayType);
@@ -227,9 +231,12 @@ private:
         }
       }
     }
+    /**
+     * function builds JSON document
+     */
     template <size_t N, class MetaStruct, typename = std::enable_if_t<traits::is_parsable_v<MetaStruct>>>
     void appendToDocument(rapidjson::Document &doc, jsonAllocator &allocator,
-                          const MetaStruct &str) {
+                          const MetaStruct &str) const {
       // set init value to Null
       rapidjson::Value val(rapidjson::kNullType);
       // check if value is unique_ptr (support for other smart pointer will be added
@@ -255,8 +262,8 @@ private:
       }
     }
     template <class T, size_t... Indexes>
-    void toJsonImpl(const T &item, rapidjson::Document &doc,
-                    const std::index_sequence<Indexes...> &) {
+    void launchDeserialize(const T &item, rapidjson::Document &doc,
+                    const std::index_sequence<Indexes...> &) const {
       (appendToDocument<Indexes>(doc, doc.GetAllocator(), item), ...);
     }
 
@@ -264,13 +271,13 @@ private:
 
 
     template <class T>
-    void arrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) {
+    void arrayToJson(T &array, const jsonArray &arr, jsonAllocator &allocator) const {
       using type =
           traits::optional_or_value<std::remove_reference_t<std::remove_cv_t<T>>>;
       if constexpr (traits::is_optional_v<T>)
         array = type{}; // if value is optional set it to default
 
-      // the same as 'to_json'
+      // bool case
       if constexpr (std::is_same_v<bool, typename type::value_type>) {
         for (auto &&it : arr) {
           if constexpr (traits::is_optional_v<T>)
@@ -278,6 +285,7 @@ private:
           else
             array.emplace_back(it.GetBool());
         }
+        // float case
       } else if constexpr (std::is_floating_point<
                                typename type::value_type>::value) {
         for (auto &&it : arr) {
@@ -286,6 +294,7 @@ private:
           else
             array.emplace_back(it.GetFloat());
         }
+        // any integer case (except for boolean and float)
       } else if constexpr (std::is_arithmetic<typename type::value_type>::value) {
         for (auto &&it : arr) {
           if constexpr (traits::is_optional_v<T>)
@@ -293,6 +302,7 @@ private:
           else
             array.emplace_back(it.GetInt64());
         }
+        // string type
       } else if constexpr (traits::is_string_type<typename type::value_type>) {
         for (auto &&it : arr) {
           if constexpr (traits::is_optional_v<T>)
@@ -300,6 +310,7 @@ private:
           else
             array.emplace_back(it.GetString());
         }
+        // another structure
       } else if constexpr (traits::is_parsable_v<typename type::value_type>) {
         for (auto &&it : arr) {
           rapidjson::Document doc(&allocator);
@@ -318,6 +329,7 @@ private:
                 fromJson<typename type::value_type>(JsonParser::i().rapidObjectToJson(doc)));
           }
         }
+        // recursive case
       } else if constexpr (traits::is_container_v<typename type::value_type>) {
         using val_type = typename type::value_type;
         val_type nestedArray;
@@ -333,9 +345,10 @@ private:
           array.emplace_back(std::move(nestedArray));
       }
     }
+
     template <class T>
     void parseFieldImpl(const char *field_name, T &field,
-                        rapidjson::Document &doc) {
+                        rapidjson::Document &doc) const {
       if (!doc.HasMember(field_name)) {
         // if not member in document return default construct
         field = {};
@@ -366,7 +379,7 @@ private:
         arrayToJson(field, arr, doc.GetAllocator());
       }
     }
-    template <typename T, size_t N> void parseImpl(T &s, rapidjson::Document &doc) {
+    template <typename T, size_t N> void parseField(T &s, rapidjson::Document &doc) const {
       if (doc.HasMember(T::template field_info<N>::name.data())) {
         using type = traits::optional_or_value<
             std::decay_t<decltype(boost::pfr::get<N>(s))>>;
@@ -382,9 +395,9 @@ private:
     }
 
     template <class T, size_t... Indexes>
-    void parseField(T &s, rapidjson::Document &doc,
-                     const std::index_sequence<Indexes...> &) {
-      (parseImpl<T, Indexes>(s, doc), ...);
+    void launchParser(T &s, rapidjson::Document &doc,
+                     const std::index_sequence<Indexes...> &) const {
+      (parseField<T, Indexes>(s, doc), ...);
     }
 
 };

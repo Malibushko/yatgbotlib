@@ -37,8 +37,8 @@ void Bot::start(opt_uint64 timeout, opt_uint64 offset, opt_uint8 limit,
   if (auto &&[webhook, Error] = getWebhookInfo();
       Error || webhook.url.size() || webhookSet) {
     if (Error)
-      utility::logger::warn(Error.value());
-    utility::logger::critical("You must remove webhook before using long polling method.");
+      utility::Logger::warn(Error.value());
+    utility::Logger::critical("You must remove webhook before using long polling method.");
     return;
   }
   stopPolling = false;
@@ -167,34 +167,41 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
                            const std::string &key_path) {
 
   webhookSet = true;
+
+  // Send Telegram Bot Api request first
   auto [result, Error] =
       setWebhook(url + ':' + std::to_string(port), cert_path);
-  if (!result)
+ // if result is not true
+ if (!result)
     return false;
+  // or if there is error
   if (Error) {
-    utility::logger::warn(Error->toString());
+    utility::Logger::warn(Error->toString());
     return false;
   }
+
   httplib::SSLServer server(cert_path.data(), key_path.data());
   if (!server.is_valid()) {
-    utility::logger::critical("Server is not valid. Check certificate paths.");
+    utility::Logger::critical("Server is not valid. Check certificate paths.");
     return false;
   }
+  // one rule for routing
   server.Post("/", [&](const httplib::Request &req, httplib::Response &) {
     if (auto host = req.headers.find("REMOTE_ADDR");
         host != req.headers.end()) {
       uint32_t host_ip = NetworkManager::ipv4(host->second.data());
+      // check if address is in one of two telegram subnets (filtering)
       if (host_ip != std::clamp(host_ip,
                                 utility::telegram_first_subnet_range_begin,
                                 utility::telegram_second_subned_range_end) &&
           host_ip != std::clamp(host_ip,
                                 utility::teleram_second_subnet_range_begin,
                                 utility::telegram_second_subned_range_end)) {
-        utility::logger::info("Request from unknown subnet", host_ip);
+        utility::Logger::info("Request from unknown subnet", host_ip);
         return;
       }
     } else {
-      utility::logger::warn("Cannot resolve host ip");
+      utility::Logger::warn("Cannot resolve host ip");
       return;
     }
     updater.routeCallback(req.body);
@@ -969,4 +976,14 @@ Bot::getGameHighScores(int64_t user_id, std::string_view inline_message_id,
 std::pair<bool, opt_error> Bot::deleteWebhook() const {
   return api->ApiCall<bool>(__func__);
 }
+std::pair<Message,opt_error>
+Bot::sendDice(IntOrString chat_id,opt_bool disable_notification,
+         opt_int64 reply_to_message_id,
+              std::optional<ReplyMarkups> reply_markup) {
+    QueryBuilder builder;
+    builder << make_named_pair(chat_id) << make_named_pair(disable_notification)
+            << make_named_pair(reply_to_message_id) << make_named_pair(reply_markup);
+    return api->ApiCall<Message>(__func__,builder);
+}
+
 } // namespace telegram

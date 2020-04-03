@@ -4,18 +4,37 @@
 #include "rapidjson/document.h"
 #include "utility/utility.h"
 namespace telegram {
-
+/**
+ * @brief Class that builds JSON Document
+ * The class has overloaded operator<< for writing to document
+ *
+ * Working with this class is as follows
+ * 1) Create QueryBuilder instance
+ * 2) Write data using 'make_named_pair' macro
+ * 3) Grab data using getQuery or getDocument methods
+ */
 class QueryBuilder {
   rapidjson::Document doc{};
 
 public:
-  QueryBuilder() = default;
-  QueryBuilder(rapidjson::Document::AllocatorType &allocator);
+  explicit QueryBuilder() = default;
+  explicit QueryBuilder(rapidjson::Document::AllocatorType &allocator);
 
+  /**
+   * Overloaded shift operator for writing data
+   * Accepts pair of parameter name and it`s value
+   * Preferrably used with 'make_named_pair' macro
+   */
   template <class T>
   friend QueryBuilder &operator<<(QueryBuilder &builder,
                                   const std::pair<std::string_view, T> &pair);
+  /// Produce a query
   std::string getQuery() const noexcept;
+  /**
+   * Get document with written values
+   * \warning if no value was sent the document will not contain any value
+   * and using rapidjson::Document::GetObject will trigger assert
+   */
   const rapidjson::Document &getDocument() const noexcept;
 };
 

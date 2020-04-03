@@ -6,6 +6,10 @@
 #include <optional>
 
 namespace telegram::utility {
+/**
+ * Trie class implementation
+ */
+
 template <class T>
 class Trie {
     struct TrieNode {

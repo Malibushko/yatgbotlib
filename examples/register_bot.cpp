@@ -5,8 +5,7 @@ struct User {
     std::string date_of_birth;
     std::string to_string() {
         std::string buffer;
-        const int literal_size = 34; // sum of string literals
-        buffer.reserve(username.size()+password.size()+date_of_birth.size()+literal_size);
+        buffer.reserve(username.size()+password.size()+date_of_birth.size());
         buffer += "\nName: " + username +
                   "\nPassword: " + password +
                   "\nBirth date: " + date_of_birth + '\n';
@@ -66,7 +65,9 @@ int main() {
         };
         return true;
        });
-
+       registration->onExit([&,user](Message){
+          // Database::write(user);  // do something with user object
+       });
        // add sequence to bot
        bot.startSequence(msg.from->id,registration);
     });

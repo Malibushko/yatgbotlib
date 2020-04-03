@@ -27,16 +27,20 @@ void UpdateManager::routeCallback(const std::string &str) {
     rapidjson::Document doc;
     const auto &ok = doc.Parse(str.data());
     if (ok.HasParseError()) {
-        utility::logger::warn("Document parse error. \nRapidjson Error Code: ",
+        utility::Logger::warn("Document parse error. \nRapidjson Error Code: ",
                               ok.GetParseError(),"\nOffset: ",ok.GetErrorOffset(),'\n',
                               "JSON: ",str);
         return;
     }
     if (doc.HasMember("ok") && !doc["ok"].GetBool()) {
-        utility::logger::warn("Error: ",doc["description"].GetString(),'\n');
+        utility::Logger::warn("Error: ",doc["description"].GetString(),'\n');
         return;
     }
+
     auto callback_router = [this](const auto &it) {
+        // try to find callback and run it
+        // if run was successfull no other callback will be triggered
+
         if (runIfExist<QueryCallback>("callback_query","data",it)) {
              return;
         }
@@ -46,33 +50,36 @@ void UpdateManager::routeCallback(const std::string &str) {
         if (runIfExist<ChosenInlineResultCallback>("chosen_inline_result","query",it)) {
              return;
         }
+        if (runIfExist<ShippingQueryCallback>("shipping_query","invoice_payload",it)) {
+                         return;
+        }
+        if (runIfExist<PreCheckoutQueryCallback>("pre_checkout_query","invoice_payload",it)) {
+                         return;
+        }
         if (runIfExist<MessageCallback>("message","text",it)) {
                          return;
         }
+        // if no other callback/regex/sequence match the callback, run the default callback (if it present)
         if (callback)
             std::thread(callback,JsonParser::i().fromJson<Update>(JsonParser::i().rapidObjectToJson(it))).detach();
     };
-
-    if (auto has_result = doc.HasMember("result");
-            (has_result && doc["result"].IsArray()) || doc.IsArray()) {
-        const auto &updates_arr =
-                has_result ? doc["result"].GetArray() : doc.GetArray();
+    // if result is array, extract the array and process every update
+    if (doc["result"].IsArray() || doc.IsArray()) {
+        const auto &updates_arr = !doc.IsArray() ? doc["result"].GetArray() : doc.GetArray();
+        // update offset value for next queries
         if (updates_arr.Size())
-            lastUpdate = updates_arr[updates_arr.Size() - 1]
-                    .GetObject()["update_id"]
-                    .GetUint64() + 1;
+            lastUpdate = updates_arr[updates_arr.Size() - 1].GetObject()["update_id"].GetUint64() + 1;
 
         for (auto &&it : updates_arr) {
             callback_router(it.GetObject());
         }
-    } else if ((has_result && doc["result"].IsObject()) ||
-               (!has_result && doc.IsObject())) {
-        const auto &update =
-                !has_result ? doc.GetObject() : doc["result"].GetObject();
+        // the same but with only one element
+    } else if (doc["result"].IsObject() || doc.IsObject()) {
+        const auto &update = doc.IsObject() ? doc.GetObject() : doc["result"].GetObject();
         lastUpdate = update["update_id"].GetUint64() + 1;
         callback_router(update);
     } else {
-        utility::logger::warn("Json document does not contain any parsable value");
+        utility::Logger::warn("Json document does not contain any parsable value");
         return;
     }
 }

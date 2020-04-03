@@ -8,6 +8,9 @@ using namespace traits;
 using name_value_pair = std::pair<std::string_view, std::string>;
 
 namespace utility {
+    /**
+     * Compare two string_views case insensitive
+     */
     bool lowercase_compare(std::string_view a, std::string_view b)
     {
         return std::equal(a.begin(), a.end(),
@@ -16,11 +19,14 @@ namespace utility {
                               return tolower(a) == tolower(b);
                           });
     }
-
+    /**
+     * Read file in binary format and returns std::string object
+     * which represent content of the file
+     */
     std::string fileBytes(const std::string &filePath) {
         std::ifstream ifs(filePath, std::ios::in | std::ios::binary);
         if (!ifs.is_open()) {
-            utility::logger::info("File ",filePath, "is empty");
+            utility::Logger::info("File ",filePath, "is empty");
             return {};
         }
         size_t fileSize = fs::file_size(filePath);
@@ -29,6 +35,11 @@ namespace utility {
 
         return std::string(bytes.data(), fileSize);
     }
+    /**
+     * Struct that contain error code to indicate the problem
+     * and description
+     * Has overloaded operator<< for writing objects to istreams
+     */
     struct Error {
         int32_t error_code;
         std::string description;
@@ -45,13 +56,19 @@ namespace utility {
 
 }
 using utility::Error;
-
+/**
+ * @brief Class that implements request to telegram api
+ */
 class ApiManager {
+  /// url that will be prepended to each request
   std::string base_url;
   NetworkManager m_manager{"api.telegram.org"};
 
 private:
-  template <class T> void assignFromJson(T &value, const std::string &data) const {
+  /**
+   * Function assigns value from string (not only JSON) based on value type
+   */
+  template <class T> void assignValue(T &value, const std::string &data) const {
     if constexpr (traits::is_string_type<T>)
       value = data;
     else if constexpr (traits::is_parsable_v<T> || traits::is_container_v<T>)
@@ -63,12 +80,21 @@ private:
     else if constexpr (std::is_floating_point_v<T>)
       value = std::stof(data);
   }
+  /**
+   * Function assigns value of type AssignType
+   * but accepts any type
+   * It is when value in reply is not equal to object value (like assinging to std::variant)
+   */
   template <class T, class AssignType>
-  void assignFromJson(T &value, const std::string &data) const {
+  void assignValue(T &value, const std::string &data) const {
     AssignType temp_val{};
-    assignFromJson<AssignType>(temp_val, data);
+    assignValue<AssignType>(temp_val, data);
     value = std::move(temp_val);
   }
+  /**
+    This function parses telegram reply (see telegram documentation)
+    end returns pair of error flag and json string that contains data (e.g 'result' part)
+   */
   std::pair<bool,std::string> parseWithError(std::string_view view) {
       rapidjson::Document doc;
       if (!view.size()) {
@@ -102,6 +128,14 @@ public:
   ApiManager() {}
   ApiManager(std::string &&url) noexcept : base_url{std::move(url)} {}
 
+  /**
+   * Overloaded function that accepts name of API method and QueryBuilder
+   * that contains arguments neccessary for the call
+   * @param api - Telegram Bot Api method name
+   * @param builder - QueryBuilder that contains data
+   * @return pair of value and Error
+   */
+
   template <class T>
   std::pair<T, std::optional<Error>> ApiCall(const char *api,
                                              const QueryBuilder &builder) {
@@ -109,23 +143,37 @@ public:
         m_manager.post(base_url + api, {}, builder.getQuery());
 
     if (!reply) {
-      return {T{}, Error{600, "Unable to make a request"}};
+      return {T{}, Error{static_cast<uint32_t>(ErrorCodes::UnableToMakeRequest),
+                      "Unable to make a request"}};
     }
     std::pair<T, std::optional<Error>> result;
 
     auto &&[is_valid, value] = parseWithError(reply->body);
     if (is_valid) {
-      assignFromJson<T>(result.first, value);
+      assignValue<T>(result.first, value);
     } else {
       result.second = Error{static_cast<int32_t>(reply->status), value};
     }
     return result;
   }
-
+  /**
+   * Overloaded function that accepts name of API method and QueryBuilder
+   * that contains arguments neccessary for the call. This overload has
+   * two template parameters and is used then function can have two different
+   * returning types (everywhere is True or Value).
+   * If value is not True than a Value is returned, otherwise Error is returned;
+   * @param api - Telegram Bot Api method name
+   * @param builder - QueryBuilder that contains data
+   * @return pair of value and Error
+   */
   template <class T, class TrueOrType>
   std::pair<T, std::optional<Error>> ApiCall(const char *api,
                                              const QueryBuilder &builder) {
     auto reply = m_manager.post(base_url + api, {}, builder.getQuery());
+    if (!reply) {
+      return {T{}, Error{static_cast<uint32_t>(ErrorCodes::UnableToMakeRequest),
+                      "Unable to make a request"}};
+    }
 
     std::pair<T, std::optional<Error>> result;
 
@@ -136,29 +184,43 @@ public:
       } else if (utility::lowercase_compare(value, utility::false_literal.data())) {
         result.first = false;
       } else {
-        assignFromJson<T, TrueOrType>(result.first, value);
+        assignValue<T, TrueOrType>(result.first, value);
       }
     } else {
       result.second = Error{static_cast<int32_t>(reply->status), value};
     }
     return result;
   }
-
+  /**
+   * @brief Call to Telegram bot API without arguments
+   * This overload just call API method and returns result
+   * @param api - Telegram Bot Api method name
+   */
   template <class T>
   std::pair<T, std::optional<Error>> ApiCall(const char *api) {
     auto reply = m_manager.post(base_url + api);
 
     std::pair<T, std::optional<Error>> result;
+    if (!reply) {
+      return {T{}, Error{static_cast<uint32_t>(ErrorCodes::UnableToMakeRequest),
+                      "Unable to make a request"}};
+    }
 
     auto &&[is_valid, value] = parseWithError(reply->body);
     if (is_valid) {
-      assignFromJson<T>(result.first, value);
+      assignValue<T>(result.first, value);
     } else {
-      result.second = Error{0, value};
+      result.second = Error{static_cast<uint32_t>(ErrorCodes::InvalidReply),
+                        value};
     }
     return result;
   }
-
+  /**
+   * This overload is used to send multipart requests (e.g when it is neccessary to send some files)
+   * @param api - Telegram Bot API method name
+   * @param builder - QueryBuilder that contains data
+   * @param params - Container of paths to files (either absolute or relative)
+   */
   template <class T>
   std::pair<T, std::optional<Error>>
   ApiCall(const char *api, QueryBuilder &builder,
@@ -166,12 +228,13 @@ public:
     std::pair<T, std::optional<Error>> result;
     std::string reply;
     int status_code = 0;
-    // check if there is a valid path to local file
+
+    /// check if there is a valid path to local file
     if (std::any_of(params.begin(), params.end(),
                     [](const name_value_pair &value) {
                       return fs::exists(fs::path(value.second));
                     })) {
-      // rewrite the doc
+      /// rewrite the doc to httplib multipart object type
       std::vector<httplib::MultipartFormData> items;
       const auto &build_doc = builder.getDocument().GetObject();
       items.reserve(static_cast<size_t>(
@@ -183,7 +246,8 @@ public:
               {it->name.GetString(), std::to_string(it->value.GetInt64()), {}});
         else if (it->value.IsBool())
           items.push_back({it->name.GetString(),
-                           it->value.GetBool() ? "true" : "false",
+                           it->value.GetBool() ? utility::true_literal.data() :
+                                                 utility::false_literal.data(),
                            {}});
         else if (it->value.IsString())
           items.push_back({it->name.GetString(), it->value.GetString()});
@@ -191,6 +255,8 @@ public:
 
       for (auto &&[name, path_or_id] : params) {
         if (auto path = fs::path(path_or_id); fs::exists(path)) {
+            /// check if value is certificate or key file
+            /// telegram has additional requirements in that case (prepend '@' to filename)
           if (path.filename().string().find(".pem") != std::string::npos)
             items.push_back({"certificate",
                              utility::fileBytes(fs::absolute(path)),
@@ -215,7 +281,7 @@ public:
       status_code = response->status;
     } else {
       result.second = Error{
-          0,
+              static_cast<int32_t>(ErrorCodes::NotValid),
           std::string("Id or filepath is not valid for at least one file at ") +
               __func__};
       return result;
@@ -223,12 +289,13 @@ public:
 
     auto &&[is_valid, value] = parseWithError(reply);
     if (is_valid) {
-      assignFromJson<T>(result.first, value);
+      assignValue<T>(result.first, value);
     } else {
       result.second = Error{static_cast<int32_t>(status_code), value};
     }
     return result;
   }
+  /// this function calls Telegram Bot Api and returns result with no processing made
   std::string ApiCallRaw(const char *api, const QueryBuilder &builder) {
     return m_manager.post(base_url + api, {}, builder.getQuery())->body;
   }

@@ -7,7 +7,27 @@
 #include <memory>
 
 namespace telegram {
+/**
+  * Main idea of these macros is to provide additional
+  * information about structure fields (e.g field names)
+  * so we would have possibility to find out field name
+  * with the following syntax
+  * T::field_info<INDEX>::name
+  * What for? - To iterate over structures with magic_get (boost::pfr)
+  * If you have not worked with magic_get,
+  * know that it allows you to get a link to the structure field by index.
+  * So now it must be clear, that using only index we can find out
+  * field name and field data - e.g. serialize structure using reflection
+  * like that:
+  * size_t index = N;
+  * jsonDocuemnt[Structure::field_info<index>::name] = boost::pfr::get<index>(StructureObject);
+  * see implemementation in json_parser.h
+  */
 
+/**
+ * This code is based on loopholes and will only be activated if
+ * __COUNTER__ is not defined (it is on msvc, gcc and clang)
+ */
 #ifndef __COUNTER__
 constexpr static int MAX_DEPTH = 64;
 template<uint64_t N>
@@ -64,13 +84,23 @@ int constexpr counter_id(int value = mark<next_flag>::value) {
     static constexpr int current_counter = counter_id();
 
 #else
+/**
+  * Macro declare field based on arguments
+  * Also it adds field_info specialization to structure declaration
+  * field_info contains info about field_name
+  */
 #ifndef declare_field
 #define declare_field(type, field_name) \
     type field_name; \
     template<typename Dummy__ >       \
     struct field_info<__COUNTER__-current_counter-1,Dummy__> \
-{ constexpr static std::string_view name = #field_name;}
+    { constexpr static std::string_view name = #field_name;}
 #endif
+/**
+ * Declares field_info class (which is specialized by field_info)
+ * And remembers current value of __COUNTER__ as offset
+ */
+
 #ifndef declare_struct
 #define declare_struct template<size_t N,class Dummy = void> struct field_info; \
     static constexpr bool is_parsable = true;\
@@ -741,6 +771,13 @@ struct PassportElementErrorUnspecified {
     declare_field(std::vector<std::string>,file_hashes);
     declare_field(std::string,message);
 };
+/// This object represents a dice with random value from 1 to 6. (
+/// Yes, we're aware of the “proper” singular of die.
+/// But it's awkward, and we decided to help it change. One dice at a time!)
+struct Dice {
+    declare_struct;
+    declare_field(int,value);
+};
 
 /// This object represents a message.
 struct Message {
@@ -792,7 +829,9 @@ struct Message {
     declare_field(std::optional<std::string>,connected_website);
     declare_field(std::optional<PassportData>,passport_data);
     declare_field(std::optional<InlineKeyboardMarkup>,reply_markup);
+    declare_field(std::optional<Dice>,dice);
 };
+
 /**
   This object represents an incoming callback query from a callback button in an inline keyboard.
   If the button that originated the query was attached to a message sent by the bot,

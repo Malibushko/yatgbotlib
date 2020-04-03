@@ -13,9 +13,13 @@ std::array<int,N> getRandomNumber() {
     std::generate(password.begin(),password.end(),[&](){return distr(gen);});
     return password;
 }
-// create keyboard in a form of matrix
 InlineKeyboardMarkup createKeyboard() {
     InlineKeyboardMarkup keyboard;
+    /* Build keyboard like
+     * 1 2 3
+     * 4 5 6
+     * 7 8 9
+     */
     keyboard.inline_keyboard.resize(3);
     for (size_t i = 0; i < 3;++i) {
         keyboard.inline_keyboard[i].resize(3);
@@ -47,7 +51,7 @@ int main() {
                                           ,password_check,number = str[i]](CallbackQuery&& q){
                 if (!q.data || q.data->at(0) != number) {
                     bot.reply(q.message.value(),"Failed to log in");
-                    bot.stopSequence(user_id);
+                    bot.stopSequence(user_id); // remove sequence from bot for this user
                 }
             });
         }

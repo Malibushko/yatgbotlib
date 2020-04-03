@@ -15,17 +15,39 @@ using UpdateCallback = std::function<void(Update &&)>;
 using MessageCallback = std::function<void(Message &&)>;
 using QueryCallback = std::function<void(CallbackQuery &&)>;
 using InlineQueryCallback = std::function<void(InlineQuery &&)>;
+using ShippingQueryCallback = std::function<void(ShippingQuery &&)>;
+using PreCheckoutQueryCallback = std::function<void(PreCheckoutQuery&&)>;
 using ChosenInlineResultCallback = std::function<void(ChosenInlineResult &&)>;
-using Callbacks = std::variant<MessageCallback, QueryCallback, InlineQueryCallback,
-ChosenInlineResultCallback>;
-using Sequences = std::variant<Sequence<MessageCallback>,
-Sequence<QueryCallback>,
-Sequence<InlineQueryCallback>,
-Sequence<ChosenInlineResultCallback>>;
 
+using Callbacks = std::variant<MessageCallback, QueryCallback, InlineQueryCallback,
+ChosenInlineResultCallback,ShippingQueryCallback,PreCheckoutQueryCallback>;
+
+using Sequences = std::variant<Sequence<MessageCallback>,
+                               Sequence<QueryCallback>,
+                               Sequence<InlineQueryCallback>,
+                               Sequence<ChosenInlineResultCallback>,
+                               Sequence<ShippingQueryCallback>,
+                               Sequence<PreCheckoutQueryCallback>>;
+
+/**
+ * @brief This class performs routing on updates
+ *
+ * This class joins three callbacks types
+ * 1) Sequences
+ * 2) Callbacks
+ * 3) Usual updates (callback with UpdateCallback signature)
+ *
+ * The priority of routing is equal to list order (Sequence -> Callback -> updates)
+ */
 class UpdateManager {
 private:
+    /*
+     * there is only ONE callback for updates
+     * because all other callback types are covered with
+     * present callback system
+    */
     UpdateCallback callback;
+    // for routing commands
     utility::Trie<Callbacks> m_callbacks;
     std::vector<std::pair<std::regex,Callbacks>> m_regex;
 
@@ -34,33 +56,80 @@ private:
     size_t lastUpdate = 0;
 public:
     UpdateManager() {}
+    /**
+     * @brief set callback for Update object
+     * @param cb callback
+     * There can be only one UpdateCallback
+     * \warning previous callback will be deleted
+     */
     void setUpdateCallback(UpdateCallback &&cb);
-
-    void addSequence(int64_t user_id,
+    /// add sequence for 'id' number
+    void addSequence(int64_t id,
                      std::shared_ptr<Sequences> callback);
-    void removeSequence(int64_t user_id);
+    /// remove sequence with 'id' number
+    void removeSequence(int64_t id);
 
+    /// get current offset that is used for long polling
     size_t getOffset() const noexcept;
+    /// set offset for long polling
     void setOffset(size_t offset);
-
+    /**
+     * @brief Add callback for the following command or data
+     * @param cmd command or data that will trigger callback
+     * @param cb callback
+     */
     void addCallback(std::string_view cmd, telegram::Callbacks &&cb);
+    /**
+     * @brief addCallback for the following regex.
+     * Regexes has the lowest priority (e.g will be triggered only if there is no command to match)
+     * @param cmd regex that will trigger the callback if matched
+     * @param callback
+     */
     void addCallback(std::regex cmd, telegram::Callbacks &&callback);
+    /**
+     * @brief routeCallback
+     * @param str - json string representing the value
+     */
     void routeCallback(const std::string &str);
+    /**
+     * Find and Run callback for the folliwng command
+     * @param cmd - command or data to route
+     * @data json string represention the value
+     */
     template <class CallbackType>
     bool runCallback(std::string_view cmd, const std::string &data);
-
+    /**
+     * Run callback for the folliwng command
+     * @param cmd - command or data to route
+     * @data json string represention the value
+     */
     template <class CallbackType>
     bool runCallback(const Callbacks& cb,const std::string &data);
 
+    /**
+     * Look for callback and return boolean value if one present or not
+     */
     template<class CallbackType>
     bool findCallback(std::string_view cmd);
+
+    /// remove callback for the folliwng command
     template <class CallbackType>
     void removeCallback(std::string_view cmd);
 
+    /**
+     * Check if callback/regex/sequence is presend and run it
+     * @param callback_name - name of data in Update object (e.g "shipping_query","callback_query" etc.)
+     * @param callback_data - name of data in Callback object (for example "shipping_query" is "query")
+     * @param document containing json value
+     */
     template <class CallbackType,class Value>
     bool runIfExist(std::string_view callback_name,std::string_view callback_data,
                     const Value& doc);
-
+    /**
+     * Look for sequence and run if it exist for current id
+     * @param id - id to look for
+     * @param val - json value representing the object
+     */
     template<class CallbackType,class Value>
     bool runIfSequence(int64_t id,const Value& val);
 };
@@ -73,24 +142,31 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
     std::visit([&](auto&& value){
         using value_type = std::decay_t<decltype (value)>;
         if constexpr (std::is_same_v<CallbackType,value_type>) {
+            // get argument type from callback type (void(Update&&) -> Update)
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
+                // process detached
                 std::thread(value,JsonParser::i().fromJson<callback_arg_type>(data)).detach();
+                // set the flag if run was successfull
                 value_found = true;
             }
         }
     },value);
     return value_found;
 }
+
 template <class CallbackType>
 bool UpdateManager::runCallback(const Callbacks& cb,const std::string &data) {
     bool value_found = false;
     std::visit([&](auto&& value){
         using value_type = std::decay_t<decltype (value)>;
         if constexpr (std::is_same_v<CallbackType,value_type>) {
+            // get argument type from callback type (void(Update&&) -> Update)
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
+                // process detached
                 std::thread(value,JsonParser::i().fromJson<callback_arg_type>(data)).detach();
+                // set the flag if run was successfull
                 value_found = true;
             }
         }
@@ -141,16 +217,20 @@ void UpdateManager::removeCallback(std::string_view cmd) {
 template<class CallbackType,class Value>
 bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
     bool call_successfull = false;
+
     if (auto result = dispatcher.find(id);result != dispatcher.end()) {
+        // if sequence present for current user
         if (result->second) {
             std::visit([&](auto&& value){
                 using value_type = typename std::decay_t<decltype (value)>::EventType;
                 if constexpr (std::is_same_v<value_type, CallbackType>) {
                     if (value.finished()) {
+                        // if sequence has finished erase it and return not triggering the callback
                         dispatcher.erase(result);
                     } else {
                         call_successfull = true;
                         std::thread([&,object = JsonParser::i().rapidObjectToJson(val)](){
+                            // get real argument type anr run detached
                             using callbackArgType = typename traits::func_signature<value_type>::args_type;
                             value.input(JsonParser::i().fromJson<callbackArgType>(object));
                         }).detach();
@@ -159,7 +239,6 @@ bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
             },*result->second);
         }
     }
-
     return call_successfull;
 }
 
