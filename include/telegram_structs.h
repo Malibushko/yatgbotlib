@@ -12,21 +12,23 @@ namespace telegram {
   * information about structure fields (e.g field names)
   * so we would have possibility to find out field name
   * with the following syntax
+  *
   * T::field_info<INDEX>::name
+  *
   * What for? - To iterate over structures with magic_get (boost::pfr)
   * If you have not worked with magic_get,
   * know that it allows you to get a link to the structure field by index.
+  *
   * So now it must be clear, that using only index we can find out
-  * field name and field data - e.g. serialize structure using reflection
-  * like that:
+  * field name and field data and then serialize struct like that:
   * size_t index = N;
-  * jsonDocuemnt[Structure::field_info<index>::name] = boost::pfr::get<index>(StructureObject);
-  * see implemementation in json_parser.h
+  * jsonDocument[Structure::field_info<index>::name] = boost::pfr::get<index>(StructureObject);
+  * see implemementation details in json_parser.h
   */
 
 /**
  * This code is based on loopholes and will only be activated if
- * __COUNTER__ is not defined (it is on msvc, gcc and clang)
+ * __COUNTER__ is not defined (it IS on msvc, gcc and clang)
  */
 #ifndef __COUNTER__
 constexpr static int MAX_DEPTH = 64;
@@ -608,12 +610,12 @@ struct ShippingOption {
 /// This object represents a shipping address.
 struct ShippingAddress {
     declare_struct
-    declare_field(std::string,country_code);    // NOLINT
-    declare_field(std::string,state);           // NOLINT
-    declare_field(std::string,city);            // NOLINT
-    declare_field(std::string,street_line1);    // NOLINT
-    declare_field(std::string,street_line2);    // NOLINT
-    declare_field(std::string,post_code);       // NOLINT
+    declare_field(std::string,country_code);
+    declare_field(std::string,state);
+    declare_field(std::string,city);
+    declare_field(std::string,street_line1);
+    declare_field(std::string,street_line2);
+    declare_field(std::string,post_code);
 };
 /// This object represents information about an order.
 struct OrderInfo {

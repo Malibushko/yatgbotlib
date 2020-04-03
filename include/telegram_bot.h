@@ -29,7 +29,7 @@ using reply_markups = std::variant<InlineKeyboardMarkup, ReplyKeyboardMarkup,
  *
  *
  * The implementation of this class is rather trivial, if you look at any API method
- * it fill look like this
+ * it would look like this
  *
  * std::pair<T,opt_error> method(args) {
  *  QueryBuilder builder;
