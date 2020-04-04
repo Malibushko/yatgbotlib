@@ -41,13 +41,7 @@ using Sequences = std::variant<Sequence<MessageCallback>,
  */
 class UpdateManager {
 private:
-    /*
-     * there is only ONE callback for updates
-     * because all other callback types are covered with
-     * present callback system
-    */
     UpdateCallback callback;
-    // for routing commands
     utility::Trie<Callbacks> m_callbacks;
     std::vector<std::pair<std::regex,Callbacks>> m_regex;
 
