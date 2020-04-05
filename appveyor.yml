@@ -1,11 +1,6 @@
     platform:
       - x64
-    matrix:
-      - TOXENV: py27
-      - TOXENV: py35
-      - TOXENV: py36
-      - TOXENV: py37
-
+      
     install:
       - cmd: echo "Downloading conan..."
       - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
