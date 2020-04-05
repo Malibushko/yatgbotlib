@@ -55,7 +55,6 @@ int main() {
            }
            return true;
        });
-
        // you can add a check that will be used to every step
        registration->addCommonCheck([&](Message&& m){
         if (m.text->find("/stop") != std::string::npos){

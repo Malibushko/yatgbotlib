@@ -1,7 +1,7 @@
 #pragma once
 #include <string>
+#include <rapidjson/document.h>
 #include "json_parser.h"
-#include "rapidjson/document.h"
 #include "utility/utility.h"
 namespace telegram {
 /**

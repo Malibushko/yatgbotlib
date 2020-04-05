@@ -1,8 +1,6 @@
 #pragma once
 #include <memory>
-#define CPPHTTPLIB_OPENSSL_SUPPORT
-#include "cpp-httplib/out/httplib.h"
-#undef CPPHTTPLIB_OPENSSL_SUPPORT
+#include <httplib/httplib.h>
 #include "utility/utility.h"
 
 namespace telegram {

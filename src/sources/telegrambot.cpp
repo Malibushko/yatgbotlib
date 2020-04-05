@@ -979,11 +979,22 @@ std::pair<bool, opt_error> Bot::deleteWebhook() const {
 std::pair<Message,opt_error>
 Bot::sendDice(IntOrString chat_id,opt_bool disable_notification,
          opt_int64 reply_to_message_id,
-              std::optional<ReplyMarkups> reply_markup) {
+              std::optional<ReplyMarkups> reply_markup) const {
     QueryBuilder builder;
     builder << make_named_pair(chat_id) << make_named_pair(disable_notification)
             << make_named_pair(reply_to_message_id) << make_named_pair(reply_markup);
     return api->ApiCall<Message>(__func__,builder);
+}
+
+std::pair<bool,opt_error>
+Bot::setMyCommands(const std::vector<BotCommand>& commands) const {
+    QueryBuilder builder;
+    builder << make_named_pair(commands);
+    return api->ApiCall<bool>(__func__,builder);
+}
+
+std::pair<std::vector<BotCommand>,opt_error> Bot::getMyCommands() const {
+   return api->ApiCall<std::vector<BotCommand>>(__func__);
 }
 
 } // namespace telegram

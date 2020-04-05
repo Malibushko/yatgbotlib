@@ -634,9 +634,17 @@ public:
   std::pair<Message,opt_error>
   sendDice(IntOrString chat_id,opt_bool disable_notification = {},
            opt_int64 reply_to_message_id = {},
-           std::optional<ReplyMarkups> reply_markup = {});
+           std::optional<ReplyMarkups> reply_markup = {}) const;
 
   std::pair<bool, opt_error> deleteWebhook() const;
+
+  /// Use this method to change the list of the bot's commands. Returns True on success.
+  std::pair<bool,opt_error> setMyCommands(const std::vector<BotCommand>& commands) const;
+
+  /** Use this method to get the current list of the bot's commands.
+   * Requires no parameters. Returns Array of BotCommand on success.
+   */
+  std::pair<std::vector<BotCommand>,opt_error>  getMyCommands() const;
 };
 
 } // namespace telegram

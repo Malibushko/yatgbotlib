@@ -70,7 +70,7 @@ TEST(BotTests, sendVideoNote) {
 }
 
 TEST(BotTests, sendChatAction) {
-  auto &&[result, error] = bot.sendChatAction(chat_id, "upload_photo");
+  auto &&[result, error] = bot.sendChatAction(chat_id, ChatAction::UploadPhoto);
   ASSERT_FALSE(error);
   ASSERT_TRUE(result);
 }

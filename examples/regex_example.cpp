@@ -14,9 +14,14 @@ int main() {
         bot.sendMessage(m.chat.id,std::to_string(rand() % 150));
     });
     // regexes have the lowest priority
+    // so the bot will respons this callback if and only
+    // if it will not match any callback or command
     bot.onEvent<MessageCallback>(std::regex{"(.*)"},[&](Message&& m){
        bot.sendMessage(m.chat.id,"Command is not supported. See list of supported commantd /h");
     });
-    // you can use regexes with any <callback>Callback signature;
+    bot.setMyCommands({{"/start","get bot description"},
+                        {"/help","get list of allowed commands"},
+                        {"/number","get random number"}});
+    // you can use regexes for any <callback>Callback signature;
     bot.start(100);
 }
