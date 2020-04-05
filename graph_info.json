@@ -1,0 +1,38 @@
+{
+ "options": [
+  [
+   "cpp-httplib:with_openssl",
+   "True"
+  ],
+  [
+   "cpp-httplib:with_zlib",
+   "False"
+  ],
+  [
+   "gtest:build_gmock",
+   "True"
+  ],
+  [
+   "gtest:fPIC",
+   "True"
+  ],
+  [
+   "gtest:hide_symbols",
+   "False"
+  ],
+  [
+   "gtest:no_main",
+   "False"
+  ],
+  [
+   "gtest:shared",
+   "False"
+  ]
+ ],
+ "root": {
+  "name": "tglib",
+  "version": "0.1",
+  "user": null,
+  "channel": null
+ }
+}

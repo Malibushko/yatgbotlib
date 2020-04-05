@@ -6,10 +6,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-set(TEST_IMPORTED_LIBRARIES tglib stdc++fs)
-if (NOT ${GTEST_FOUND})
-    message("GTest library not found. ")
-endif()
+set(TEST_IMPORTED_LIBRARIES tglib stdc++fs CONAN_PKG::gtest)
 
 set(BOT_TOKEN "663528116:AAG-0bX4VLsnkMVzDpA4Ak_8dWMgRquD3ig")
 set(TEST_CHAT 250033715)
