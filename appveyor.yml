@@ -1,5 +1,7 @@
     platform:
       - x64
+    matrix:
+      - PYTHON: "C:\\Python36-x64"
 
     install:
       - cmd: echo "Downloading conan..."
@@ -9,6 +11,6 @@
       - cmd: conan --version
 
     build_script:
-      - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
+      - cmd: conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
       - cmd: conan install .
       - cmd: conan create . yehorka/stable
