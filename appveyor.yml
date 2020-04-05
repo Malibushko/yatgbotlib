@@ -1,5 +1,7 @@
+build: false
+
 environment:
-    PYTHON: "C:\Python38"
+    PYTHON: "C:\\Python37"
 
     matrix:
         # Conan development
@@ -31,10 +33,11 @@ environment:
           CMAKE_GENERATOR: "Visual Studio 16 2019"
 
 install:
-      - echo "Downloading conan..."
+     - echo "Downloading conan..."
       - set PATH=%PATH%;%PYTHON%/Scripts/
       - python -m pip install --upgrade pip
-      - pip.exe install conan
+      - pip install tox==3.7.0 tox-venv==0.3.1
+      - pip install conan
       - conan user # Create the conan data directory
       - conan --version
 
