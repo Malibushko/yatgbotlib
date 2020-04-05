@@ -1,7 +1,4 @@
-
-find_package(GTest REQUIRED)
-find_package(OpenSSL REQUIRED)
-set(TEST_IMPORTED_LIBRARIES GTest::GTest OpenSSL::SSL OpenSSL::Crypto stdc++fs tglib)
+set(TEST_IMPORTED_LIBRARIES CONAN_PKG::gtest CONAN_PKG::cpp-httplib  stdc++fs)
 if (NOT ${GTEST_FOUND})
     message("GTest library not found. ")
 endif()

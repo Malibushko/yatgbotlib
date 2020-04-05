@@ -6,6 +6,7 @@ class TGlibConan(ConanFile):
    version = "0.1"
    settings = "os", "compiler", "build_type", "arch"
    generators = "cmake"
+   exports_sources = "src/*", "CMakeLists.txt", "test/*", "examples/*"
 
    def source(self):
       self.run("git clone https://github.com/Malibushko/yatgbotlib.git")

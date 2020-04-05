@@ -53,7 +53,7 @@ conan_cmake_run(CONANFILE conanfile.txt
 add_library(tglib SHARED ${HEADERS} ${SOURCES})
 
 target_link_libraries(${PROJECT_NAME} stdc++fs CONAN_PKG::rapidjson
-    CONAN_PKG::cpp-httplib CONAN_PKG::gtest CONAN_PKG::magic_get)
+    CONAN_PKG::cpp-httplib CONAN_PKG::magic_get)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})
 set_target_properties(${PROJECT_NAME} PROPERTIES PUBLIC_HEADER include/telegram_bot.h)
