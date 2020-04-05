@@ -6,7 +6,7 @@ endif()
 
 include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-set(TEST_IMPORTED_LIBRARIES CONAN_PKG::gtest CONAN_PKG::cpp-httplib  stdc++fs)
+set(TEST_IMPORTED_LIBRARIES tglib stdc++fs)
 if (NOT ${GTEST_FOUND})
     message("GTest library not found. ")
 endif()
