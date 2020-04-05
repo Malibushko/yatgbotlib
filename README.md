@@ -5,8 +5,8 @@ Library for Telegram Bot Api written in C++
 ## Requirements
 
 Compiler with C++17  
-CMake v 3.5 or higher 
-Conan
+CMake v 3.5 or higher  
+Conan 
 
 ### Build instructions (Conan)
 ```
@@ -35,7 +35,8 @@ Now you can copy examples from `/examples` folder.
 ## Running the tests
 
 Tests are run automatically. If you dont want to run the tests set `"build_tests"` option to false. You can do this in your conanfile.txt 
-```[options]
+```
+[options]
 tglib::build_tests = False
 ```
 Or add modify code above
@@ -43,7 +44,7 @@ Or add modify code above
 conan_cmake_run(REQUIRES tglib/0.1@yehorka/stable
                 BASIC_SETUP 
                 BUILD missing
-                OPTIONS tglib::build_tests=False)
+                OPTIONS tglib:build_tests=False)
 ```
 
 ## Examples
@@ -65,7 +66,7 @@ int main() {
 }
 ```
 
-#### Webhook 
+#### Command bot 
 ```cpp
 #include <telegram_bot.h>
 

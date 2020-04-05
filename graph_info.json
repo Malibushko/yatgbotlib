@@ -1,0 +1,46 @@
+{
+ "root": {
+  "version": "0.1", 
+  "name": "tglib", 
+  "channel": null, 
+  "user": null
+ }, 
+ "options": [
+  [
+   "build_examples", 
+   "False"
+  ], 
+  [
+   "build_tests", 
+   "True"
+  ], 
+  [
+   "cpp-httplib:with_openssl", 
+   "True"
+  ], 
+  [
+   "cpp-httplib:with_zlib", 
+   "False"
+  ], 
+  [
+   "gtest:build_gmock", 
+   "True"
+  ], 
+  [
+   "gtest:fPIC", 
+   "True"
+  ], 
+  [
+   "gtest:hide_symbols", 
+   "False"
+  ], 
+  [
+   "gtest:no_main", 
+   "False"
+  ], 
+  [
+   "gtest:shared", 
+   "False"
+  ]
+ ]
+}
