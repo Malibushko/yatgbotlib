@@ -7,6 +7,7 @@
     install:
       - cmd: echo "Downloading conan..."
       - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
+      - cmd: python -m pip install --upgrade pip
       - cmd: pip.exe install conan
       - cmd: conan user # Create the conan data directory
       - cmd: conan --version
