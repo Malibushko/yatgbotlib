@@ -35,6 +35,8 @@
 *.exe
 *.out
 *.app
+# Conan files
+*conan
 
 ### CMake ###
 CMakeLists.txt.user
