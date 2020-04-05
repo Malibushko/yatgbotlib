@@ -4,8 +4,8 @@ Library for Telegram Bot Api written in C++
 
 ## CI
 
-[![Build Status](https://travis-ci.org/Malibushko/yatgbotlib.svg?branch=master)](https://travis-ci.org/Malibushko/yatgbotlib)
-
+Travis CI [![Build Status](https://travis-ci.org/Malibushko/yatgbotlib.svg?branch=master)](https://travis-ci.org/Malibushko/yatgbotlib)  
+Appveyor  [![Build Status](https://img.shields.io/appveyor/ci/Malibushko/yatgbotlib/master.svg)](https://ci.appveyor.com/project/Malibushko/yatgbotlib)
 
 ## Requirements
 

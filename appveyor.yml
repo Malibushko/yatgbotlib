@@ -2,13 +2,12 @@
       - x64
 
     environment:
-        PYTHON: "C:\\Python37"
+        PYTHON_HOME: "C:\\Python37"
 
     install:
       - cmd: echo "Downloading conan..."
-      - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
-      - cmd: python -m pip install --upgrade pip
-      - cmd: pip.exe install conan
+      - cmd: set PATH=%PYTHON_HOME%;%PYTHON_HOME%/Scripts/;%PATH%
+      - cmd: pip.exe install conan --upgrade
       - cmd: conan user # Create the conan data directory
       - cmd: conan --version
 
