@@ -1,5 +1,12 @@
+if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+    file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.15/conan.cmake"
+        "${CMAKE_BINARY_DIR}/conan.cmake")
+endif()
 
-set(TEST_IMPORTED_LIBRARIES CONAN_PKG::gtest CONAN_PKG::cpp-httplib tglib stdc++fs)
+include(${CMAKE_BINARY_DIR}/conan.cmake)
+
+set(TEST_IMPORTED_LIBRARIES CONAN_PKG::gtest CONAN_PKG::cpp-httplib  stdc++fs)
 if (NOT ${GTEST_FOUND})
     message("GTest library not found. ")
 endif()
