@@ -1,0 +1,12 @@
+[requires]
+rapidjson/1.1.0
+cpp-httplib/0.5.7
+gtest/1.10.0
+magic_get/1.0
+
+[generators]
+cmake
+
+[options]
+gtest:shared=True
+cpp-httplib:with_openssl=True
