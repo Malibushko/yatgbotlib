@@ -1,17 +1,16 @@
-    platform:
-      - x64
+environment:
+    PYTHON_HOME: "C:\\Python37"
 
-    environment:
-        PYTHON_HOME: "C:\\Python37"
-
-    install:
-      - cmd: echo "Downloading conan..."
-      - cmd: set PATH=%PYTHON_HOME%;%PYTHON_HOME%/Scripts/;%PATH%
-      - cmd: pip.exe install conan --upgrade
-      - cmd: conan user # Create the conan data directory
-      - cmd: conan --version
-
-    build_script:
-      - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
-      - cmd: conan install .
-      - cmd: conan create . yehorka/stable
+    matrix:
+        - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+          CONAN_VISUAL_VERSIONS: 15
+install:
+      echo "Downloading conan..."
+      set PATH=%PYTHON_HOME%;%PYTHON_HOME%/Scripts/;%PATH%
+      pip.exe install conan --upgrade
+      conan user
+      conan --version
+build_script:
+      conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
+      conan install .
+      conan create . yehorka/stable
