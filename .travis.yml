@@ -1,0 +1,15 @@
+os: linux
+language: python
+python: "3.7"
+dist: bionic
+compiler:
+  - gcc
+install:
+# Install conan
+  - pip install conan
+# Automatic detection of your arch, compiler, etc.
+  - conan user
+script:
+# Download dependencies and build project
+  - conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
+  - conan create . yehorka/stable

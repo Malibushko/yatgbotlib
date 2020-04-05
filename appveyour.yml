@@ -1,0 +1,14 @@
+    platform:
+      - x64
+
+    install:
+      - cmd: echo "Downloading conan..."
+      - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
+      - cmd: pip.exe install conan
+      - cmd: conan user # Create the conan data directory
+      - cmd: conan --version
+
+    build_script:
+      - cmd: conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
+      - cmd: conan install .
+      - cmd: conan create . yehorka/stable

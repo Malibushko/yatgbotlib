@@ -29,8 +29,14 @@ conan_cmake_run(REQUIRES tglib/0.1@yehorka/stable
 add_executable (${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
 ```
+##### Or 
+You can add the following to your `conanfile.txt`
+```
+[requires]
+tglib/0.1@yehorka/stable
+```
 
-Now you can copy examples from `/examples` folder. 
+Now you can copy and run examples from `/examples` folder. 
 
 ## Running the tests
 
