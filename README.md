@@ -2,6 +2,11 @@
 
 Library for Telegram Bot Api written in C++ 
 
+## CI
+
+[![Build Status](https://travis-ci.org/Malibushko/yatgbotlib.svg?branch=master)](https://travis-ci.org/Malibushko/yatgbotlib)
+
+
 ## Requirements
 
 Compiler with C++17  
@@ -12,8 +17,8 @@ Conan
 ```
 conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
 ```
-This will add repository with library recipe to your remotes
-Then you can add library by adding 
+This will add repository with library recipe to your remotes  
+Then you can add library by adding  
 ```cpp
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -30,11 +35,12 @@ add_executable (${PROJECT_NAME} main.cpp)
 target_link_libraries(${PROJECT_NAME} ${CONAN_LIBS})
 ```
 ##### Or 
-You can add the following to your `conanfile.txt`
+You can add the following to your existing `conanfile.txt`  
 ```
 [requires]
 tglib/0.1@yehorka/stable
 ```
+See more detailed information here https://github.com/conan-io/cmake-conan
 
 Now you can copy and run examples from `/examples` folder. 
 

@@ -1,6 +1,9 @@
     platform:
       - x64
-      
+
+    environment:
+        PYTHON: "C:\\Python37"
+        
     install:
       - cmd: echo "Downloading conan..."
       - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
