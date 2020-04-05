@@ -1,9 +1,5 @@
-  platform:
+    platform:
       - x64
-
-
-    environment:
-        PYTHON: "C:\\Python37"
 
     install:
       - cmd: echo "Downloading conan..."
@@ -13,6 +9,6 @@
       - cmd: conan --version
 
     build_script:
-      - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
+      - cmd: conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
       - cmd: echo "y" | conan install .
       - cmd: conan create . yehorka/stable
