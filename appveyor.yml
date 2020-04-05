@@ -1,5 +1,5 @@
 environment:
-    PYTHON: "C:\\Python37"
+    PYTHON: "C:\Python38"
 
     matrix:
         # Conan development
