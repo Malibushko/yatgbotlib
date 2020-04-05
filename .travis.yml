@@ -11,5 +11,5 @@ install:
   - conan user
 script:
 # Download dependencies and build project
-  - conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
+  - conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
   - conan create . yehorka/stable
