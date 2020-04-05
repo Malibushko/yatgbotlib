@@ -1,4 +1,5 @@
-set(TEST_IMPORTED_LIBRARIES CONAN_PKG::gtest CONAN_PKG::cpp-httplib  stdc++fs)
+
+set(TEST_IMPORTED_LIBRARIES CONAN_PKG::gtest CONAN_PKG::cpp-httplib tglib stdc++fs)
 if (NOT ${GTEST_FOUND})
     message("GTest library not found. ")
 endif()
@@ -15,9 +16,6 @@ add_definitions(-DTEST_PATH=\"${TGLIB_SOURCE_DIR}/test/resource/\"
                 -DBOT_TOKEN=\"${BOT_TOKEN}\"
                 -DTEST_CHAT_ID=${TEST_CHAT})
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}
-                    ${GTEST_INCLUDE_DIRS}
-                    ${TGLIB_SOURCE_DIR})
 
 m_add_test(api_manager)
 m_add_test(json_parser)
