@@ -1,15 +1,13 @@
-    platform:
+platform:
       - x64
+install:
+  - cmmd: echo "Downloading conan..."
+  - cmmd: set PATH=%PATH%;%PYTHON%/Scripts/
+  - cmmd: pip.exe install conan
+  - cmmd: conan user # Create the conan data directory
+  - cmmd: conan --version
 
-    install:
-      - cmmd: echo "Downloading conan..."
-      - cmmd: set PATH=%PATH%;%PYTHON%/Scripts/
-      - cmmd: pip.exe install conan
-      - cmmd: conan user # Create the conan data directory
-      - cmmd: conan --version
-
-    build_script:
-      - cmmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
-      - cmmd: echo "y"
-      - cmmd: conan install .
-      - cmmd: conan create . yehorka/stable
+build_script:
+  - cmmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
+  - cmmd: echo "y" | conan install .
+  - cmmd: conan create . yehorka/stable
