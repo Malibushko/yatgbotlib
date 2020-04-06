@@ -23,7 +23,11 @@ public:
   NetworkManager(NetworkManager &&) = delete;
   NetworkManager &operator=(const NetworkManager &) = delete;
   NetworkManager &operator=(NetworkManager &&) = delete;
-  /// this functions transforms string representation of IPv4 address to 32-bit int
+  /**
+   * @brief Function transforms string representation of IPv4 address to 32-bit int
+   * @param s - string in a format "255.255.255.255"
+   * \return 32-bit integet representing IP address
+   */
   static uint32_t ipv4(const std::string& s);
   /**
     * @brief Usual POST request

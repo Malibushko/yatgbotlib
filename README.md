@@ -111,6 +111,14 @@ int main() {
 ```
 See more in `examples` folder. 
 
+### Making documentantion
+To generate documentation for project use doxygen 
+```
+cd /path/to/project
+mkdir doc
+doxygen Doxyfile
+```
+
 ### Plans for future
 
 1. Builtin ORM support 
