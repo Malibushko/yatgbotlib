@@ -15,7 +15,7 @@ Conan
 
 ### Build instructions (Conan)
 ```
-conan remote add https://api.bintray.com/conan/yehorka9991/magic_get 
+conan remote add <some_name> https://api.bintray.com/conan/yehorka9991/magic_get 
 ```
 This will add repository with library recipe to your remotes  
 Then you can add library by adding  

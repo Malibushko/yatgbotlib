@@ -107,6 +107,4 @@ constexpr uint32_t telegram_second_subned_range_end = 1533806590;
 
 constexpr std::string_view true_literal = "true";
 constexpr std::string_view false_literal = "false";
-
-
 }
