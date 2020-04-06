@@ -6,11 +6,10 @@ using namespace telegram;
 void UpdateManager::setUpdateCallback(UpdateCallback &&cb) {
     callback = cb;
 }
-void UpdateManager::addSequence(int64_t user_id,
-                  std::shared_ptr<Sequences> callback) {
+void UpdateManager::addSequence(int64_t user_id, const Sequences& callback) {
     dispatcher[user_id] = callback;
-
 }
+
 void UpdateManager::removeSequence(int64_t user_id) {
     dispatcher.erase(user_id);
 }

@@ -22,12 +22,12 @@ using ChosenInlineResultCallback = std::function<void(ChosenInlineResult &&)>;
 using Callbacks = std::variant<MessageCallback, QueryCallback, InlineQueryCallback,
 ChosenInlineResultCallback,ShippingQueryCallback,PreCheckoutQueryCallback>;
 
-using Sequences = std::variant<Sequence<MessageCallback>,
-                               Sequence<QueryCallback>,
-                               Sequence<InlineQueryCallback>,
-                               Sequence<ChosenInlineResultCallback>,
-                               Sequence<ShippingQueryCallback>,
-                               Sequence<PreCheckoutQueryCallback>>;
+using Sequences = std::variant<std::shared_ptr<Sequence<MessageCallback>>,
+                               std::shared_ptr<Sequence<QueryCallback>>,
+                               std::shared_ptr<Sequence<InlineQueryCallback>>,
+                               std::shared_ptr<Sequence<ChosenInlineResultCallback>>,
+                               std::shared_ptr<Sequence<ShippingQueryCallback>>,
+                               std::shared_ptr<Sequence<PreCheckoutQueryCallback>>>;
 
 /**
  * @brief This class performs routing on updates
@@ -45,7 +45,7 @@ private:
     utility::Trie<Callbacks> m_callbacks;
     std::vector<std::pair<std::regex,Callbacks>> m_regex;
 
-    std::unordered_map<int64_t, std::shared_ptr<Sequences>>
+    std::unordered_map<int64_t, Sequences>
     dispatcher;
     size_t lastUpdate = 0;
 public:
@@ -59,7 +59,7 @@ public:
     void setUpdateCallback(UpdateCallback &&cb);
     /// add sequence for 'id' number
     void addSequence(int64_t id,
-                     std::shared_ptr<Sequences> callback);
+                     const Sequences &callback);
     /// remove sequence with 'id' number
     void removeSequence(int64_t id);
 
@@ -214,11 +214,12 @@ bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
 
     if (auto result = dispatcher.find(id);result != dispatcher.end()) {
         // if sequence present for current user
-        if (result->second) {
             std::visit([&](auto&& value){
-                using value_type = typename std::decay_t<decltype (value)>::EventType;
+                using variant_type = std::decay_t<decltype (value)>;
+                using sequence_type = typename variant_type::element_type;
+                using value_type = typename sequence_type::EventType;
                 if constexpr (std::is_same_v<value_type, CallbackType>) {
-                    if (value.finished()) {
+                    if (!value || value->finished()) {
                         // if sequence has finished erase it and return not triggering the callback
                         dispatcher.erase(result);
                     } else {
@@ -226,12 +227,11 @@ bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
                         std::thread([&,object = JsonParser::i().rapidObjectToJson(val)](){
                             // get real argument type anr run detached
                             using callbackArgType = typename traits::func_signature<value_type>::args_type;
-                            value.input(JsonParser::i().fromJson<callbackArgType>(object));
+                            value->input(JsonParser::i().fromJson<callbackArgType>(object));
                         }).detach();
                     }
                 }
-            },*result->second);
-        }
+            },result->second);
     }
     return call_successfull;
 }

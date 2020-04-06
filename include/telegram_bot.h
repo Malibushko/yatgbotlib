@@ -130,9 +130,7 @@ public:
    */
   template <class Event,class Check>
   void startSequence(int64_t id, std::shared_ptr<Sequence<Event,Check>> seq) {
-      auto s = std::make_shared<Sequences>();
-      *s = *seq;
-      updater.addSequence(id, s);
+      updater.addSequence(id, seq);
   }
   /**
    * @brief Removes sequence for 'user_id'

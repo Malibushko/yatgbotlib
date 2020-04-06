@@ -51,7 +51,7 @@ int main() {
                                           ,password_check,number = str[i]](CallbackQuery&& q){
                 if (!q.data || q.data->at(0) != number) {
                     bot.reply(q.message.value(),"Failed to log in");
-                    bot.stopSequence(user_id); // remove sequence from bot for this user
+                    bot.stopSequence(user_id);
                 }
             });
         }

@@ -64,13 +64,13 @@ public:
   std::shared_ptr<Sequence<Event, Check>>
   addTransition(const Event &step, const std::optional<Check> &check = {});
 
-  /*  Currently not working
-
-      void setStep(uint32_t val);
-      void stepBack();
-      void finish();
-      void reset();
-  */
+  void setStep(uint32_t val);
+  void stepBack();
+  void finish();
+  void reset();
+  std::size_t getStep() const noexcept{
+      return m_currentStep;
+  }
   /// Set event that will be called after last transition
   std::shared_ptr<Sequence<Event,Check>> onExit(const Event& e) {
       exitEvent = e;
@@ -118,6 +118,7 @@ void Sequence<Event, Check>::input(Arg &&arg) {
     return;
   }
 
+// implementation of Sequence class
 
 template <class Event, class Check>
 Sequence<Event, Check>::Sequence() noexcept {}
@@ -154,7 +155,7 @@ Sequence<Event, Check>::addTransition(const Event &step,
   transitions.emplace_back(step, check);
   return this->shared_from_this();
 }
-/* Currently unavailable
+
 template <class Event, class Check>
 void Sequence<Event, Check>::setStep(uint32_t val) {
   m_currentStep = std::clamp(val, 0, transitions.size());
@@ -172,5 +173,5 @@ template <class Event, class Check> void Sequence<Event, Check>::finish() {
 template <class Event, class Check> void Sequence<Event, Check>::reset() {
   m_currentStep = 0;
 }
-*/
+
 } // namespace telegram
