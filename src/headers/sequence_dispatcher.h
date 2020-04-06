@@ -3,8 +3,11 @@
 
 namespace telegram {
 
+template <class Event>
+using checker_signature = typename traits::checked_callback<Event>::checker;
 /**
  * This class represens sequence of Events
+ *
  * Sequences are simillar to DFA (https://en.wikipedia.org/wiki/Deterministic_finite_automaton)
  *
  * Transition is an event that happens then current step is changed
@@ -19,10 +22,6 @@ namespace telegram {
  * exitEvent happens AFTER the last transition call
  *
  */
-
-template <class Event>
-using checker_signature = typename traits::checked_callback<Event>::checker;
-
 template <class Event, class Check = checker_signature<Event>>
 class Sequence : public std::enable_shared_from_this<Sequence<Event>> {
   using TransitionPair = std::pair<Event, std::optional<Check>>;

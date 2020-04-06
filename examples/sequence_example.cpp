@@ -33,7 +33,7 @@ InlineKeyboardMarkup createKeyboard() {
 int main() {
     using namespace telegram;
     Bot bot{BOT_TOKEN}; // set BOT_TOKEN in CMake file
-    bot.onCommand("/login",[&](Message&& msg){
+    bot.onMessage("/login",[&](Message&& msg){
         auto password = getRandomNumber<5>();
         std::stringstream ss;
         for (auto it : password)

@@ -60,35 +60,55 @@ public:
    * \warning there can be only ONE callback for Updates
    */
   void onUpdate(UpdateCallback &&cb);
+
   /**
    * @brief set callback for ChosenInlineResult
    * @param cmd - data that will trigger the callback
    * @param cb - callback function that must follow void(ChosenInlineResult&&) signature
    */
-  void onInlineResult(std::string_view cmd, ChosenInlineResultCallback &&cb);
+  void onChosenInlineResult(std::string_view cmd, ChosenInlineResultCallback &&cb);
+
   /**
    * @brief set callback for CallbackQuery
    * @param cmd - data that will trigger the callback
    * @param cb - callback function that must follow void(CallbackQuery&&) signature
    */
-  void onCallback(std::string_view cmd, QueryCallback &&cb);
+  void onQueryCallback(std::string_view cmd, QueryCallback &&cb);
+
   /**
    * @brief set callback for Message (preferrably commands like /help)
    * @param cmd - text -in message that will trigger the callback
    * @param cb - callback that must follow void(Message&&) signature
    */
-  void onCommand(std::string_view cmd, MessageCallback &&cb);
+  void onMessage(std::string_view cmd, MessageCallback &&cb);
 
   /**
-   * @brief Templated version that can be used instead of 'on<command>' function set
-   * @param cmd - command or data that will trigger the callback
-   * @param cb - callback, must be one either one of MessageCallback, QueryCallback, InlineQueryCallback,
-     ChosenInlineResultCallback,ShippingQueryCallback,PreCheckoutQueryCallback;
+   * @brief set callback for InlineQuery
+   * @param cmd - query in InlineQuery that will trigger the callback
+   * @param cb - callback that must follow void(Message&&) signature
    */
+  void onInlineQuery(std::string_view cmd, InlineQueryCallback&& cb);
 
+  /**
+   * @brief set callback for ShippingQuery
+   * @param cmd - invoice_payload that will trigger the callback
+   * @param cb - callback that must follow void(Message&&) signature
+   */
+  void onShippingQuery(std::string_view cmd,ShippingQueryCallback&& cb);
+
+  /**
+   * @brief set callback for PrecheckoutQuery query
+   * @param cmd - invoice_payload -in query that will trigger the callback
+   * @param cb - callback that must follow void(ShippingQuery&&) signature
+   */
+  void onPreCheckoutQuery(std::string_view cmd,PreCheckoutQueryCallback&& cb);
+
+  /**
+   * @brief Templated function that can be used to set callback with uniform syntax
+   */
   template<class CallbackType>
   void onEvent(std::string_view cmd, CallbackType&& cb) {
-       updater.addCallback(cmd, std::move(cb));
+       updater.addCallback(cmd, std::forward<CallbackType>(cb));
   }
   /**
    * @brief Templated function that can be used to set callback using std::regex
@@ -125,6 +145,7 @@ public:
    * If the bot is using getUpdates, will return an object with the url field empty.
    */
   std::pair<WebhookInfo, opt_error> getWebhookInfo() const;
+  /// start the long polling
   void start(opt_uint64 timeout = {}, opt_uint64 offset = {},
              opt_uint8 limit = {},
              std::optional<std::vector<std::string_view>> allowed_updates = {});

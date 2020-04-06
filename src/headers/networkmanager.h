@@ -32,7 +32,6 @@ public:
     * @param body - body of POST request (empty json object by default)
     * @param content_type - 'Content-Type' header of POST request (application/json by default)
     */
-
   std::shared_ptr<httplib::Response>
   post(const std::string &url, const httplib::Headers &headers = {},
        const std::string &body = "{}",

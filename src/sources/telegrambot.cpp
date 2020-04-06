@@ -13,19 +13,30 @@ void Bot::onUpdate(UpdateCallback &&cb) {
   updater.setUpdateCallback(std::move(cb));
 }
 
-void Bot::onInlineResult(std::string_view cmd,
+void Bot::onChosenInlineResult(std::string_view cmd,
                          ChosenInlineResultCallback &&cb) {
   updater.addCallback(cmd, std::move(cb));
 }
 
-void Bot::onCallback(std::string_view cmd, QueryCallback &&cb) {
+void Bot::onQueryCallback(std::string_view cmd, QueryCallback &&cb) {
   updater.addCallback(cmd, std::move(cb));
 }
 
-void Bot::onCommand(std::string_view cmd, MessageCallback &&cb) {
+void Bot::onMessage(std::string_view cmd, MessageCallback &&cb) {
   updater.addCallback(cmd, std::move(cb));
 }
 
+void Bot::onPreCheckoutQuery(std::string_view cmd,PreCheckoutQueryCallback&& cb) {
+    updater.addCallback(cmd, std::move(cb));
+}
+
+void Bot::onInlineQuery(std::string_view cmd, InlineQueryCallback&& cb) {
+    updater.addCallback(cmd, std::move(cb));
+}
+
+void Bot::onShippingQuery(std::string_view cmd,ShippingQueryCallback&& cb) {
+    updater.addCallback(cmd, std::move(cb));
+}
 void Bot::stopSequence(int64_t user_id) { updater.removeSequence(user_id); }
 
 std::pair<WebhookInfo, opt_error> Bot::getWebhookInfo() const {
