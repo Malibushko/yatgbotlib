@@ -77,6 +77,8 @@ class ApiManager {
 private:
   /**
    * Function assigns value from string (not only JSON) based on value type
+   * @param value - Value to be assigned
+   * @param data - JSON string containing data
    */
   template <class T> void assignValue(T &value, const std::string &data) const {
     if constexpr (traits::is_string_type<T>)
@@ -104,6 +106,8 @@ private:
   /**
     This function parses telegram reply (see telegram documentation)
     end returns pair of error flag and json string that contains data (e.g 'result' part)
+    @param view Teleram Bot Api reply
+    @return pair of boolean indicating error and JSON value from 'description' response part
    */
   std::pair<bool,std::string> parseWithError(std::string_view view) {
       rapidjson::Document doc;
@@ -143,7 +147,7 @@ public:
    * that contains arguments neccessary for the call
    * @param api - Telegram Bot Api method name
    * @param builder - QueryBuilder that contains data
-   * @return pair of value and Error
+   * @return Pair of Error (if available) and value
    */
   template <class T>
   std::pair<T, std::optional<Error>> ApiCall(const char *api,
@@ -173,7 +177,7 @@ public:
    * If value is not True than a Value is returned, otherwise Error is returned;
    * @param api - Telegram Bot Api method name
    * @param builder - QueryBuilder that contains data
-   * @return pair of value and Error
+   * @return Pair of Error (if available) and value
    */
   template <class T, class TrueOrType>
   std::pair<T, std::optional<Error>> ApiCall(const char *api,
@@ -204,6 +208,7 @@ public:
    * @brief Call to Telegram bot API without arguments
    * This overload just call API method and returns result
    * @param api - Telegram Bot Api method name
+   * @return Pair of Error (if available) and value
    */
   template <class T>
   std::pair<T, std::optional<Error>> ApiCall(const char *api) {

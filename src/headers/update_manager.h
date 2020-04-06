@@ -30,23 +30,28 @@ using Sequences = std::variant<std::shared_ptr<Sequence<MessageCallback>>,
                                std::shared_ptr<Sequence<PreCheckoutQueryCallback>>>;
 
 /**
- * @brief This class performs routing on updates
+ * @brief This class performs routing on updates \n
  *
- * This class joins three callbacks types
- * 1) Sequences
- * 2) Callbacks
- * 3) Usual updates (callback with UpdateCallback signature)
+ * This class joins three callbacks types  \n
+ * 1) Sequences  \n
+ * 2) Callbacks  \n
+ * 3) Usual updates (callback with UpdateCallback signature)  \n
  *
- * The priority of routing is equal to list order (Sequence -> Callback -> updates)
+ * The priority of routing is equal to list order (Sequence -> Callback -> updates)  \n
  */
 class UpdateManager {
 private:
+    /// Callback for Update (only one)
     UpdateCallback callback;
+    /// Trie of commands
     utility::Trie<Callbacks> m_callbacks;
+    /// Regexes
     std::vector<std::pair<std::regex,Callbacks>> m_regex;
 
+    /// Container of sequences
     std::unordered_map<int64_t, Sequences>
     dispatcher;
+    // for making requests to Telegram Bot Api
     size_t lastUpdate = 0;
 public:
     UpdateManager() {}
@@ -57,10 +62,17 @@ public:
      * \warning previous callback will be deleted
      */
     void setUpdateCallback(UpdateCallback &&cb);
-    /// add sequence for 'id' number
+    /**
+     * Add sequence for 'id' number
+     * @param id Number to identify sequence
+     * @param callback Callback to be invoked when there is new Update for 'id'
+     */
     void addSequence(int64_t id,
                      const Sequences &callback);
-    /// remove sequence with 'id' number
+    /**
+     * Remove sequence with 'id' number
+     * @param id Sequence id that was specified in 'addSequence'
+     */
     void removeSequence(int64_t id);
 
     /// get current offset that is used for long polling
@@ -102,11 +114,16 @@ public:
 
     /**
      * Look for callback and return boolean value if one present or not
+     * @param cmd - Command/data to find
+     * @return true if callback exists, false otherwise
      */
     template<class CallbackType>
     bool findCallback(std::string_view cmd);
 
-    /// remove callback for the folliwng command
+    /**
+     * Remove callback for the following command
+     * @param cmd - Command/data to remove
+     */
     template <class CallbackType>
     void removeCallback(std::string_view cmd);
 
@@ -115,6 +132,7 @@ public:
      * @param callback_name - name of data in Update object (e.g "shipping_query","callback_query" etc.)
      * @param callback_data - name of data in Callback object (for example "shipping_query" is "query")
      * @param document containing json value
+     * @return true if callback was invoked, false otherwise
      */
     template <class CallbackType,class Value>
     bool runIfExist(std::string_view callback_name,std::string_view callback_data,
@@ -123,6 +141,7 @@ public:
      * Look for sequence and run if it exist for current id
      * @param id - id to look for
      * @param val - json value representing the object
+     * @return true if callback was invoked, false otherwise
      */
     template<class CallbackType,class Value>
     bool runIfSequence(int64_t id,const Value& val);

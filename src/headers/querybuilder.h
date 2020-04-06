@@ -24,16 +24,22 @@ public:
    * Overloaded shift operator for writing data
    * Accepts pair of parameter name and it`s value
    * Preferrably used with 'make_named_pair' macro
+   * @param builder - QueryBuilder objec
+   * @param pair - pair of json field name and value (preferrably made with 'make_named_pair' macro)
    */
   template <class T>
   friend QueryBuilder &operator<<(QueryBuilder &builder,
                                   const std::pair<std::string_view, T> &pair);
-  /// Produce a query
+  /**
+   * @brief get JSON string containg all written data
+   */
   std::string getQuery() const noexcept;
   /**
    * Get document with written values
-   * \warning if no value was sent the document will not contain any value
-   * and using rapidjson::Document::GetObject will trigger assert
+   * \warning if no value was sent the document will not contain any value \
+   * and using rapidjson::Document::GetObject will trigger rapdjson assert and \
+   * terminate the program
+   * \return rapidjsonDocument containg all written data
    */
   const rapidjson::Document &getDocument() const noexcept;
 };

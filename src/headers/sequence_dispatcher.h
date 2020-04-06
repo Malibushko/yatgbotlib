@@ -6,20 +6,20 @@ namespace telegram {
 template <class Event>
 using checker_signature = typename traits::checked_callback<Event>::checker;
 /**
- * @brief This class represens sequence of Events
+ * @brief This class represens sequence of Events \n
  *
- * Sequences are simillar to DFA (https://en.wikipedia.org/wiki/Deterministic_finite_automaton)
+ * Sequences are simillar to DFA (https://en.wikipedia.org/wiki/Deterministic_finite_automaton) \n
  *
- * Transition is an event that happens then current step is changed
+ * Transition is an event that happens then current step is changed \n
  *
- * Check is a function that must return boolean value that represents if there
- * must be transition to next or not. Every Transition can have its own Check
+ * Check is a function that must return boolean value that represents if there \n
+ * must be transition to next or not. Every Transition can have its own Check \n
  *
- * commonCheck is a special Check that is called at every transition
+ * commonCheck is a special Check that is called at every transition \n
  *
- * Sequence has two special events - exitEvent and enterEvent
- * enterEvent happens BEFORE the first transition call
- * exitEvent happens AFTER the last transition call
+ * Sequence has two special events - exitEvent and enterEvent \n
+ * enterEvent happens BEFORE the first transition call \n
+ * exitEvent happens AFTER the last transition call \n
  */
 template <class Event, class Check = checker_signature<Event>>
 class Sequence : public std::enable_shared_from_this<Sequence<Event>> {

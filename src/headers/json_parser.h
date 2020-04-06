@@ -32,7 +32,11 @@ public:
     }
     JsonParser(JsonParser&&) = delete;
     JsonParser(const JsonParser&) = delete;
-
+    /**
+     * @brief Serialize value to JSON format
+     * \return std::string containing valid JSON
+     * @param item - Structure or class containing 'declare_struct' macro
+     */
     template <class T, typename = std::enable_if_t<traits::is_parsable_v<T>>>
     std::string toJson(const T &item) const {
       static_assert(boost::pfr::tuple_size_v<std::decay_t<T>>> 0,
@@ -47,6 +51,11 @@ public:
       return rapidObjectToJson(document);
     }
 
+    /**
+     * @brief Deserialize value from JSON format
+     * \return object of class T
+     * @param data - valid JSON string containing data named as T fields
+     */
     template <class T, typename = std::enable_if_t<traits::is_container_v<T> ||
                                                    traits::is_parsable_v<T>>>
     T fromJson(const std::string &data) const  {
@@ -69,7 +78,12 @@ public:
       }
       return item;
     }
-
+    /**
+     * @brief Serialize rapidjson value to JSON format and write it to object
+     * @param object of type T that must be filled from json
+     * @param val - rapidjson Value containing data
+     * @paragraph allocator - rapidjson Allocator
+     */
     template <class T>
     void valueToJson(const T &value, rapidjson::Value &val,
                      jsonAllocator &allocator) const {
@@ -146,12 +160,22 @@ public:
       }
     }
 
+    /**
+     * @brief Serialize rapidjson value to JSON string
+     * @param val - rapidjson Value containing data
+     * \return std::string containing valid JSON
+     */
     std::string rapidObjectToJson(const rapidjson::Value& val) const {
         rapidjson::StringBuffer buff;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
         val.Accept(writer);
         return buff.GetString();
     }
+    /**
+     * @brief Serialize rapidjson array to JSON string
+     * @param val - rapidjson Value containing Array object
+     * \return std::string containing valid JSON
+     */
     std::string rapidArrayToJson(rapidjson::Value val) const {
         rapidjson::StringBuffer buff;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
@@ -164,6 +188,11 @@ public:
         doc.Accept(writer);
         return buff.GetString();
     }
+    /**
+     * @brief Serialize rapidjson Document to JSON string
+     * @param val - rapidjson Document containing data
+     * \return std::string containing valid JSON
+     */
     std::string rapidDocumentToString(const rapidjson::Document& doc) const {
         rapidjson::StringBuffer buff;
         rapidjson::Writer<rapidjson::StringBuffer> writer(buff);
