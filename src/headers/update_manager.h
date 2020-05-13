@@ -1,5 +1,4 @@
 #pragma once
-#include <thread>
 #include <functional>
 #include <variant>
 #include <regex>
@@ -8,16 +7,17 @@
 #include "sequence_dispatcher.h"
 #include "utility/trie.h"
 #include "json_parser.h"
+#include "utility/threadpool.h"
 
 namespace telegram {
 
-using UpdateCallback = std::function<void(Update &&)>;
-using MessageCallback = std::function<void(Message &&)>;
-using QueryCallback = std::function<void(CallbackQuery &&)>;
-using InlineQueryCallback = std::function<void(InlineQuery &&)>;
-using ShippingQueryCallback = std::function<void(ShippingQuery &&)>;
-using PreCheckoutQueryCallback = std::function<void(PreCheckoutQuery&&)>;
-using ChosenInlineResultCallback = std::function<void(ChosenInlineResult &&)>;
+using UpdateCallback = std::function<void(const Update &)>;
+using MessageCallback = std::function<void(const Message &)>;
+using QueryCallback = std::function<void(const CallbackQuery &)>;
+using InlineQueryCallback = std::function<void(const InlineQuery &)>;
+using ShippingQueryCallback = std::function<void(const ShippingQuery &)>;
+using PreCheckoutQueryCallback = std::function<void(const PreCheckoutQuery&)>;
+using ChosenInlineResultCallback = std::function<void(const ChosenInlineResult &)>;
 
 using Callbacks = std::variant<MessageCallback, QueryCallback, InlineQueryCallback,
 ChosenInlineResultCallback,ShippingQueryCallback,PreCheckoutQueryCallback>;
@@ -51,10 +51,14 @@ private:
     /// Container of sequences
     std::unordered_map<int64_t, Sequences>
     dispatcher;
+
+    // ThreadPool for controlling  number of threads
+    utility::ThreadPool pool;
     // for making requests to Telegram Bot Api
     size_t lastUpdate = 0;
 public:
-    UpdateManager() {}
+    explicit UpdateManager(std::size_t thread_num) : pool(thread_num) {
+    }
     /**
      * @brief set callback for Update object
      * @param cb callback
@@ -159,7 +163,7 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
                 // process detached
-                std::thread(value,JsonParser::i().fromJson<callback_arg_type>(data)).detach();
+                pool.enqueue(value,JsonParser::i().fromJson<callback_arg_type>(data));
                 // set the flag if run was successfull
                 value_found = true;
             }
@@ -178,7 +182,7 @@ bool UpdateManager::runCallback(const Callbacks& cb,const std::string &data) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
                 // process detached
-                std::thread(value,JsonParser::i().fromJson<callback_arg_type>(data)).detach();
+                pool.enqueue(value,JsonParser::i().fromJson<callback_arg_type>(data));
                 // set the flag if run was successfull
                 value_found = true;
             }
@@ -243,11 +247,11 @@ bool UpdateManager::runIfSequence(int64_t id,const Value& val) {
                         dispatcher.erase(result);
                     } else {
                         call_successfull = true;
-                        std::thread([&,object = JsonParser::i().rapidObjectToJson(val)](){
+                        pool.enqueue([&,object = JsonParser::i().rapidObjectToJson(val)](){
                             // get real argument type anr run detached
                             using callbackArgType = typename traits::func_signature<value_type>::args_type;
                             value->input(JsonParser::i().fromJson<callbackArgType>(object));
-                        }).detach();
+                        });
                     }
                 }
             },result->second);

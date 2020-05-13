@@ -4,7 +4,7 @@ int main() {
     using namespace telegram;
     Bot bot{BOT_TOKEN};
 
-    bot.onUpdate([&](Update&& update){
+    bot.onUpdate([&](const Update& update){
        if (update.message) {
            bot.sendMessage(update.message->chat.id,"Hello from server!");
        }

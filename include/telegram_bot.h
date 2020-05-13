@@ -54,7 +54,7 @@ class Bot {
   bool webhookSet = false;
 
 public:
-  Bot(const std::string &token) noexcept;
+  Bot(const std::string &token,std::size_t thread_number = std::thread::hardware_concurrency()) noexcept;
   /**
    * @brief Set callback for Updates
    * \warning there can be only ONE callback for Updates

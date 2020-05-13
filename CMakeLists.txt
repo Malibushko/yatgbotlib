@@ -27,15 +27,13 @@ set(HEADERS
     ./src/utility/logger.h
     ./src/utility/traits.h
     ./src/utility/trie.h
-    ./src/utility/utility.h)
+    ./src/utility/utility.h
+    ./src/utility/threadpool.h)
 
 set (SOURCES ./src/sources/telegrambot.cpp
     ./src/sources/update_manager.cpp
     ./src/sources/networkmanager.cpp
     ./src/sources/querybuilder.cpp)
-
-include_directories(${PROJECT_SOURCE_DIR}/src
-                    ${PROJECT_SOURCE_DIR}/include)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -52,7 +50,10 @@ conan_cmake_run(CONANFILE conanfile.txt
 
 add_library(tglib SHARED ${HEADERS} ${SOURCES})
 
-target_link_libraries(${PROJECT_NAME} stdc++fs CONAN_PKG::rapidjson
+
+include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC stdc++fs CONAN_PKG::rapidjson
     CONAN_PKG::cpp-httplib CONAN_PKG::magic_get)
 
 set_target_properties(${PROJECT_NAME} PROPERTIES VERSION ${PROJECT_VERSION})

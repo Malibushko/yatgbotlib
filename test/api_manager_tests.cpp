@@ -1,5 +1,5 @@
-#include "telegram_bot.h"
 #include <gtest/gtest.h>
+#include "telegram_bot.h"
 using namespace telegram;
 #define stringify(x) #x
 constexpr std::string_view bot_token = BOT_TOKEN;

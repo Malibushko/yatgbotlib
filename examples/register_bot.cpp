@@ -16,7 +16,7 @@ struct User {
 int main() {
     using namespace telegram;
     Bot bot{BOT_TOKEN};
-    bot.onMessage("/register",[&](Message&& msg){
+    bot.onMessage("/register",[&](const Message& msg){
        bot.sendMessage(msg.chat.id,"Send your username",ParseMode::Markdown);
        auto registration = std::make_shared<Sequence<MessageCallback>>();
        auto user = std::make_shared<::User>();
@@ -26,29 +26,29 @@ int main() {
        // and must return boolean value, and indicates
        // if value should be passed to next step or not
 
-       registration->addTransition([user,&bot](Message&& m){
+       registration->addTransition([user,&bot](const Message& m){
            user->username = m.text.value();
            bot.reply(m,"Send your password");
-       })->addCheck([&](Message&& m){
+       })->addCheck([&](const Message& m){
            if (!m.text || m.text->size() < 3) {
                bot.reply(m,"Username is empty or too short");
                return false;
            }
            return true; // must always return boolean value
            // if value is false - current step is repeated
-       })->addTransition([user,&bot](Message&& m){
+       })->addTransition([user,&bot](const Message& m){
            user->password = m.text.value();
            bot.reply(m,"Send your date of birth");
-       })->addCheck([&](Message&& m){
+       })->addCheck([&](const Message& m){
            if (!m.text || m.text->size() < 3) {
                bot.reply(m,"Password cannot be empty!");
                return false;
            }
            return true;
-       })->addTransition([user,&bot](Message&& m){
+       })->addTransition([user,&bot](const Message& m){
            user->date_of_birth = m.text.value();
            bot.sendMessage(m.chat.id,user->to_string());
-       })->addCheck([&bot,user](Message&& m){
+       })->addCheck([&bot,user](const Message& m){
            if (!m.text || m.text->size() < 3) {
                bot.reply(m,"Date of birth must not be empty.");
                return false;
@@ -56,7 +56,7 @@ int main() {
            return true;
        });
        // you can add a check that will be used to every step
-       registration->addCommonCheck([&](Message&& m){
+       registration->addCommonCheck([&](const Message& m){
         if (m.text->find("/stop") != std::string::npos){
             bot.reply(m,"Registration cancelled");
             bot.stopSequence(m.chat.id);
@@ -64,7 +64,7 @@ int main() {
         };
         return true;
        });
-       registration->onExit([&,user](Message){
+       registration->onExit([&,user](const Message& ){
           // Database::write(user);  // do something with user object
        });
        // add sequence to bot

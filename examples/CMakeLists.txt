@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(TG_BOT_TOKEN "663528116:AAG-0bX4VLsnkMVzDpA4Ak_8dWMgRquD3ig")
+set(TG_BOT_TOKEN "")
 
 set (EXAMPLE_LIBS tglib)
 macro (add_example _EXAMPLE_NAME)

@@ -1,6 +1,7 @@
 #include "headers/update_manager.h"
 #include "headers/sequence_dispatcher.h"
-
+#include <type_traits>
+#include <future>
 using namespace telegram;
 
 void UpdateManager::setUpdateCallback(UpdateCallback &&cb) {
@@ -60,7 +61,7 @@ void UpdateManager::routeCallback(const std::string &str) {
         }
         // if no other callback/regex/sequence match the callback, run the default callback (if it present)
         if (callback)
-            std::thread(callback,JsonParser::i().fromJson<Update>(JsonParser::i().rapidObjectToJson(it))).detach();
+            pool.enqueue(callback,JsonParser::i().fromJson<Update>(JsonParser::i().rapidObjectToJson(it)));
     };
     // if result is array, extract the array and process every update
     if (doc["result"].IsArray() || doc.IsArray()) {
