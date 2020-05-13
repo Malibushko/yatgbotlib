@@ -1,5 +1,6 @@
 #include <telegram_bot.h>
 #include <array>
+#include <random>
 using namespace telegram;
 
 // generate random number of size N in form of array
@@ -33,7 +34,7 @@ InlineKeyboardMarkup createKeyboard() {
 int main() {
     using namespace telegram;
     Bot bot{BOT_TOKEN}; // set BOT_TOKEN in CMake file
-    bot.onMessage("/login",[&](Message&& msg){
+    bot.onMessage("/login",[&](const Message& msg){
         auto password = getRandomNumber<5>();
         std::stringstream ss;
         for (auto it : password)
@@ -48,7 +49,7 @@ int main() {
         for (std::size_t i = 0; i < password.size();++i) {
             // add transition for each number
             password_check->addTransition([&bot,user_id = msg.from->id
-                                          ,password_check,number = str[i]](CallbackQuery&& q){
+                                          ,password_check,number = str[i]](const CallbackQuery& q){
                 if (!q.data || q.data->at(0) != number) {
                     bot.reply(q.message.value(),"Failed to log in");
                     bot.stopSequence(user_id);
@@ -56,7 +57,7 @@ int main() {
             });
         }
         // if everything is successfull - send user a message
-        password_check->onExit([&bot](CallbackQuery&& q){
+        password_check->onExit([&bot](const CallbackQuery& q){
             bot.reply(q.message.value(),"Successfully logged in!");
         });
         // add message to bot (not thread-safe)
