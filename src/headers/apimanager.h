@@ -136,6 +136,8 @@ private:
       } else {
           return {false,doc["description"].GetString()};
       }
+      // to supress warning
+      return {};
   }
 
 public:
