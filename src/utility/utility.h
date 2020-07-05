@@ -5,7 +5,7 @@
 #include <map>
 #    if __has_include(<filesystem>)
 #        include <filesystem>
-namespace fs = namespace std::filesystem;
+namespace fs = std::filesystem;
 #else
 #    include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
@@ -65,6 +65,8 @@ constexpr std::string_view toString(ContentTypes value) {
         return "multipart/form-data";
     case ContentTypes::application_octet_stream:
         return "application/octet-stream";
+    default:
+        return "";
     }
 }
 constexpr std::string_view toString(ParseMode value) {
@@ -73,6 +75,8 @@ constexpr std::string_view toString(ParseMode value) {
         return "Markdown";
     case ParseMode::HTML:
         return "HTML";
+    default:
+        return "";
     }
 }
 constexpr std::string_view toString(ChatAction value) {
@@ -97,6 +101,8 @@ constexpr std::string_view toString(ChatAction value) {
         return "upload_video_note";
     case ChatAction::UploadVideo:
         return "upload_video";
+    default:
+        return "";
     }
 }
 
