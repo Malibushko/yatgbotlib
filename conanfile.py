@@ -23,7 +23,7 @@ class TGlibConan(ConanFile):
       examples = "-DTGLIB_BUILD_EXAMPLES=ON" if self.options.build_examples else "-DTGLIB_BUILD_EXAMPLES=OFF"
       tests = "-DTGLIB_BUILD_TESTS=ON" if self.options.build_tests else "-DTGLIB_BUILD_TESTS=OFF";
       self.run("cmake yatgbotlib/ %s %s %s" % (cmake.command_line, examples,tests))
-      cmake.build()
+      self.run("cmake --build . --target all")
 
       if self.options.build_examples:
          cmake.run("make test")
