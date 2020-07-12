@@ -1,6 +1,7 @@
     platform:
       - x64
-
+    image: Visual Studio 2019
+    
     install:
       - cmd: echo "Downloading conan..."
       - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
