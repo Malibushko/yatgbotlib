@@ -3,12 +3,12 @@
 
     install:
       - cmd: echo "Downloading conan..."
-      - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
+      - cmd: set PATH=C:\Python37;C:\Python37\Scripts;%PATH%
       - cmd: pip.exe install conan
       - cmd: conan user # Create the conan data directory
       - cmd: conan --version
 
     build_script:
       - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
-      - cmd: echo "y" | conan install .
-      - cmd: echo "y" | conan create . yehorka/stable
+      - cmd: conan install .
+      - cmd: conan create . yehorka/stable
