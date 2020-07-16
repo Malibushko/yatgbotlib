@@ -35,6 +35,7 @@ install:
   - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
   - cmd: echo %PYTHON%
   - cmd: python -m pip install --upgrade pip
+  - cmd: pip install tox==3.7.0 tox-venv==0.3.1 requests
   - cmd: pip install conan
   - cmd: conan user
   - cmd: conan --version
