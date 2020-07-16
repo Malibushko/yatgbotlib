@@ -177,7 +177,6 @@ See more in `examples` folder.
 To generate documentation for project use doxygen 
 ```
 cd /path/to/project
-mkdir doc
 doxygen Doxyfile
 ```
 
