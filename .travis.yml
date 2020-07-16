@@ -1,14 +1,39 @@
-os: linux
 language: python
 python: "3.7"
 dist: bionic
-compiler:
-  - gcc
+
+matrix:
+  include:
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - g++-7
+    env:
+    - M_COMPILER="gcc"
+    - M_COMPILER_VERSION="7"
+    
+  - os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-6.0
+    env:
+    - M_COMPILER="clang"
+    - M_COMPILER_VERSION="7.0"
+
 install:
 # Install conan
   - pip install conan
 # Automatic detection of your arch, compiler, etc.
   - conan user
+  - conan profile new default --detect
+  - conan profile update settings.compiler="${M_COMPILER}" default
+  - conan profile update settings.compiler.version="${M_COMPILER_VERSION}" default
 script:
 # Download dependencies and build project
   - conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
