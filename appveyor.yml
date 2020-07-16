@@ -31,14 +31,14 @@ environment:
           CMAKE_GENERATOR: "Visual Studio 16 2019"
 
 install:
-  - echo "Downloading conan..."
-  - set PATH=%PATH%;%PYTHON%/Scripts/
-  - python -m pip install --upgrade pip
-  - pip install conan
-  - conan user
-  - conan --version
+  - cmd: echo "Downloading conan..."
+  - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
+  - cmd: python -m pip install --upgrade pip
+  - cmd: pip install conan
+  - cmd: conan user
+  - cmd: conan --version
 
 build_script: 
-  - conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get
-  - conan install .
-  - conan create . yehorka/stable
+  - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get
+  - cmd: conan install .
+  - cmd: conan create . yehorka/stable
