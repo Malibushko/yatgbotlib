@@ -249,7 +249,7 @@ struct InputMediaAudio {
 };
 /// Represents a general file to be sent.
 struct InputMediaDocument {
-    declare_struct;
+    declare_struct
     declare_field(std::string,type);
     declare_field(std::string,media);
     declare_field(std::optional<inn_type>,thumb);
@@ -602,7 +602,7 @@ struct LabeledPrice {
 };
 /// This object represents one shipping option.
 struct ShippingOption {
-    declare_struct;
+    declare_struct
     declare_field(std::string,id);
     declare_field(std::string,title);
     declare_field(std::vector<LabeledPrice>,prices);
@@ -742,7 +742,7 @@ struct PassportElementErrorFile {
 /// Represents an issue with a list of scans.
 /// The error is considered resolved when the list of files containing the scans changes.
 struct PassportElementErrorFiles {
-    declare_struct;
+    declare_struct
     declare_field(const std::string_view,source {"files"});
     declare_field(std::string,type);
     declare_field(std::vector<std::string>,file_hashes);
@@ -778,7 +778,7 @@ struct PassportElementErrorUnspecified {
 /// Yes, we're aware of the “proper” singular of die.
 /// But it's awkward, and we decided to help it change. One dice at a time!)
 struct Dice {
-    declare_struct;
+    declare_struct
     declare_field(int,value);
 };
 
@@ -1071,7 +1071,7 @@ struct InlineQueryResultLocation {
  * the specified content instead of the venue.
  */
 struct InlineQueryResultVenue {
-    declare_struct;
+    declare_struct
     declare_field(std::string,type);
     declare_field(std::string,id);
     declare_field(float,latitude);
@@ -1093,7 +1093,7 @@ struct InlineQueryResultVenue {
  * the specified content instead of the contact.
  */
 struct InlineQueryResultContact {
-    declare_struct;
+    declare_struct
     declare_field(std::string,type);
     declare_field(std::string,id);
     declare_field(std::string,phone_number);
