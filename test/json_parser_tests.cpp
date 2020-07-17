@@ -3,7 +3,7 @@
 #include "telegram_bot.h"
 using namespace telegram;
 struct Small {
-    declare_struct;
+    declare_struct
     declare_field(bool,test);
 };
 
@@ -13,7 +13,7 @@ TEST(JsonParser,to_json_small_structure) {
     EXPECT_EQ(expected_json,json);
 }
 struct Large {
-    declare_struct;
+    declare_struct
     declare_field(bool,b1);
     declare_field(bool,b2);
     declare_field(bool,b3);
@@ -132,7 +132,7 @@ TEST(JsonParser,to_json_variant) {
     EXPECT_EQ(expected_json_2,json_2);
 }
 struct Matrix {
-    declare_struct;
+    declare_struct
     declare_field(std::vector<std::vector<int>>,data);
 };
 
@@ -155,8 +155,9 @@ TEST(JsonParser,forward_reverse_parse) {
 TEST(JsonParser,parse_array) {
     ComplexArray arr = JsonParser::i().fromJson<ComplexArray>({"{\"data\":[{\"test\":false},{\"test\":true},{\"test\":false}]}"});
     auto expected = std::vector<Small>{{false},{true},{false}};
-    if (arr.data.size() != expected.size())
+    if (arr.data.size() != expected.size()) {
         ASSERT_TRUE(false);
+    }
 
     for (size_t i = 0; i < arr.data.size();++i)
         if (arr.data[i].test != expected[i].test) {
@@ -167,8 +168,9 @@ TEST(JsonParser,parse_array) {
 }
 TEST(JsonParse,parse_unique_ptr) {
     SharedPtr ptr = JsonParser::i().fromJson<SharedPtr>({"{\"data\":5}"});
-    if (!ptr.data)
+    if (!ptr.data) {
         ASSERT_TRUE(false);
+    }
     EXPECT_EQ((*ptr.data),5);
 }
 int main(int argc, char** argv) {
