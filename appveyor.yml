@@ -1,14 +1,21 @@
-    platform:
-      - x64
+image:
+- Visual Studio 2019
 
-    install:
-      - cmd: echo "Downloading conan..."
-      - cmd: set PATH=%PATH%;%PYTHON%/Scripts/
-      - cmd: pip.exe install conan
-      - cmd: conan user # Create the conan data directory
-      - cmd: conan --version
+environment:
+  PY_DIR: C:/Python38-x64
 
-    build_script:
-      - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
-      - cmd: echo "y" | conan install .
-      - cmd: echo "y" | conan create . yehorka/stable
+init:
+- cmd: set PATH=%PY_DIR%;%PY_DIR%\Scripts;%PATH%
+
+install:
+  - cmd: echo "Downloading conan..."
+  - cmd: echo %PATH%
+  - cmd: python -m pip install --upgrade pip
+  - cmd: pip install conan
+  - cmd: conan user
+  - cmd: conan --version
+
+build_script: 
+  - cmd: conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get
+  - cmd: conan install .
+  - cmd: conan create . yehorka/stable

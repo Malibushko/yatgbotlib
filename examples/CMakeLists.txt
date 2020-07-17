@@ -4,7 +4,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(TG_BOT_TOKEN "")
+
 list (APPEND TARGET_IMPORTED_LIBS ${PROJECT_NAME})
+
 macro (add_example _EXAMPLE_NAME)
     add_executable(${_EXAMPLE_NAME} ${_EXAMPLE_NAME}.cpp)
     target_link_libraries(${_EXAMPLE_NAME} PRIVATE ${TARGET_IMPORTED_LIBS})
