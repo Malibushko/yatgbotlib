@@ -1,12 +1,4 @@
-if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
-    message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
-    file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.15/conan.cmake"
-        "${CMAKE_BINARY_DIR}/conan.cmake")
-endif()
-
-include(${CMAKE_BINARY_DIR}/conan.cmake)
-
-set(TEST_IMPORTED_LIBRARIES tglib stdc++fs CONAN_PKG::gtest)
+set(TEST_IMPORTED_LIBRARIES ${PROJECT_NAME} CONAN_PKG::gtest)
 
 set(BOT_TOKEN "663528116:AAG-0bX4VLsnkMVzDpA4Ak_8dWMgRquD3ig")
 set(TEST_CHAT 250033715)
