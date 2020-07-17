@@ -5,14 +5,15 @@
 #include <utility>
 #include <variant>
 
-#include <rapidjson/document.h>
-#include <rapidjson/writer.h>
-#include <rapidjson/stringbuffer.h>
+#include "rapidjson/document.h"
+#include "rapidjson/writer.h"
+#include "rapidjson/stringbuffer.h"
 
-#include <boost/pfr.hpp>
+#include "boost/pfr.hpp"
 
 #include "utility/traits.h"
 #include "utility/logger.h"
+
 namespace telegram {
 
 using jsonAllocator = rapidjson::Document::AllocatorType;
@@ -39,9 +40,11 @@ public:
      */
     template <class T, typename = std::enable_if_t<traits::is_parsable_v<T>>>
     std::string toJson(const T &item) const {
-      static_assert(boost::pfr::tuple_size_v<std::decay_t<T>>> 0,
-                    "The structure has no fields.");
-
+#ifdef __FUNCTION__
+        static_assert(boost::pfr::tuple_size_v<T> > 0, "The struct <" __FUNCTION__ "> has no fields");
+#else
+        static_assert(boost::pfr::tuple_size_v<T> > 0, "The struct has no fields");
+#endif
       rapidjson::Value object(rapidjson::kObjectType);
       rapidjson::Document document;
       document.SetObject();
@@ -72,7 +75,11 @@ public:
         auto temp_arr = doc.GetArray();
         arrayToJson(item, temp_arr, doc.GetAllocator());
       } else if constexpr (traits::is_parsable_v<T>) {
+#ifdef __FUNCTION__
+        static_assert(boost::pfr::tuple_size_v<T>> 0, "The struct <" __FUNCTION__ "> has no fields");
+#else
         static_assert(boost::pfr::tuple_size_v<T>> 0, "The struct has no fields");
+#endif
         launchParser(item, doc,
                     std::make_index_sequence<boost::pfr::tuple_size_v<T>>{});
       }
@@ -395,7 +402,7 @@ private:
       else if constexpr (std::is_floating_point_v<field_type>)
         field = val.GetFloat();
       else if constexpr (std::is_integral_v<field_type>)
-        field = val.GetInt64();
+        field = static_cast<T>(val.GetInt64());
       else if constexpr (traits::is_parsable_v<field_type>) {
         rapidjson::Document subdoc(&doc.GetAllocator());
         subdoc.SetObject();

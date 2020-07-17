@@ -5,6 +5,7 @@
 #include <vector>
 #include <variant>
 #include <memory>
+#include <string_view>
 
 namespace telegram {
 /**
@@ -113,7 +114,7 @@ int constexpr counter_id(int value = mark<next_flag>::value) {
 struct Message;
 struct KeyboardButton;
 struct InlineKeyboardButton;
-struct Bot;
+class Bot;
 /// this struct is not defined in telegram documentation
 struct CallbackGame {};
 /**

@@ -3,6 +3,12 @@
 #include "querybuilder.h"
 #include "utility/utility.h"
 
+// RapidJSON conflicts with WinAPI
+// so it`s a temporal workaround for Win platforms
+#ifdef _WIN32
+#undef GetObject
+#endif
+
 namespace telegram {
 using namespace traits;
 using name_value_pair = std::pair<std::string_view, std::string>;
@@ -276,11 +282,11 @@ public:
             /// telegram has additional requirements in that case (prepend '@' to filename)
           if (path.filename().string().find(".pem") != std::string::npos)
             items.push_back({"certificate",
-                             utility::fileBytes(fs::absolute(path)),
+                             utility::fileBytes(fs::absolute(path).string()),
                              '@' + path.string()});
           else
             items.push_back({name.data(),
-                             utility::fileBytes(fs::absolute(path)),
+                             utility::fileBytes(fs::absolute(path).string()),
                              path.filename().string()});
         } else {
           items.push_back({{name.data(), name.size()}, path_or_id});
@@ -323,3 +329,12 @@ public:
   }
 };
 } // namespace telegram
+
+#ifdef WIN32
+// WINAPI IS THE BEST
+#ifdef UNICODE
+#define GetObject  GetObjectW
+#else
+#define GetObject  GetObjectA
+#endif // !UNICODE
+#endif

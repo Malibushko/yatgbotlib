@@ -8,7 +8,7 @@ namespace telegram {
 Bot::Bot(const std::string &token, std::size_t thread_number) noexcept
     : api{std::make_unique<ApiManager>("https://api.telegram.org/bot" + token +
                                        '/')},
-    updater(std::max(thread_number,2ul)) {}
+      updater(std::max(thread_number,std::size_t{2})) {}
 
 void Bot::onUpdate(UpdateCallback &&cb) {
   updater.setUpdateCallback(std::move(cb));

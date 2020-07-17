@@ -8,7 +8,7 @@
 #include "utility/trie.h"
 #include "json_parser.h"
 #include "utility/threadpool.h"
-
+#undef GetObject
 namespace telegram {
 
 using UpdateCallback = std::function<void(const Update &)>;

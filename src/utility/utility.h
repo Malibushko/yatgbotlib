@@ -10,6 +10,9 @@ namespace fs = std::filesystem;
 #    include <experimental/filesystem>
 namespace fs = std::experimental::filesystem;
 #endif
+#ifdef WIN32
+#define _SILENCE_CXX17_ITERATOR_BASE_CLASS_DEPRECATION_WARNING
+#endif
 
 #include <rapidjson/writer.h>
 #include <rapidjson/document.h>
@@ -55,7 +58,7 @@ namespace telegram::utility {
 #define make_named_pair(value) std::pair<std::string_view,std::decay_t<decltype(value)>>{#value,value}
 #endif
 
-constexpr std::string_view toString(ContentTypes value) {
+inline constexpr std::string_view toString(ContentTypes value) {
     switch (value) {
     case ContentTypes::text_plain:
         return "text/plain";
@@ -69,7 +72,7 @@ constexpr std::string_view toString(ContentTypes value) {
         return "";
     }
 }
-constexpr std::string_view toString(ParseMode value) {
+inline constexpr std::string_view toString(ParseMode value) {
     switch (value) {
     case ParseMode::Markdown:
         return "Markdown";
@@ -79,7 +82,7 @@ constexpr std::string_view toString(ParseMode value) {
         return "";
     }
 }
-constexpr std::string_view toString(ChatAction value) {
+inline constexpr std::string_view toString(ChatAction value) {
     switch (value) {
     case ChatAction::UploadAudio:
         return "upload_audio";
