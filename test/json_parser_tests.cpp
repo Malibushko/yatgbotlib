@@ -99,13 +99,13 @@ TEST(JsonParser,to_json_complex_array_type) {
 
 }
 
-struct UniquePtr {
-    declare_struct;
-    declare_field(std::unique_ptr<int>,data);
+struct SharedPtr {
+    declare_struct
+    declare_field(std::shared_ptr<int>,data);
 };
 
-TEST(JsonParser,to_json_unique_ptr) {
-    UniquePtr ptr;
+TEST(JsonParse,to_json_unique_ptr) {
+    SharedPtr ptr;
     ptr.data = std::make_unique<int>(5);
     std::string json = JsonParser::i().toJson(ptr);
     std::string expected_json = "{\"data\":5}";
@@ -166,7 +166,7 @@ TEST(JsonParser,parse_array) {
     ASSERT_TRUE(true);
 }
 TEST(JsonParse,parse_unique_ptr) {
-    UniquePtr ptr = JsonParser::i().fromJson<UniquePtr>({"{\"data\":5}"});
+    SharedPtr ptr = JsonParser::i().fromJson<SharedPtr>({"{\"data\":5}"});
     if (!ptr.data)
         ASSERT_TRUE(false);
     EXPECT_EQ((*ptr.data),5);
