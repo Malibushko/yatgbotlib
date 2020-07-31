@@ -1,6 +1,6 @@
 from conans import ConanFile, CMake
-import subprocess
 import sys
+import os
 
 class TGlibConan(ConanFile):
    name = "tglib"
@@ -16,8 +16,13 @@ class TGlibConan(ConanFile):
 
    def source(self):
        self.run("git clone https://github.com/Malibushko/yatgbotlib.git")
-       self.run("pip install --user html2markdown lxml beautifulsoup4")
-       
+       try:
+           if os.environ['TRAVIS_BUILD']:
+               print("Building on Travis")
+               self.run("pip install html2markdown lxml beautifulsoup4")
+       except KeyError: 
+           print("Building on local machine")
+           self.run("pip install --user html2markdown lxml beautifulsoup4")
 
    def build(self):
       cmake = CMake(self)
