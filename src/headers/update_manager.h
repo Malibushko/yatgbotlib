@@ -163,7 +163,7 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
                 // process detached
-                pool.enqueue(value,JsonParser::i().fromJson<callback_arg_type>(data));
+                pool.enqueue(std::forward<decltype(value)>(value),JsonParser::i().fromJson<callback_arg_type>(data));
                 // set the flag if run was successfull
                 value_found = true;
             }
@@ -182,7 +182,7 @@ bool UpdateManager::runCallback(const Callbacks& cb,const std::string &data) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
                 // process detached
-                pool.enqueue(value,JsonParser::i().fromJson<callback_arg_type>(data));
+                pool.enqueue(std::forward<decltype(value)>(value),JsonParser::i().fromJson<callback_arg_type>(data));
                 // set the flag if run was successfull
                 value_found = true;
             }
