@@ -43,24 +43,13 @@ void UpdateManager::routeCallback(const std::string &str) {
         // try to find callback and run it
         // if run was successfull no other callback will be triggered
 
-        if (runIfExist<QueryCallback>("callback_query","data",it)) {
-             return;
-        }
-        if (runIfExist<InlineQueryCallback>("inline_query","query",it)) {
-             return;
-        }
-        if (runIfExist<ChosenInlineResultCallback>("chosen_inline_result","query",it)) {
-             return;
-        }
-        if (runIfExist<ShippingQueryCallback>("shipping_query","invoice_payload",it)) {
-                         return;
-        }
-        if (runIfExist<PreCheckoutQueryCallback>("pre_checkout_query","invoice_payload",it)) {
-                         return;
-        }
-        if (runIfExist<MessageCallback>("message","text",it)) {
-                         return;
-        }
+        if (runIfExist<QueryCallback>("callback_query","data",it)
+                || runIfExist<InlineQueryCallback>("inline_query","query",it)
+                || runIfExist<ChosenInlineResultCallback>("chosen_inline_result","query",it)
+                || runIfExist<ShippingQueryCallback>("shipping_query","invoice_payload",it)
+                || runIfExist<PreCheckoutQueryCallback>("pre_checkout_query","invoice_payload",it)
+                || runIfExist<MessageCallback>("message","text",it))
+            return;
         // if no other callback/regex/sequence match the callback, run the default callback (if it present)
 
         if (callback)

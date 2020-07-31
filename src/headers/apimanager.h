@@ -240,7 +240,7 @@ public:
   /**
    * This overload is used to send multipart requests (e.g when it is neccessary to send some files)
    * @param api - Telegram Bot API method name
-   * @param builder - QueryBuilder that contains data 
+   * @param builder - QueryBuilder that contains data
    * @param params - Container of paths to files (either absolute or relative)
    * @return Pair of Error (if available) and value
    */
