@@ -17,7 +17,7 @@ int main() {
     using namespace telegram;
     Bot bot{BOT_TOKEN};
     bot.onMessage("/register",[&](const Message& msg){
-       bot.sendMessage(msg.chat.id,"Send your username",ParseMode::Markdown);
+       bot.sendMessage(msg.chat.id,"Send your username","Markdown");
        auto registration = std::make_shared<Sequence<MessageCallback>>();
        auto user = std::make_shared<::User>();
        // transition is an action that bot will do after each step

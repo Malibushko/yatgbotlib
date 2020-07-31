@@ -1,3 +1,4 @@
+
 #include <telegram_bot.h>
 #include <array>
 #include <random>
@@ -32,6 +33,7 @@ InlineKeyboardMarkup createKeyboard() {
     return keyboard;
 }
 int main() {
+    /*
     using namespace telegram;
     Bot bot{BOT_TOKEN}; // set BOT_TOKEN in CMake file
     bot.onMessage("/login",[&](const Message& msg){
@@ -41,7 +43,7 @@ int main() {
             ss << it;
         // create string out of array
         auto str = ss.str();
-        bot.sendMessage(msg.chat.id,"Enter `" + str + "`\n",ParseMode::Markdown,
+        bot.sendMessage(msg.chat.id,"Enter `" + str + "`\n","Markdown",
         {},{},{},createKeyboard());
 
         // create sequence
@@ -64,4 +66,5 @@ int main() {
         bot.startSequence(msg.from->id,password_check);
     });
     bot.start(100);
+    */
 }

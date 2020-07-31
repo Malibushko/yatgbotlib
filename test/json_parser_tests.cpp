@@ -101,7 +101,7 @@ TEST(JsonParser,to_json_complex_array_type) {
 
 struct SharedPtr {
     declare_struct
-    declare_field(std::shared_ptr<int>,data);
+    declare_field(std::unique_ptr<int>,data);
 };
 
 TEST(JsonParse,to_json_unique_ptr) {

@@ -144,8 +144,8 @@ public:
   void stop();
 
   /// TODO: add description
-  void start(std::optional<int64_t> timeout, std::optional<int64_t> offset, std::optional<int8_t> limit,
-                  std::optional<std::vector<std::string_view>> allowed_updates);
+  void start(std::optional<int64_t> timeout = {}, std::optional<int64_t> offset = {}, std::optional<int8_t> limit = {},
+             std::optional<std::vector<std::string_view>> allowed_updates = {});
   /**
    * @brief Starts webhook server on 0.0.0.0 address and given port and sets webhook for teleragram bot
    * @param url - url that will be used in setWebhook server

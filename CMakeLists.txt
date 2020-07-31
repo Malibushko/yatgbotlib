@@ -5,6 +5,7 @@ project(tglib VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_USE_OPENSSL ON)
+
 set(CMAKE_BUILD_TYPE RELEASE)
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
@@ -14,25 +15,45 @@ set(TGLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 set(TGLIB_BUILD_TESTS ON)
 set(TGLIB_BUILD_EXAMPLES OFF)
 
-set(HEADERS
-    ./include/telegram_bot.h
-    ./src/headers/json_parser.h
-    ./src/headers/querybuilder.h
-    ./src/headers/apimanager.h
-    ./src/headers/update_manager.h
-    ./src/headers/sequence_dispatcher.h
-    ./src/headers/networkmanager.h
-    ./src/headers/telegram_structs.h
-    ./src/utility/logger.h
-    ./src/utility/traits.h
-    ./src/utility/trie.h
-    ./src/utility/utility.h
-    ./src/utility/threadpool.h)
+find_package(PythonInterp 3 REQUIRED)
+if (!${PYTHONINTERP_FOUND})
+    message("Python interperator was not found. Aborting")
+elseif()
+    message("Python ${PYTHON_VERSION_STRING} was found")
+endif()
 
-set (SOURCES ./src/sources/telegrambot.cpp
-    ./src/sources/update_manager.cpp
-    ./src/sources/networkmanager.cpp
-    ./src/sources/querybuilder.cpp)
+set(HEADERS_PATH ${CMAKE_SOURCE_DIR}/src/headers)
+set(SOURCES_PATH ${CMAKE_SOURCE_DIR}/src/sources)
+set(INCLUDE_PATH ${CMAKE_SOURCE_DIR}/include)
+set(UTILITY_PATH ${CMAKE_SOURCE_DIR}/src/utility)
+
+# Generation of API
+execute_process(
+ COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_CURRENT_SOURCE_DIR}/generate.py
+    # generate structs
+    "${HEADERS_PATH}/__telegram_structs.h" "${HEADERS_PATH}/telegram_structs.h"
+    "${INCLUDE_PATH}/__telegram_bot.h" "${INCLUDE_PATH}/telegram_bot.h"
+    "${SOURCES_PATH}/__telegram_bot.cpp" "${SOURCES_PATH}/telegram_bot.cpp"
+)
+set(HEADERS
+    ${INCLUDE_PATH}/telegram_bot.h
+    ${HEADERS_PATH}/json_parser.h
+    ${HEADERS_PATH}/querybuilder.h
+    ${HEADERS_PATH}/apimanager.h
+    ${HEADERS_PATH}/update_manager.h
+    ${HEADERS_PATH}/sequence_dispatcher.h
+    ${HEADERS_PATH}/networkmanager.h
+    ${HEADERS_PATH}/telegram_structs.h
+    ${UTILITY_PATH}/logger.h
+    ${UTILITY_PATH}/traits.h
+    ${UTILITY_PATH}/trie.h
+    ${UTILITY_PATH}/utility.h
+    ${UTILITY_PATH}/threadpool.h)
+
+set (SOURCES ${SOURCES_PATH}/telegram_bot.cpp
+    ${SOURCES_PATH}/update_manager.cpp
+    ${SOURCES_PATH}/networkmanager.cpp
+    ${SOURCES_PATH}/querybuilder.cpp)
 
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
     message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
@@ -51,7 +72,8 @@ add_library(${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES})
 
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include)
 
-list (APPEND TARGET_LIBRARIES  CONAN_PKG::rapidjson
+list (APPEND TARGET_LIBRARIES
+    CONAN_PKG::rapidjson
     CONAN_PKG::cpp-httplib
     CONAN_PKG::magic_get)
 

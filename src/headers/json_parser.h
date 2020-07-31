@@ -423,8 +423,15 @@ private:
 
         if constexpr (traits::is_unique_ptr_v<type>) {
           boost::pfr::get<N>(s) = std::make_unique<typename type::element_type>();
-          parseFieldImpl(T::template field_info<N>::name.data(),
-                         *boost::pfr::get<N>(s), doc);
+            if constexpr (traits::is_optional_v<std::decay_t<decltype (boost::pfr::get<N>(s))>>) {
+              parseFieldImpl(T::template field_info<N>::name.data(),
+                             **boost::pfr::get<N>(s), doc);
+            }
+            else {
+                parseFieldImpl(T::template field_info<N>::name.data(),
+                               *boost::pfr::get<N>(s), doc);
+            }
+
         } else
           parseFieldImpl(T::template field_info<N>::name.data(),
                          boost::pfr::get<N>(s), doc);
