@@ -11,13 +11,29 @@ Appveyor  [![Build Status](https://img.shields.io/appveyor/ci/Malibushko/yatgbot
 
 Compiler with C++17  
 CMake v 3.5 or higher  
-Conan 
+Conan  
+Python 3.x.x  
+
+## Supported API version
+
+API for this library generated automatically (if use Conan) during the build  
+If you want to update API just rebuild the library as usual  
+If you choose building by hands, to generate API you need the following python libraries:  
+1) `lxml`  
+2) `html2markdown`  
+3) `beautifulsoup4`  
+4) `requests`  
 
 ### Build instructions (Conan)
 ```
 conan remote add <some_name> https://api.bintray.com/conan/yehorka9991/magic_get 
 ```
-This will add repository with library recipe to your remotes  
+This will add repository with library recipe to your remotes or download `conanfile.py` from this repo and run   
+
+`cd /path/to/conanfile`
+`conan create .`
+`conan run .`
+
 Then you can add library by adding  
 ```cpp
 if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
@@ -182,7 +198,7 @@ doxygen Doxyfile
 
 ### Plans for future
 
-1. Builtin ORM support 
+1. Builtin ORM support
 2. More intuitive sequences 
 3. Decreasing compilation speed 
 

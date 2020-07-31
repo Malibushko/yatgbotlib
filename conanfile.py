@@ -1,4 +1,6 @@
 from conans import ConanFile, CMake
+import subprocess
+import sys
 
 class TGlibConan(ConanFile):
    name = "tglib"
@@ -14,6 +16,7 @@ class TGlibConan(ConanFile):
 
    def source(self):
        self.run("git clone https://github.com/Malibushko/yatgbotlib.git")
+       self.run("pip install --user html2markdown lxml beautifulsoup4")
        
 
    def build(self):
