@@ -69,12 +69,11 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
 // Workaround about MSVC`s implementation of std::bind that copies arguments despite
 // deleted move constructor
 #ifdef _MSC_VER
-        std::bind(std::forward<F>(f), std::cref(args)...)
+    std::bind(std::forward<F>(f), std::cref(args)...)
 #else
-        std::bind(std::forward<F>(f), std::forward(args)...)
+    std::bind(std::forward<F>(f), std::forward<Args>(args)...)
 #endif
     );
-
 
     std::future<return_type> res = task->get_future();
     {
