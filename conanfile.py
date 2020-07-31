@@ -12,8 +12,8 @@ class TGlibConan(ConanFile):
    options = {"build_examples": [True, False], "build_tests": [True,False]}
    default_options = {"build_examples": False, "build_tests":True, "cpp-httplib:with_openssl": True}
 
-#   def source(self):
- #      self.run("git clone https://github.com/Malibushko/yatgbotlib.git")
+   def source(self):
+       self.run("git clone https://github.com/Malibushko/yatgbotlib.git")
        
 
    def build(self):
