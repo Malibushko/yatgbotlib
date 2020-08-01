@@ -14,7 +14,6 @@ endmacro()
 
 add_definitions(-DBOT_TOKEN=\"${TG_BOT_TOKEN}\"
     -DRESOURCE_PATH=\"${TGLIB_SOURCE_DIR}/examples/resource/\")
-
 add_example(echo_bot)
 add_example(webhook_example)
 add_example(callback_example)
