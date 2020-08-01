@@ -66,7 +66,13 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
     using return_type = typename std::invoke_result_t<F,Args...>;
 
     auto task = std::make_shared< std::packaged_task<return_type()> >(
-                std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+// Workaround about MSVC`s implementation of std::bind that copies arguments despite
+// deleted move constructor
+#ifdef _MSC_VER
+    std::bind(std::forward<F>(f), std::cref(args)...)
+#else
+    std::bind(std::forward<F>(f), std::forward<Args>(args)...)
+#endif
     );
 
     std::future<return_type> res = task->get_future();
@@ -75,8 +81,7 @@ auto ThreadPool::enqueue(F&& f, Args&&... args)
 
         // don't allow enqueueing after stopping the pool
         if(stop)
-            throw std::runtime_error("enqueue on stopped ThreadPool");
-
+            return {};
         tasks.emplace([task](){ (*task)(); });
     }
     condition.notify_one();
