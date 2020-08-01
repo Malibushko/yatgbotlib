@@ -3,6 +3,8 @@ rapidjson/1.1.0
 cpp-httplib/0.5.7
 gtest/1.10.0
 magic_get/1.0
+spdlog/1.7.0
+fmt/7.0.2
 
 [generators]
 cmake
@@ -10,3 +12,4 @@ cmake
 [options]
 gtest:shared=True
 cpp-httplib:with_openssl=True
+
