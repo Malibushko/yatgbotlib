@@ -2,6 +2,8 @@
 #include <functional>
 #include <variant>
 #include <regex>
+#include <utility/logger.h>
+#include <fmt/format.h>
 
 #include "telegram_structs.h"
 #include "sequence_dispatcher.h"
@@ -163,6 +165,7 @@ bool UpdateManager::runCallback(std::string_view cmd, const std::string &data) {
             using callback_arg_type = typename traits::func_signature<value_type>::args_type;
             if (value) {
                 // process detached
+                utility::Logger::info(fmt::format("Run callback for command: {}",cmd.data()));
                 pool.enqueue(value,JsonParser::i().fromJson<callback_arg_type>(data));
                 // set the flag if run was successfull
                 value_found = true;

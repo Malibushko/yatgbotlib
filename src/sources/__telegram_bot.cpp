@@ -1,4 +1,6 @@
-﻿#include "telegram_bot.h"
+﻿#include <spdlog/spdlog.h>
+
+#include "telegram_bot.h"
 #include "headers/querybuilder.h"
 #include "headers/apimanager.h"
 #include "utility/utility.h"
@@ -8,7 +10,9 @@ namespace telegram {
 Bot::Bot(const std::string &token, std::size_t thread_number) noexcept
     : api{std::make_unique<ApiManager>("https://api.telegram.org/bot" + token +
                                        '/')},
-      updater(std::max(thread_number,std::size_t{2})) {}
+      updater(std::max(thread_number,std::size_t{2})) {
+    utility::Logger::info(fmt::format("Threadpool capacity set to {}",std::max(thread_number,std::size_t{2})));
+}
 
 void Bot::onUpdate(UpdateCallback &&cb) {
   updater.setUpdateCallback(std::move(cb));
@@ -38,19 +42,24 @@ void Bot::onInlineQuery(std::string_view cmd, InlineQueryCallback&& cb) {
 void Bot::onShippingQuery(std::string_view cmd,ShippingQueryCallback&& cb) {
     updater.addCallback(cmd, std::move(cb));
 }
-void Bot::stopSequence(int64_t user_id) { updater.removeSequence(user_id); }
+void Bot::stopSequence(int64_t user_id) {
+    utility::Logger::info(fmt::format("Removed sequence for user #{}",user_id));
+    updater.removeSequence(user_id);
+}
 
 void Bot::start(std::optional<int64_t> timeout, std::optional<int64_t> offset, std::optional<int8_t> limit,
                 std::optional<std::vector<std::string_view>> allowed_updates) {
   if (auto &&[webhook, Error] = getWebhookInfo();
       Error || webhook.url.size() || webhookSet) {
-    if (Error)
+    if (Error) {
       utility::Logger::warn(Error.value());
+    }
     utility::Logger::critical("You must remove webhook before using long polling method.");
     return;
   }
   stopPolling = false;
   updater.setOffset(offset.value_or(0));
+  utility::Logger::info("Bot started");
   while (!stopPolling) {
     updater.routeCallback(getUpdatesRawJson(updater.getOffset(), limit, timeout,
                                             allowed_updates));
@@ -66,7 +75,10 @@ std::string Bot::getUpdatesRawJson(
           << make_named_pair(timeout) << make_named_pair(allowed_updates);
   return api->ApiCallRaw("getUpdates", builder);
 }
-void Bot::stop() { stopPolling = true; }
+void Bot::stop() {
+    utility::Logger::info("Stopping bot.");
+    stopPolling = true;
+}
 
 std::pair<Message, opt_error> Bot::reply(const Message &msg,
                                          const std::string &message) const {
@@ -78,13 +90,14 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
                            const std::string &key_path) {
 
   webhookSet = true;
-
   // Send Telegram Bot Api request first
   auto [result, Error] =
       setWebhook(url + ':' + std::to_string(port), cert_path);
  // if result is not true
- if (!result)
-    return false;
+ if (!result) {
+      utility::Logger::warn("Failed to set webhook. Check certificates paths are valid.");
+      return false;
+  }
   // or if there is error
   if (Error) {
     utility::Logger::warn(Error->toString());
@@ -108,7 +121,7 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
           host_ip != std::clamp(host_ip,
                                 utility::teleram_second_subnet_range_begin,
                                 utility::telegram_second_subned_range_end)) {
-        utility::Logger::info("Request from unknown subnet", host_ip);
+        utility::Logger::warn("Request from unknown subnet", host_ip);
         return;
       }
     } else {
@@ -117,6 +130,7 @@ bool Bot::setWebhookServer(const std::string &url, uint16_t port,
     }
     updater.routeCallback(req.body);
   });
+  utility::Logger::info(fmt::format("Server started on port [{}]",port));
   return server.listen("0.0.0.0", port);
 }
 

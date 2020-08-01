@@ -70,12 +70,16 @@ conan_cmake_run(CONANFILE conanfile.txt
 
 add_library(${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES})
 
+add_definitions(-DTGLIB_VERBOSITY_LEVEL=1)
+
 include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include)
 
 list (APPEND TARGET_LIBRARIES
     CONAN_PKG::rapidjson
     CONAN_PKG::cpp-httplib
-    CONAN_PKG::magic_get)
+    CONAN_PKG::magic_get
+    CONAN_PKG::spdlog
+    CONAN_PKG::fmt)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     list(APPEND TARGET_LIBRARIES c++experimental)

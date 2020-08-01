@@ -1,4 +1,6 @@
 #pragma once
+#include <fmt/format.h>
+
 #include "networkmanager.h"
 #include "querybuilder.h"
 #include "utility/utility.h"
@@ -160,6 +162,8 @@ public:
   template <class T>
   std::pair<T, std::optional<Error>> ApiCall(const char *api,
                                              const QueryBuilder &builder) {
+    utility::Logger::info(fmt::format("Calling {} with args: {}",api,builder.getQuery()));
+
     std::shared_ptr<httplib::Response> reply =
         m_manager.post(base_url + api, {}, builder.getQuery());
 
@@ -190,7 +194,9 @@ public:
   template <class T, class TrueOrType>
   std::pair<T, std::optional<Error>> ApiCall(const char *api,
                                              const QueryBuilder &builder) {
-    auto reply = m_manager.post(base_url + api, {}, builder.getQuery());
+      utility::Logger::info(fmt::format("Calling {} with args: {}",api,builder.getQuery()));
+
+      auto reply = m_manager.post(base_url + api, {}, builder.getQuery());
     if (!reply) {
       return {T{}, Error{static_cast<uint32_t>(ErrorCodes::UnableToMakeRequest),
                       "Unable to make a request"}};
@@ -220,6 +226,7 @@ public:
    */
   template <class T>
   std::pair<T, std::optional<Error>> ApiCall(const char *api) {
+    utility::Logger::info(fmt::format("Calling {} with no args",api));
     auto reply = m_manager.post(base_url + api);
 
     std::pair<T, std::optional<Error>> result;
@@ -248,6 +255,7 @@ public:
   std::pair<T, std::optional<Error>>
   ApiCall(const char *api, QueryBuilder &builder,
           const std::vector<name_value_pair> &params) {
+    utility::Logger::info(fmt::format("Calling {} with args: {} and files",api,builder.getQuery()));
     std::pair<T, std::optional<Error>> result;
     std::string reply;
     int status_code = 0;

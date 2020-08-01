@@ -5,7 +5,6 @@
 #include <string>
 #include <type_traits>
 #include <variant>
-
 #include "headers/update_manager.h"
 #include "headers/apimanager.h"
 

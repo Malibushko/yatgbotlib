@@ -1,6 +1,6 @@
 #include <type_traits>
 #include <future>
-
+#include <fmt/format.h>
 #include "headers/update_manager.h"
 #include "headers/sequence_dispatcher.h"
 
@@ -10,6 +10,7 @@ void UpdateManager::setUpdateCallback(UpdateCallback &&cb) {
     callback = cb;
 }
 void UpdateManager::addSequence(int64_t user_id, const Sequences& callback) {
+    utility::Logger::info(fmt::format("Sequence set for user {}",user_id));
     dispatcher[user_id] = callback;
 }
 

@@ -1,6 +1,7 @@
 #pragma once
 #include <memory>
 #include <sstream>
+#include <spdlog/spdlog.h>
 namespace telegram {
 
 namespace utility {
@@ -25,10 +26,22 @@ public:
         printf("\n[CRITICAL]: %s",info);
     }
 };
+class SpdLogger : public LoggerBase {
+public:
+    void warn(const char *info) override {
+        spdlog::warn(info);
+    }
+    void info(const char *info) override {
+        spdlog::info(info);
+    }
+    void critical(const char *info) override {
+        spdlog::critical(info);
+    }
+};
 
 class Logger {
     static inline std::unique_ptr<LoggerBase> i =
-            std::make_unique<utility::ConsoleLogger>();
+            std::make_unique<utility::SpdLogger>();
 public:
     static void set_implementation(std::unique_ptr<utility::LoggerBase> ptr) {
         i.reset();
@@ -36,41 +49,34 @@ public:
     }
     template<class... Args>
     static void warn(Args&&... args) {
+#if TGLIB_VERBOSITY_LEVEL > 0
         if (Logger::i) {
             std::stringstream s;
             (s << ... <<args);
-            warn(s.str().data());
+            i->warn(s.str().data());
         }
+#endif
     }
     template<class... Args>
     static void info(Args&&... args) {
+#if TGLIB_VERBOSITY_LEVEL > 1
         if (Logger::i) {
             std::stringstream s;
             (s << ... <<args);
-            info(s.str().data());
+            i->info(s.str().data());
         }
+#endif
     }
 
     template<class... Args>
     static void critical(Args&&... args) {
+#if TGLIB_VERBOSITY_LEVEL > 0
         if (Logger::i) {
             std::stringstream s;
             (s << ... <<args);
-            critical(s.str().data());
+            i->critical(s.str().data());
         }
-    }
-    static void warn(const char * msg) {
-        if (Logger::i)
-            Logger::i->warn(msg);
-    }
-
-    static void info(const char * msg) {
-        if (Logger::i)
-            Logger::i->info(msg);
-    }
-    static void critical(const char * msg) {
-        if (Logger::i)
-            Logger::i->critical(msg);
+#endif
     }
 };
 
