@@ -1,8 +1,8 @@
 #include <type_traits>
 #include <future>
 #include <fmt/format.h>
-#include "update_manager.h"
-#include "sequence_dispatcher.h"
+#include "headers/update_manager.h"
+#include "headers/sequence_dispatcher.h"
 
 using namespace telegram;
 

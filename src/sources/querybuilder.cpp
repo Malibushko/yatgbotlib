@@ -1,4 +1,4 @@
-#include "querybuilder.h"
+#include "headers/querybuilder.h"
 using namespace telegram;
 
 QueryBuilder::QueryBuilder(

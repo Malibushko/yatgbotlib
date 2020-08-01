@@ -11,6 +11,7 @@ set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
 set(TGLIB_SOURCE_DIR ${CMAKE_SOURCE_DIR})
 set(TGLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 option(TGLIB_BUILD_TESTS ON)
 option(TGLIB_BUILD_EXAMPLES OFF)
@@ -74,10 +75,7 @@ add_library(${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES})
 message("Verbosity level: ${VERBOSITY_LEVEL}")
 add_definitions(-DTGLIB_VERBOSITY_LEVEL=${VERBOSITY_LEVEL})
 
-include_directories(${SOURCES_PATH})
-include_directories(${HEADERS_PATH})
-include_directories(${INCLUDE_PATH})
-include_directories(${UTILITY_PATH})
+include_directories(${INCLUDE_PATH} ${CMAKE_SOURCE_DIR}/src)
 
 list (APPEND TARGET_LIBRARIES
     CONAN_PKG::rapidjson

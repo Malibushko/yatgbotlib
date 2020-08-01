@@ -2,7 +2,7 @@
 #include <string>
 #include <rapidjson/document.h>
 #include "json_parser.h"
-#include "utility.h"
+#include "utility/utility.h"
 namespace telegram {
 /**
  * @brief Class that builds JSON Document

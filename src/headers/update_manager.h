@@ -7,8 +7,8 @@
 #include "telegram_structs.h"
 #include "sequence_dispatcher.h"
 #include "json_parser.h"
-#include "trie.h"
-#include "threadpool.h"
+#include "utility/trie.h"
+#include "utility/threadpool.h"
 
 namespace telegram {
 
