@@ -1,5 +1,5 @@
 #pragma once
-#include "utility/traits.h"
+#include "traits.h"
 
 namespace telegram {
 

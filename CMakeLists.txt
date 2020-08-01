@@ -14,6 +14,7 @@ set(TGLIB_INCLUDE_DIR ${CMAKE_SOURCE_DIR}/include)
 
 set(TGLIB_BUILD_TESTS ON)
 set(TGLIB_BUILD_EXAMPLES OFF)
+set(VERBOSITY_LEVEL 1)
 
 find_package(PythonInterp 3 REQUIRED)
 if (!${PYTHONINTERP_FOUND})
@@ -70,12 +71,20 @@ conan_cmake_run(CONANFILE conanfile.txt
 
 add_library(${PROJECT_NAME} SHARED ${HEADERS} ${SOURCES})
 
-include_directories(${PROJECT_SOURCE_DIR}/src ${PROJECT_SOURCE_DIR}/include)
+message("Verbosity level: ${VERBOSITY_LEVEL}")
+add_definitions(-DTGLIB_VERBOSITY_LEVEL=${VERBOSITY_LEVEL})
+
+include_directories(${SOURCES_PATH})
+include_directories(${HEADERS_PATH})
+include_directories(${INCLUDE_PATH})
+include_directories(${UTILITY_PATH})
 
 list (APPEND TARGET_LIBRARIES
     CONAN_PKG::rapidjson
     CONAN_PKG::cpp-httplib
-    CONAN_PKG::magic_get)
+    CONAN_PKG::magic_get
+    CONAN_PKG::spdlog
+    CONAN_PKG::fmt)
 
 if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
     list(APPEND TARGET_LIBRARIES c++experimental)
@@ -100,10 +109,12 @@ elseif (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 if (TGLIB_BUILD_TESTS)
+    message("Building tests")
     enable_testing()
     add_subdirectory(${PROJECT_SOURCE_DIR}/test)
 endif()
 
 if (TGLIB_BUILD_EXAMPLES)
+    message("Building examples")
     add_subdirectory(${PROJECT_SOURCE_DIR}/examples)
 endif()

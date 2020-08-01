@@ -1,4 +1,4 @@
-#include "headers/networkmanager.h"
+#include "networkmanager.h"
 
 using namespace telegram;
 using namespace telegram::utility;

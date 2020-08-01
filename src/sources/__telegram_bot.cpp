@@ -1,7 +1,7 @@
 ﻿#include "telegram_bot.h"
-#include "headers/querybuilder.h"
-#include "headers/apimanager.h"
-#include "utility/utility.h"
+#include "querybuilder.h"
+#include "apimanager.h"
+#include "utility.h"
 
 namespace telegram {
 

@@ -6,8 +6,8 @@
 #include <type_traits>
 #include <variant>
 
-#include "headers/update_manager.h"
-#include "headers/apimanager.h"
+#include "update_manager.h"
+#include "apimanager.h"
 
 namespace telegram {
 using opt_error = std::optional<Error>;

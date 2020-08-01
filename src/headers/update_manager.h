@@ -5,10 +5,10 @@
 
 #include "telegram_structs.h"
 #include "sequence_dispatcher.h"
-#include "utility/trie.h"
 #include "json_parser.h"
-#include "utility/threadpool.h"
-#undef GetObject
+#include "trie.h"
+#include "threadpool.h"
+
 namespace telegram {
 
 using UpdateCallback = std::function<void(const Update &)>;

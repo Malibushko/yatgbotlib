@@ -16,8 +16,8 @@ namespace fs = std::experimental::filesystem;
 
 #include <rapidjson/writer.h>
 #include <rapidjson/document.h>
-#include "headers/json_parser.h"
-#include "utility/logger.h"
+#include "json_parser.h"
+#include "logger.h"
 
 namespace telegram {
 /// HTTP request content types

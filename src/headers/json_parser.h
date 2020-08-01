@@ -11,8 +11,8 @@
 
 #include "boost/pfr.hpp"
 
-#include "utility/traits.h"
-#include "utility/logger.h"
+#include "traits.h"
+#include "logger.h"
 
 namespace telegram {
 

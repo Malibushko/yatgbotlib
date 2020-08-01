@@ -1,7 +1,7 @@
 #pragma once
 #include "networkmanager.h"
 #include "querybuilder.h"
-#include "utility/utility.h"
+#include "utility.h"
 
 // RapidJSON conflicts with WinAPI
 // so it`s a temporal workaround for Win platforms
