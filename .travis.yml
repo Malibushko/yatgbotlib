@@ -17,27 +17,11 @@ matrix:
     - TRAVIS_BUILD="True"
     - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     
-  - os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-         packages:
-        - clang-8
-        - libc++-8-dev
-        - libc++abi-8-dev
-    env:
-    - M_COMPILER="clang"
-    - M_COMPILER_VERSION="7.0"
-    - TRAVIS_BUILD="True"
-    - MATRIX_EVAL=“CC=clang-8 && CXX=clang++8”
-    
 before_install:
   - eval “${MATRIX_EVAL}”
 install:
 # Install conan
   - pip install conan
-  - pip install lxml beautifulsoup4 html2markdown
 # Automatic detection of your arch, compiler, etc.
   - conan user
   - conan profile new default --detect
@@ -46,4 +30,4 @@ install:
 script:
 # Download dependencies and build project
   - conan remote add magic_get https://api.bintray.com/conan/yehorka9991/magic_get 
-  - conan create . yehorka/stable
+  - conan create . yehorka/stable --build missing
