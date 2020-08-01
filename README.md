@@ -9,10 +9,11 @@ Appveyor  [![Build Status](https://img.shields.io/appveyor/ci/Malibushko/yatgbot
 
 ## Requirements
 
-Compiler with C++17  
+Compiler with C++17 support  
 CMake v 3.5 or higher  
 Conan  
 Python 3.x.x  
+
 
 ## Supported API version
 
@@ -24,7 +25,12 @@ If you choose building by hands, to generate API you need the following python l
 3) `beautifulsoup4`  
 4) `requests`  
 
-### Build instructions (Conan)
+##### Note 
+
+Python 3 and pip3 is required for automatic API generation, so make sure you have added it to your PATH
+(e.g it can be run from terminal without specifying path explicitly) 
+
+## Build instructions (Conan)
 ```
 conan remote add <some_name> https://api.bintray.com/conan/yehorka9991/magic_get 
 ```
@@ -73,6 +79,32 @@ conan_cmake_run(REQUIRES tglib/0.1@yehorka/stable
                 BASIC_SETUP 
                 BUILD missing
                 OPTIONS tglib:build_tests=False)
+```
+## Logging
+
+By default spdlog is used. You can replace it by user-defined logger by calling  
+`utility::Logger::set_implementation(your_logger_obj)`  
+in C++ code.   
+Your logger implementation should inherit `LoggerBase` class and implement all virtual functions.  
+Logger has three levels of verbosity:
+- 0 - no logging enabled
+- 1 - only warnings or errors
+- 2 - warnings, errors and additional information about executing functions and received results
+
+By default 1 level is used. You can change it by specifying `verbosity_level` variable in conan build 
+or `VERBOSITY_LEVEL` in CMakeLists.txt if you choosed manual building. 
+
+Example of how your conanfile.txt may look like
+```
+[requires]
+tglib/0.1
+
+[generators]
+cmake
+
+[options]
+tglib:verbosity_level=2
+tglib:build_tests=False
 ```
 
 ## Examples
@@ -189,18 +221,15 @@ int main() {
 ```
 See more in `examples` folder. 
 
-### Making documentantion
+## Documentantion
 To generate documentation for project use doxygen 
 ```
 cd /path/to/project
 doxygen Doxyfile
 ```
+## Feedback
 
-### Plans for future
-
-1. Builtin ORM support
-2. More intuitive sequences 
-3. Decreasing compilation speed 
+If you experience any bug or shortcoming, please leave an issue on GitHub or contact me on Telegram (@Malbu0698)
 
 ## License
 

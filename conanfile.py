@@ -31,7 +31,7 @@ class TGlibConan(ConanFile):
       
        cmake.definitions["TGLIB_BUILD_EXAMPLES"] = self.options.build_examples
        cmake.definitions["TGLIB_BUILD_TESTS"] = self.options.build_tests
-       cmake.definitions["VERBOSITY_LEVEL"] = self.options.verbosity_level
+       cmake.definitions["VERBOSITY_LEVEL"] = str(self.options.verbosity_level)
        print("Building tests: {}\nBuilding examples: {}\nLogger verbosity level: {}"
        	.format(cmake.definitions["TGLIB_BUILD_TESTS"],cmake.definitions["TGLIB_BUILD_EXAMPLES"],cmake.definitions["VERBOSITY_LEVEL"]))
        cmake.configure(source_folder="yatgbotlib")

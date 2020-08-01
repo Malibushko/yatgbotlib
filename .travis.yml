@@ -15,19 +15,25 @@ matrix:
     - M_COMPILER="gcc"
     - M_COMPILER_VERSION="7"
     - TRAVIS_BUILD="True"
+    - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
     
   - os: linux
     addons:
       apt:
         sources:
         - ubuntu-toolchain-r-test
-        packages:
-        - clang-6.0
+         packages:
+        - clang-8
+        - libc++-8-dev
+        - libc++abi-8-dev
     env:
     - M_COMPILER="clang"
     - M_COMPILER_VERSION="7.0"
     - TRAVIS_BUILD="True"
-
+    - MATRIX_EVAL=“CC=clang-8 && CXX=clang++8”
+    
+before_install:
+  - eval “${MATRIX_EVAL}”
 install:
 # Install conan
   - pip install conan
