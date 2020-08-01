@@ -29,8 +29,8 @@ class TGlibConan(ConanFile):
        cmake = CMake(self)
        cmake.verbose = True
       
-       cmake.definitions["TGLIB_BUILD_EXAMPLES"] = "ON" if self.options.build_examples else "OFF"
-       cmake.definitions["TGLIB_BUILD_TESTS"] = "ON" if self.options.build_tests else "OFF"
+       cmake.definitions["TGLIB_BUILD_EXAMPLES"] = self.options.build_examples
+       cmake.definitions["TGLIB_BUILD_TESTS"] = self.options.build_tests
        cmake.definitions["VERBOSITY_LEVEL"] = self.options.verbosity_level
        print("Building tests: {}\nBuilding examples: {}\nLogger verbosity level: {}"
        	.format(cmake.definitions["TGLIB_BUILD_TESTS"],cmake.definitions["TGLIB_BUILD_EXAMPLES"],cmake.definitions["VERBOSITY_LEVEL"]))
