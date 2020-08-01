@@ -2,7 +2,6 @@
 #include <functional>
 #include <variant>
 #include <regex>
-#include <utility/logger.h>
 #include <fmt/format.h>
 
 #include "telegram_structs.h"

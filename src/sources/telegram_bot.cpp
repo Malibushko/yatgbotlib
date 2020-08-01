@@ -4,7 +4,7 @@
 #include "querybuilder.h"
 #include "apimanager.h"
 #include "utility.h"
-﻿
+
 namespace telegram {
 
 Bot::Bot(const std::string &token, std::size_t thread_number) noexcept
